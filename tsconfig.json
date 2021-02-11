@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "checkJs": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "resolveJsonModule": true,
+    "outDir": "dist/",
+    "target": "ESNext",
+    "skipLibCheck": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "module": "commonjs"
+  },
+  "include": ["src/**/*"],
+  "compileOnSave": false,
+  "exclude": ["dist/**"]
+}
