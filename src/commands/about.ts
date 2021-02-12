@@ -21,10 +21,10 @@ export const execute = ({ message }: Record<string, Message>): boolean => {
       .setAuthor("About Me")
       .setFooter(
         `Requested by ${message.author.tag} (${message.author.id})`,
-        message.author.avatarURL()
+        message.author.avatarURL() as string
       )
       .setTimestamp()
-      .setThumbnail(message.client.user.avatarURL())
+      .setThumbnail(message.client.user?.avatarURL() as string)
   );
   return true;
 };
