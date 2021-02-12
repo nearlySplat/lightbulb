@@ -14,7 +14,7 @@ type Usr = {
 };
 export const createLogMessage = (options: LogMessageOptions): string => {
   let result = `
-    \`[${new Date().toLocaleString()}]\` \`[Case ${options.case}]\` ${
+    \`[Case ${options.case}]\` ${
     options.action
   } \`[on]\` **${options.victim.tag}** (${options.victim.id}) \`[by]\` **${options.perpetrator.tag}** (${options.perpetrator.id})
     \`[Reason]\` ${options.reason ?? 'None'}
