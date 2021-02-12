@@ -41,6 +41,7 @@ export const execute = async (client: Client, guild: Guild, user: User) => {
       reason: auditLogEntry?.reason,
       case: auditLogs.entries.size,
       action: 'Unban',
+      emoji: "🔧"
     });
     channel.send(result);
   }
