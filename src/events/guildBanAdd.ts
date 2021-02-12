@@ -7,7 +7,7 @@ import {
   TextChannel,
   User,
 } from 'discord.js';
-import { createLogMessage } from '../util';
+import { createLogMessage, getCases } from '../util';
 
 export const execute = async (client: Client, guild: Guild, user: User) => {
   if (!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
@@ -39,7 +39,7 @@ export const execute = async (client: Client, guild: Guild, user: User) => {
         tag: auditLogEntry?.executor.tag,
       },
       reason: auditLogEntry?.reason,
-      case: auditLogs.entries.size,
+      case: getCases(auditLogs.entries),
       action: 'Ban',
       emoji: "🔨"
     });
