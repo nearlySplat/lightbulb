@@ -1,12 +1,15 @@
 import CatLoggr from 'cat-loggr/ts';
-import { Client, Intents } from 'discord.js';
+import { Client } from 'discord.js';
 import { config } from 'dotenv';
 import { readdirSync } from 'fs';
 import { join } from 'path';
+import { INTENTS } from './constants';
+import { Command } from './types';
 import { loadFiles } from './util';
 export const loggr = new CatLoggr();
-export const commands = loadFiles('../commands');
-
+export const commands = loadFiles<Command>('../commands');
+export const startedTimestamp = Date.now();
+export const startedAt = new Date();
 const client = new Client({
   allowedMentions: { users: [], roles: [] },
   presence: {
@@ -16,7 +19,7 @@ const client = new Client({
       type: 'WATCHING',
     },
   },
-  intents: [Intents.NON_PRIVILEGED],
+  intents: INTENTS,
 });
 config({
   path: join(__dirname, '..', '.env'),

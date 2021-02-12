@@ -1,5 +1,7 @@
-import { MessageEmbed, Message } from "discord.js";
-export const execute = ({ message }: Record<string, Message>): boolean => {
+import { MessageEmbed } from 'discord.js';
+import { CLIENT_COLOUR } from '../constants';
+import { Context } from '../types';
+export const execute = ({ message }: Context): boolean => {
   message.channel.send(
     new MessageEmbed()
       .setDescription(
@@ -15,10 +17,10 @@ export const execute = ({ message }: Record<string, Message>): boolean => {
     **What I log:**
     - 🔨 Bans
     - 🔧 Unbans
-    - 👢 Kicks (Coming Soon)`.replace(/\n +/g, "\n")
+    - 👢 Kicks (Coming Soon)`.replace(/\n +/g, '\n')
       )
-      .setColor(16571005)
-      .setAuthor("About Me")
+      .setColor(CLIENT_COLOUR)
+      .setAuthor('About Me')
       .setFooter(
         `Requested by ${message.author.tag} (${message.author.id})`,
         message.author.avatarURL() as string

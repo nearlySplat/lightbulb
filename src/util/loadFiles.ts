@@ -2,10 +2,9 @@ import { Collection } from 'discord.js';
 import { readdirSync } from 'fs';
 import { join } from 'path';
 import { loggr } from '..';
-import { Command } from '../types';
 
-export const loadFiles = (folder: string) => {
-  const coll = new Collection<string, Command>(),
+export function loadFiles<T>(folder: string): Collection<string, T> {
+  const coll = new Collection<string, T>(),
     files = readdirSync(join(__dirname, folder)).map(value =>
       value.replace(/\.[jt]s/g, '')
     );
@@ -15,4 +14,4 @@ export const loadFiles = (folder: string) => {
   }
   loggr.debug(`Loaded ${coll.size} files.`);
   return coll;
-};
+}
