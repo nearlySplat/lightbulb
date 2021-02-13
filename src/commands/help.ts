@@ -1,4 +1,4 @@
-import { Collection, GuildMember, MessageEmbed } from 'discord.js';
+import { Collection, GuildMember, MessageEmbed, ClientUser } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata } from '../types';
 import { getAccessLevel, getCurrentLevel } from '../util';
@@ -24,7 +24,7 @@ export const execute: CommandExecute = ({ message, commands }) => {
         .map(value => `**${value.meta.name}** - ${value.meta.description}`)
         .join('\n')
     )
-    .setThumbnail(message.client.user.avatarURL() as string)
+    .setThumbnail((message.client.user as ClientUser).avatarURL() as string)
     .setTimestamp();
   message.reply({
     allowedMentions: {
