@@ -31,10 +31,3 @@ export interface AccessLevels {
   ADMINISTRATOR?: 2;
   OWNER?: 3;
 }
-
-enum A {
-  one = 1,
-  two,
-  three,
-}
-loggr.debug(A.one);
