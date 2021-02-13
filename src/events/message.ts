@@ -1,4 +1,4 @@
-import { Client, GuildMember, Message } from 'discord.js';
+import { Client, GuildMember, Message, ClientUser } from 'discord.js';
 import { commands } from '..';
 import { PREFIXES } from '../constants';
 import { Command } from '../types';
@@ -46,6 +46,6 @@ export const execute = async (
       });
     else return false;
   }
-  for (let prefix of [`<@${client.user.id}>`, `<@!${client.user.id}>`, ...PREFIXES]) handleCommand(prefix, prefix === '!');
+  for (let prefix of [`<@${(client.user as ClientUser).id}>`, `<@!${(client.user as ClientUser).id}>`, ...PREFIXES]) handleCommand(prefix, prefix === '!');
   return true;
 };
