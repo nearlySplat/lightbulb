@@ -15,7 +15,7 @@ export const execute = async (
   ): Promise<boolean> {
     const timeStarted = Date.now();
     if (!message.content?.startsWith(prefix)) return false;
-    let args: string[] = message.content.slice(prefix.length).split(/ +/);
+    let args: string[] = message.content.slice(prefix.length).trim().split(/ +/);
     const command: Command | undefined = commands.get(args[0]),
       commandName = args[0];
     if (!command) return false;
