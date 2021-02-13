@@ -39,6 +39,6 @@ export const execute: CommandExecute = ({ message, commands }) => {
 export const meta: CommandMetadata = {
   name: 'help',
   description: 'Lists the commands of the bot.',
-  accessLevel: 3,
+  accessLevel: 0,
   aliases: [],
 };
