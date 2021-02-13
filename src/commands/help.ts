@@ -8,7 +8,7 @@ export const execute: CommandExecute = ({ message, commands }) => {
     .setAuthor('Help')
     .setColor(CLIENT_COLOUR)
     .setFooter(
-      `Requested by ${message.author.tag} (${message.author.id}) | Please note that I do not respond to commands prefixed with ! other than 'reason'`,
+      `Requested by ${message.author.tag} (${message.author.id})`,
       message.author.avatarURL() as string
     )
     .setDescription(
