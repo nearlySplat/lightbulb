@@ -46,6 +46,6 @@ export const execute = async (
       });
     else return false;
   }
-  for (let prefix of PREFIXES) handleCommand(prefix, prefix === '!');
+  for (let prefix of [`<@${client.user.id}>`, `<@!${client.user.id}>`, ...PREFIXES]) handleCommand(prefix, prefix === '!');
   return true;
 };
