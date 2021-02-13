@@ -1,6 +1,6 @@
 import { inspect } from 'util';
 import { WHITELIST } from '../constants';
-import { Context } from '../types';
+import { CommandMetadata, Context } from '../types';
 
 export const execute = async ({ message, args }: Context): Promise<boolean> => {
   if (!WHITELIST.includes(message.author.id)) return true;
@@ -40,4 +40,11 @@ export const execute = async ({ message, args }: Context): Promise<boolean> => {
     }
   );
   return true;
+};
+
+export const meta: CommandMetadata = {
+  name: 'eval',
+  description: 'Evaluate JavaScript code.',
+  accessLevel: 3,
+  aliases: [],
 };

@@ -1,11 +1,11 @@
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
-import { Context } from '../types';
+import { Context, CommandMetadata } from '../types';
 export const execute = ({ message }: Context): boolean => {
   message.channel.send(
     new MessageEmbed()
       .setDescription(
-        `👋 Hi! I'm 🤖💡, here to make your logging life easier!
+        `👋 Hi! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
 
     **My features**:
     - Logging
@@ -29,4 +29,11 @@ export const execute = ({ message }: Context): boolean => {
       .setThumbnail(message.client.user?.avatarURL() as string)
   );
   return true;
+};
+
+export const meta: CommandMetadata = {
+  name: 'about',
+  description: 'Information about me!',
+  accessLevel: 0,
+  aliases: [],
 };

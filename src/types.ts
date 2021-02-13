@@ -1,15 +1,20 @@
 import { Client, Collection, Message, PermissionFlags } from 'discord.js';
+import { loggr } from '.';
 
 export type Command = {
-  execute(context: Context): boolean;
-  meta: CommandMetadata;
+  execute: CommandExecute;
+  meta?: CommandMetadata;
 };
+
+export type CommandExecute = (context: Context) => boolean;
+
 export interface Context {
   client: Client;
   args: string[];
   message: Message;
   commands: Collection<string, Command>;
   commandHandlerStarted: number;
+  accessLevel: number;
 }
 
 export interface CommandMetadata {
@@ -26,3 +31,10 @@ export interface AccessLevels {
   ADMINISTRATOR?: 2;
   OWNER?: 3;
 }
+
+enum A {
+  one = 1,
+  two,
+  three,
+}
+loggr.debug(A.one);
