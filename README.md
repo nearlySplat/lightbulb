@@ -1,7 +1,7 @@
 # lightbulb
-The [TypeScript] rewrite of [Eureka!](https://voidbots.net/bot/eureka).
+The [TypeScript](https://typescriptlang.org) rewrite of [Eureka!](https://voidbots.net/bot/eureka).
 
-# Self-hosting
+## Self-hosting
 Running this code will require TypeScript. To install typescript, run 
 ```bash
 # for yarn
@@ -24,3 +24,8 @@ Runs `tsc` in watch mode. This will compile your code when you save the file.
 ```bash
 yarn global add typescript && yarn && tsc && node dist
 ```
+
+## Contributing
+Read the `.eslintrc.yml` file or run `eslint .` to fix code style errors. Then, format the code with [Prettier](https://prettier.io) using the `.prettierrc` file.
+
+Also, try to use [the Conventional Commits stuff thing](https://www.conventionalcommits.org/en/v1.0.0/). Yes, I sometimes don't use it. I still haven't figured out how to rename Git Commits.
