@@ -87,7 +87,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
     return true;
   }
   if (args[0].includes("..")) {
-    const nums = args[0].split("..").reverse().map(v => v.parseInt(v));
+    const nums = args[0].split("..").reverse().map(v => parseInt(v));
     const cases = Array.from(
       { length: nums.reduce((a, b) => a - b) + 1 },
       (_, i) => i + 1
