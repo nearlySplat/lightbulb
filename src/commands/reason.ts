@@ -6,6 +6,7 @@ import {
   Snowflake,
   TextChannel,
   User,
+  Message,
 } from "discord.js";
 import { createLogMessage, getCases } from "../util";
 import { CLIENT_COLOUR } from "../constants";
@@ -86,7 +87,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
     return true;
   }
   if (args[0].includes("..")) {
-    const nums = args[0].split("..").reverse();
+    const nums = args[0].split("..").reverse().map(v => v.parseInt(v));
     const cases = Array.from(
       { length: nums.reduce((a, b) => a - b) + 1 },
       (_, i) => i + 1
@@ -95,13 +96,13 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
     await message.channel
       .awaitMessages((m) => m.author.id == message.author.id, { max: 1 })
       .then((v) =>
-        parseInt(v.first().content) === cases.length
+        parseInt((v.first() as Message).content) === cases.length
           ? updateMessages(cases)
               .catch(() => null)
               .then(
                 (v) =>
-                  !v ||
-                  message.channel.send(`👌 Updated ${cases.length} cases.`)
+                  v ?
+                  message.channel.send(`👌 Updated ${cases.length} cases.`) : message
               )
           : message.channel.send("Bruh your math sucks.")
       );
