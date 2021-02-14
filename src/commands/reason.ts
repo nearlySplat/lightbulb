@@ -30,7 +30,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
     ) as TextChannel,
     auditLogs = await (message.guild as Guild).fetchAuditLogs();
   await channel.messages.fetch({});
-  async function updateMessages(cases) {
+  async function updateMessages(cases: (number | string)[]) {
     cases.map(async (value) => {
       const message1 =
         value == "l"
