@@ -12,21 +12,21 @@ import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata, Context } from '../types';
 
 export const execute = async ({ message, args }: Context): any => {
-  if (!message.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
-  const channel = guild.channels.cache.find(
+  if (!(message.guild as Guild).me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
+  const channel = (message.guild as Guild).channels.cache.find(
       value =>
         (value.name?.match(/^💡(-log(s|ging)?)?$/g) &&
           value.type == 'text' &&
           value
-            .permissionsFor(guild.me as GuildMember)
+            .permissionsFor(message.guild.me as GuildMember)
             ?.has('SEND_MESSAGES')) ??
         false
     ) as TextChannel,
-    auditLogs = await message.guild.fetchAuditLogs();
+    auditLogs = await (message.guild as Guild).fetchAuditLogs();
   const message1 = channel?.messages.cache.find(v => v.content.startsWith(`\`[Case ${args[0]}]\``));
   if (!message1) return message.react("😔");
   const matchedUser = message1.content.match(/ed]` [^#]+#\d{4} \((\d+)\)/g)?.[0].match(/\d{5}\d+/g)?.[0];
-  const user = await message.client.users.fetch(`${matchedUser}`).catch(() => null)
+  const user = await message.client.users?.fetch(`${matchedUser}`).catch(() => null)
   if (!user) return message.react("😔");
   const auditLogEntry = auditLogs.entries.find(
       value =>
@@ -46,9 +46,9 @@ export const execute = async ({ message, args }: Context): any => {
         tag: message.author.tag,
       },
       reason: args.slice(1).join(" ") || auditLogEntry?.reason,
-      case: parseInt(message1.content.match(/Case \d+/g)?.[0].match(/\d+/g)?.[0]),
-      action: message1.content.match(/(bann|kick|unbann)ed/g)?.[0].replace(/\b\w/g, v => v.toUpperCase()).replaceAll("ed", ""),
-      emoji: message1.content.match(/[👢🔨🔧]/g)?.[0]
+      case: parseInt(message1.content.match(/Case \d+/g)?.[0].match(/\d+/g)?.[0]) as number,
+      action: message1.content.match(/(bann|kick|unbann)ed/g)?.[0].replace(/\b\w/g, v => v.toUpperCase()).replaceAll("ed", "") as string,
+      emoji: message1.content.match(/[👢🔨🔧]/g)?.[0] as string
     });
     message1.edit(result);
     message.channel.send("👌")
