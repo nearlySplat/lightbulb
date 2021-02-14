@@ -26,7 +26,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
   const message1 = channel?.messages.cache.find(v => v.content.startsWith(`\`[Case ${args[0]}]\``));
   if (!message1) return message.react("😔");
   const matchedUser = message1.content.match(/ed]` [^#]+#\d{4} \((\d+)\)/g)?.[0].match(/\d{5}\d+/g)?.[0];
-  const user = await message.client.users?.fetch(`${matchedUser}`).catch(() => null)
+  const user = await message.client.users?.fetch(`${matchedUser}`)//.catch(() => null)
   if (!user) return message.react("😔");
   const auditLogEntry = auditLogs.entries.find(
       value =>
