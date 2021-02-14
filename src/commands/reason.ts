@@ -6,38 +6,48 @@ import {
   Snowflake,
   TextChannel,
   User,
-} from 'discord.js';
-import { createLogMessage, getCases } from '../util';
-import { CLIENT_COLOUR } from '../constants';
-import { CommandExecute, CommandMetadata, Context } from '../types';
+} from "discord.js";
+import { createLogMessage, getCases } from "../util";
+import { CLIENT_COLOUR } from "../constants";
+import { CommandExecute, CommandMetadata, Context } from "../types";
 
 export const execute = async ({ message, args }: Context): Promise<any> => {
-  if (!(message.guild as Guild).me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
+  if (
+    !(message.guild as Guild).me?.permissions.has(
+      Permissions.FLAGS.VIEW_AUDIT_LOG
+    )
+  )
+    return;
   const channel = (message.guild as Guild).channels.cache.find(
-      value =>
+      (value) =>
         (value.name?.match(/^💡(-log(s|ging)?)?$/g) &&
-          value.type == 'text' &&
+          value.type == "text" &&
           value
             .permissionsFor((message.guild as Guild).me as GuildMember)
-            ?.has('SEND_MESSAGES')) ??
+            ?.has("SEND_MESSAGES")) ??
         false
     ) as TextChannel,
     auditLogs = await (message.guild as Guild).fetchAuditLogs();
-  await channel.messages.fetch();
-  const message1 = channel?.messages.cache.find(v => v.content.startsWith(`\`[Case ${args[0]}]\``));
+  const message1 = channel?.messages.cache.find((v) =>
+    v.content.startsWith(`\`[Case ${args[0]}]\``)
+  );
   if (!message1) return message.react("😔");
-  const matchedUser = message1.content.match(/ed]` [^#]+#\d{4} \((\d+)\)/g)?.[0].match(/\d{5}\d+/g)?.[0];
-  const user = await message.client.users?.fetch(`${matchedUser}`).catch(() => null)
+  const matchedUser = message1.content
+    .match(/ed]` \*\*[^#]+#\d{4}\*\* \(\d+\)/g)?.[0]
+    ?.match(/\d{4}\d+/g)?.[0];
+  const user = await message.client.users
+    ?.fetch(`${matchedUser}`)
+    .catch(() => null);
   if (!user) return message.react("😔");
   const auditLogEntry = auditLogs.entries.find(
-      value =>
-        value.action == 'MEMBER_BAN_ADD' &&
-        (value.target as { id: Snowflake })?.id === user.id
-    );
+    (value) =>
+      value.action == "MEMBER_BAN_ADD" &&
+      (value.target as { id: Snowflake })?.id === user.id
+  );
   if (!auditLogEntry) return false;
   if (channel) {
     const result = createLogMessage({
-      compact: channel.topic?.includes('--compact'),
+      compact: channel.topic?.includes("--compact"),
       victim: {
         tag: user.tag,
         id: user.id,
@@ -47,18 +57,23 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
         tag: message.author.tag,
       },
       reason: args.slice(1).join(" ") || auditLogEntry?.reason,
-      case: parseInt(message1.content.match(/Case \d+/g)?.[0].match(/\d+/g)?.[0] as string) as number,
-      action: message1.content.match(/(bann|kick|unbann)ed/g)?.[0].replace(/\b\w/g, v => v.toUpperCase()).replaceAll("ed", "") as string,
-      emoji: message1.content.match(/[👢🔨🔧]/g)?.[0] as string
+      case: parseInt(
+        message1.content.match(/Case \d+/g)?.[0].match(/\d+/g)?.[0] as string
+      ),
+      action: message1.content
+        .match(/(bann|kick|unbann)n{0,2}ed/g)?.[0]
+        .replace(/\b\w/g, (v) => v.toUpperCase())
+        .replaceAll("ed", "").replace(/n{2,4}$/g, "n"),
+      emoji: message1.content.match(/(👢|🔨|🔧)/g)?.[0],
     });
     message1.edit(result);
-    message.channel.send("👌")
+    message.channel.send("👌");
   }
 };
 
 export const meta: CommandMetadata = {
-  name: 'reason',
-  description: 'Edits a reason in the mod log.',
+  name: "reason",
+  description: "Edits a reason in the mod log.",
   accessLevel: 1,
   aliases: [],
 };
