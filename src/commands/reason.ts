@@ -23,6 +23,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
         false
     ) as TextChannel,
     auditLogs = await (message.guild as Guild).fetchAuditLogs();
+  await channel.messages.fetch();
   const message1 = channel?.messages.cache.find(v => v.content.startsWith(`\`[Case ${args[0]}]\``));
   if (!message1) return message.react("😔");
   const matchedUser = message1.content.match(/ed]` [^#]+#\d{4} \((\d+)\)/g)?.[0].match(/\d{5}\d+/g)?.[0];
