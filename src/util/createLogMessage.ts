@@ -17,7 +17,7 @@ type Usr = {
 export const createLogMessage = (options: LogMessageOptions): string => {
   let result = `
     \`[Case ${options.case}]\` ${options.emoji} **${options.perpetrator.tag}** (${options.perpetrator.id}) \`[${
-    options.action.toLowerCase()
+    options.action?.toLowerCase()
   }${options.action.endsWith("n") ? "n" : ""}ed]\` ${(options.context ? options.context + " " : undefined) ?? ""}**${options.victim.tag}** (${options.victim.id})
     \`[Reason]\` ${options.reason ?? 'None'}
       `
