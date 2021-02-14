@@ -63,7 +63,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
       action: message1.content
         .match(/(bann|kick|unbann)n?ed/g)?.[0]
         .replace(/\b\w/g, (v) => v.toUpperCase())
-        .replaceAll("ed", ""),
+        .replaceAll("ed", "").replaceA(/nn$/g, "n"),
       emoji: message1.content.match(/(👢|🔨|🔧)/g)?.[0],
     });
     message1.edit(result);
