@@ -11,8 +11,8 @@ import { createLogMessage, getCases } from '../util';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata, Context } from '../types';
 
-export const execute = async ({ message: { guild, ...message }, args }: Context): any => {
-  if (!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
+export const execute = async ({ message, args }: Context): any => {
+  if (!message.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
   const channel = guild.channels.cache.find(
       value =>
         (value.name?.match(/^💡(-log(s|ging)?)?$/g) &&
@@ -22,8 +22,8 @@ export const execute = async ({ message: { guild, ...message }, args }: Context)
             ?.has('SEND_MESSAGES')) ??
         false
     ) as TextChannel,
-    auditLogs = await guild.fetchAuditLogs();
-  const message = channel?.messages.cache.find(v => v.content.startsWith(`\`[Case ${args[0]}]\``));
+    auditLogs = await message.guild.fetchAuditLogs();
+  const message1 = channel?.messages.cache.find(v => v.content.startsWith(`\`[Case ${args[0]}]\``));
   if (!message1) return message.react("😔");
   const matchedUser = message1.content.match(/ed]` [^#]+#\d{4} \((\d+)\)/g)?.[0].match(/\d{5}\d+/g)?.[0];
   const user = await message.client.users.fetch(`${matchedUser}`).catch(() => null)
@@ -47,8 +47,8 @@ export const execute = async ({ message: { guild, ...message }, args }: Context)
       },
       reason: args.slice(1).join(" ") || auditLogEntry?.reason,
       case: parseInt(message1.content.match(/Case \d+/g)?.[0].match(/\d+/g)?.[0]),
-      action: 'Ban',
-      emoji: "🔨"
+      action: message1.content.match(/(bann|kick|unbann)ed/g)?.[0].replace(/\b\w/g, v => v.toUpperCase()).replaceAll("ed", ""),
+      emoji: message1.content.match(/[👢🔨🔧]/g)?.[0]
     });
     message1.edit(result);
     message.channel.send("👌")
