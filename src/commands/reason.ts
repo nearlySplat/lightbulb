@@ -61,9 +61,9 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
         message1.content.match(/Case \d+/g)?.[0].match(/\d+/g)?.[0] as string
       ),
       action: message1.content
-        .match(/(bann|kick|unbann)ed/g)?.[0]
+        .match(/(bann|kick|unbann)n?ed/g)?.[0]
         .replace(/\b\w/g, (v) => v.toUpperCase())
-        .replaceAll("ed", ""),
+        .replaceAll("nn?ned", "n"),
       emoji: message1.content.match(/(👢|🔨|🔧)/g)?.[0],
     });
     message1.edit(result);
