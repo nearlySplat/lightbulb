@@ -94,8 +94,8 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
     await message.channel.send(`How many cases will this affect?`);
     await message.channel
       .awaitMessages((m) => m.author.id == message.author.id, { max: 1 })
-      .then(({ content: v }) =>
-        parseInt(v) === cases.length
+      .then((v) =>
+        parseInt(v.first().content) === cases.length
           ? updateMessages(cases)
               .catch(() => null)
               .then(
