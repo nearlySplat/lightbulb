@@ -28,7 +28,8 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
         false
     ) as TextChannel,
     auditLogs = await (message.guild as Guild).fetchAuditLogs();
-  const message1 = channel?.messages.cache.find((v) =>
+  await channel.messages.fetch({});
+  const message1 = args[0] == "l" ? channel?.messages.cache.filter(v => v.author.id === client.user?.id).map(v => v).sort((a, b) => b.createdTimestamp - a)[0] : channel?.messages.cache.find((v) =>
     v.content.startsWith(`\`[Case ${args[0]}]\``)
   );
   if (!message1) return message.react("😔");
@@ -61,7 +62,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
         message1.content.match(/Case \d+/g)?.[0].match(/\d+/g)?.[0] as string
       ),
       action: message1.content
-        .match(/(bann|kick|unbann)n{0,2}ed/g)?.[0]
+        .match(/(ban|kick|unban)(n{1,2})?ed/g)?.[0]
         .replace(/\b\w/g, (v) => v.toUpperCase())
         .replaceAll("ed", "").replace(/n{2,4}$/g, "n"),
       emoji: message1.content.match(/(👢|🔨|🔧)/g)?.[0],
