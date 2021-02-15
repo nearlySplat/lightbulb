@@ -3,7 +3,7 @@ import { CommandExecute, CommandMetadata } from '../types';
 import { Permissions, PermissionFlags } from "discord.js";
 
 export const execute: CommandExecute = ({ message, args }) => {
-  message.reply(`<https://discord.com/oauth2/authorize?client_id=${args?.[0] ?? message.client.user?.id}&scope=bot${args[1] ? `&permissions=${args.slice(1).map(v => Permissions.FLAGS[v.toUpperCase() as keyof PermissionFlags] ?? 0).reduce((prev, curr) => prev + curr)}` : ""}>`, {
+  message.reply(`<https://discord.com/oauth2/authorize?client_id=${args[0]?.replace(/(<@!?|>)/g, "") || message.client.user?.id}&scope=bot${args[1] ? `&permissions=${args.slice(1).map(v => Permissions.FLAGS[v.toUpperCase() as keyof PermissionFlags] ?? 0).reduce((prev, curr) => prev + curr)}` : ""}>`, {
     allowedMentions: {
       repliedUser: false,
       parse: [],
