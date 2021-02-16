@@ -1,12 +1,12 @@
 import { Context, CommandMetadata } from "../types";
-import { SnowflakeUtil } from "discord.js";
+import { SnowflakeUtil, MessageEmbed } from "discord.js";
 import { CLIENT_COLOUR } from "../constants";
 
 export const execute = async (ctx: Context): Promise<boolean> => {
   const deconstructed = SnowflakeUtil.deconstruct(
     ctx.args[0] ?? ctx.message.author.id
   );
-  const _ = new Discord.MessageEmbed()
+  const _ = new MessageEmbed()
     .addField(
       "Snowflake",
       Object.entries(deconstructed).map(
