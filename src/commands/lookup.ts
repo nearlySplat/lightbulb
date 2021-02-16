@@ -34,7 +34,7 @@ export const execute = async (ctx: Context): Promise<boolean> => {
       .setThumbnail(user.avatarURL() as string);
   } else if (invite) {
     _.setAuthor(`Invite Lookup for ${invite.guild.name}`)
-      .addField(`**Invite Link**: https://discord.gg/${invite.code}\n**Inviter**: ${invite.inviter.tag} (${invite.inviter.id})\n**Guild**:\n⇒ __Name__: ${invite.guild.name}\n⇒ __Vanity__: \`${invite.guild.vanityURLCode() ?? "None"}\`\n⇒ __Member Count__: ${invite.guild.approximateMemberCount}`)
+      .addField(`**Invite Link**: https://discord.gg/${invite.code}\n**Inviter**: ${invite.inviter.tag} (${invite.inviter.id})\n${invite.guild ? `**Guild**:\n⇒ __Name__: ${invite.guild?.name}\n⇒ __Vanity__: \`${invite.guild?.vanityURLCode ?? "None"}\`\n⇒ __Member Count__: ${invite.guild?.approximateMemberCount}` : ""}`)
   }
   ctx.message.reply({ allowedMentions: { repliedUser: false, parse: [] }, embed: _ })
   return true;
