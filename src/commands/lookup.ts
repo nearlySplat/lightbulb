@@ -5,7 +5,7 @@ import { CLIENT_COLOUR } from "../constants";
 export const execute = async (ctx: Context): Promise<boolean> => {
   const deconstructed = SnowflakeUtil.deconstruct(
     ctx.args[0] ?? ctx.message.author.id
-  ), user = await ctx.client.users.fetch(ctx.args[0]).catch(e => null), invite = ctx.client.fetchInvite(ctx.args[0]).catch(e => null)
+  ), user = await ctx.client.users.fetch(ctx.args[0]).catch(e => null), invite = ctx.client.fetchInvite(ctx.args[0].replace(/discord\.(gg|com\/invites)\//g, "")).catch(e => null)
   const _ = new MessageEmbed()
     .addField(
       "Snowflake",
@@ -30,8 +30,11 @@ export const execute = async (ctx: Context): Promise<boolean> => {
     .setThumbnail(ctx.client.user?.avatarURL() as string);
   if (user) {
     _.setAuthor(`Lookup for ${user.tag}`)
-      .addField("User Info", `**Tag**: ${user.tag}\n**ID***: ${user.id}`)
+      .addField("User Info", `**Tag**: ${user.tag}\n**ID**: ${user.id}`)
       .setThumbnail(user.avatarURL() as string);
+  } else if (invite) {
+    _.setAuthor(`Invite Lookup for ${invite.guild.name}`)
+      .addField(`**Invite Link**: https://discord.gg/${invite.code}\n**Inviter**: ${invite.inviter.tag} (${invite.inviter.id})\n**Guild**:\n⇒ __Name__: ${invite.guild.name}\n⇒ __Vanity__: \`${invite.guild.vanityURLCode() ?? "None"}\`\n⇒ __Member Count__: ${invite.guild.approximateMemberCount}`)
   }
   ctx.message.reply({ allowedMentions: { repliedUser: false, parse: [] }, embed: _ })
   return true;
