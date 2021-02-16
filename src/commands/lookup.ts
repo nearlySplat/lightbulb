@@ -35,6 +35,6 @@ export const execute = async (ctx: Context): Promise<boolean> => {
 export const meta: CommandMetadata = {
   name: "lookup",
   description: "Looks up an ID in Discord.",
-  accessLevel: 1,
+  accessLevel: 0,
   aliases: [],
 };
