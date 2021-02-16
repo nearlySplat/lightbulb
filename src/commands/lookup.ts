@@ -34,7 +34,9 @@ export const execute = async (ctx: Context): Promise<boolean> => {
       .setThumbnail(user.avatarURL() as string);
   } else if (invite) {
     _.setAuthor(`Invite Lookup for ${invite.guild?.name ?? invite.code}`)
-      .addField("Invite Info", `**Invite Link**: https://discord.gg/${invite.code}\n${invite.inviter ? `**Inviter**: ${invite.inviter.tag} (${invite.inviter.id})` : ""}\n${invite.guild ? `**Guild**:\n⇒ __Name__: ${invite.guild?.name}\n⇒ __Vanity__: \`${invite.guild?.vanityURLCode ?? "None"}\`${invite.guild?.approximateMemberCount ? `\n⇒ __Member Count__: ${invite.guild?.approximateMemberCount}` : ""}` : ""}`)
+      .addField("Invite Info", `**Invite Link**: https://discord.gg/${invite.code}${invite.inviter ? `\n**Inviter**: __${invite.inviter.tag}__ (${invite.inviter.id})` : ""}\n${invite.guild ? `**Guild**:\n⇒ __Name__: ${invite.guild?.name}\n⇒ __Vanity__: \`${invite.guild?.vanityURLCode ?? "None"}\`${invite.guild?.approximateMemberCount ? `\n⇒ __Member Count__: ${invite.guild?.approximateMemberCount}` : ""}` : ""}`)
+      .setImage((invite.guild?.bannerURL() ?? invite.guild?.splashURL()) as (string | undefined))
+      .setThumbnail(invite.guild?.iconURL() as string)
   }
   ctx.message.reply({ allowedMentions: { repliedUser: false, parse: [] }, embed: _ })
   return true;
