@@ -1,10 +1,35 @@
 import { Context, CommandMetadata } from "../types";
 import { SnowflakeUtil } from "discord.js";
+import { CLIENT_COLOUR } from "../constants";
 
 export const execute = async (ctx: Context): Promise<boolean> => {
-  ctx.message.channel.send(Object.entries(SnowflakeUtil.deconstruct(ctx.args[0] ?? ctx.message.author.id)).map(([K, V]) => `**${K}**: \`${(V as (Date | string | number)) instanceof Date ? V.toLocaleString() : V}\``))
+  const deconstructed = SnowflakeUtil.deconstruct(
+    ctx.args[0] ?? ctx.message.author.id
+  );
+  const _ = new Discord.MessageEmbed()
+    .addField(
+      "Snowflake",
+      Object.entries(deconstructed).map(
+        ([K, V]) =>
+          `**${K.replace(/\b\w/g, (v) => v.toUpperCase()).replace(
+            /([a-z])([A-Z])/g,
+            "$1 $2"
+          )}**: \`${
+            (V as Date | string | number) instanceof Date
+              ? V.toLocaleString()
+              : V
+          }\``
+      )
+    )
+    .setColor(CLIENT_COLOUR)
+    .setAuthor(`Lookup Information for ${ctx.args[0]}`)
+    .setFooter(
+      `Requested by ${ctx.message.author.tag} (${ctx.message.author.id}) | Snowflake created at`
+    )
+    .setTimestamp(deconstructed.timestamp)
+    .setThumbnail(ctx.client.user?.avatarURL() as string);
   return true;
-}
+};
 
 export const meta: CommandMetadata = {
   name: "lookup",
