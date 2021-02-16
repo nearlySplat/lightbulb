@@ -28,6 +28,10 @@ export const execute = async (ctx: Context): Promise<boolean> => {
     )
     .setTimestamp(deconstructed.timestamp)
     .setThumbnail(ctx.client.user?.avatarURL() as string);
+  if (user) {
+    _.setTitle(`Lookup for ${user.tag}`);
+      .addField("User Info", `**Tag**: ${user.tag}\n**ID***: ${user.id}`)
+  }
   ctx.message.reply({ allowedMentions: { repliedUser: false, parse: [] }, embed: _ })
   return true;
 };
