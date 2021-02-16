@@ -5,7 +5,7 @@ import { CLIENT_COLOUR } from "../constants";
 export const execute = async (ctx: Context): Promise<boolean> => {
   const deconstructed = SnowflakeUtil.deconstruct(
     ctx.args[0] ?? ctx.message.author.id
-  ), user = await ctx.client.users.fetch(ctx.args[0]).catch(e => null), invite = ctx.client.fetchInvite(ctx.args[0].replace(/discord\.(gg|com\/invites)\//g, "")).catch(e => null)
+  ), user = await ctx.client.users.fetch(ctx.args[0]).catch(e => null), invite = await ctx.client.fetchInvite(ctx.args[0].replace(/discord\.(gg|com\/invites)\//g, "")).catch(e => null)
   const _ = new MessageEmbed()
     .addField(
       "Snowflake",
