@@ -60,8 +60,8 @@ export const execute = async (ctx: Context): Promise<boolean> => {
               }${invite.guild?.name}\n⇒ __Vanity__: \`${
                 invite.guild?.vanityURLCode ?? 'None'
               }\`${
-                invite.guild?.approximateMemberCount
-                  ? `\n⇒ __Member Count__: ${invite.guild?.approximateMemberCount}`
+                invite.guild?.approximateMemberCount || invite.memberCount
+                  ? `\n⇒ __Member Count__: ${invite.guild?.approximateMemberCount ?? invite.memberCount}`
                   : ''
               }`
             : ''
