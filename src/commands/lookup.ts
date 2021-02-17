@@ -15,7 +15,7 @@ export const execute = async (ctx: Context): Promise<boolean> => {
     user = await ctx.client.users.fetch(ctx.args[0]).catch(e => null),
     invite = await ctx.client
       .fetchInvite(
-        ctx.args[0].replace(/(https?)?discord\.(gg|com\/invites)\//g, '')
+        ctx.args[0].replace(/(https?:\/\/)?discord\.(gg|com\/invites)\//g, '')
       )
       .catch(e => null),
     guild: GuildLookupData =
