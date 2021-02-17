@@ -1,4 +1,11 @@
-import { Client, Collection, Message, PermissionFlags } from 'discord.js';
+import {
+  Client,
+  Collection,
+  GuildPreview,
+  Message,
+  PermissionFlags,
+  Snowflake,
+} from 'discord.js';
 import { loggr } from '.';
 
 export type Command = {
@@ -31,3 +38,21 @@ export interface AccessLevels {
   ADMINISTRATOR?: 2;
   OWNER?: 3;
 }
+
+export type WidgetResponse = WidgetSuccessfulResponse | WidgetError;
+
+export type WidgetError =
+  | {
+      [value: string]: string[];
+    }
+  | { message: string; code: number };
+
+export interface WidgetSuccessfulResponse {
+  id?: Snowflake;
+  name?: string;
+  instant_invite?: string;
+  members?: any[];
+  presence_count?: number;
+}
+
+export type GuildLookupData = WidgetResponse | GuildPreview | null;
