@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata } from '../types';
 
-const invalidArg = arg => `__**Invalid Arguments!**__\n An argument for \`${arg}\` was \n- not specified or \n- not of the correct type.\n\nArguments for this command are: \`\`\`\n<action>: "encode" | "decode" = what you want me to do with your string\n<string>: string = the data you want me to encode/decode.\`\`\``
+const invalidArg = (arg: string) => `__**Invalid Arguments!**__\n An argument for \`${arg}\` was \n- not specified or \n- not of the correct type.\n\nArguments for this command are: \`\`\`\n<action>: "encode" | "decode" = what you want me to do with your string\n<string>: string = the data you want me to encode/decode.\`\`\``
 export const execute: CommandExecute = ({ message, args }) => {
   if (!args[0] || !["encode","decode"].includes(args[0])) return message.reply(invalidArg("action")).then(() => false);
   if (!args[1]) return message.reply(invalidArg("data")).then(() => false);
