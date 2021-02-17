@@ -87,6 +87,25 @@ export const execute = async (ctx: Context): Promise<boolean> => {
       )
       .setTimestamp(invite.guild?.createdTimestamp);
   }
+  if (guild) {
+    let g = guild as GuildPreview & { members?: any[] };
+    _.setAuthor(`Guild Lookup for ${g.name}`)
+      .addField(
+        'Guild Info',
+        `**Name**: ${g.name}\n**ID**: ${g.id}\n**Members**: ${
+          g.approximateMemberCount ?? g.members?.length
+        }\n${g.description ? `**Description**: ${g.description}\n` : ''}${
+          g.features
+            ? `**Community Features**: ${g.features.map(v => `\`${v}\``).join(", ")}`
+            : ''
+        }`
+      )
+      .setThumbnail(
+        g.iconURL?.({
+          dynamic: true,
+        }) as string
+      );
+  }
   if (parseInt(ctx.args[0]))
     _.addField(
       'Snowflake',
@@ -102,25 +121,7 @@ export const execute = async (ctx: Context): Promise<boolean> => {
           }\``
       )
     );
-if (guild) {
-    let g = guild as GuildPreview & { members?: any[] };
-    _.setAuthor(`Guild Lookup for ${g.name}`)
-      .addField(
-        'Guild Info',
-        `**Name**: ${g.name}\n**ID**: ${g.id}\n**Members**: ${
-          g.approximateMemberCount ?? g.members?.length
-        }\n${g.description ? `**Description**: ${g.description}\n` : ''}${
-          g.features
-            ? `**Community Features**: ${g.features.map(v => `\`${v}\``)}`
-            : ''
-        }`
-      )
-      .setThumbnail(
-        g.iconURL?.({
-          dynamic: true,
-        }) as string
-      );
-  }
+
   if (_.fields.length === 0)
     _.setDescription(
       'Nothing was found... I currently only support **user IDs** and **server invite links**.'
