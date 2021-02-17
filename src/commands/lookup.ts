@@ -23,8 +23,8 @@ export const execute = async (ctx: Context): Promise<boolean> => {
       ((
         await axios.get(
           `https://canary.discord.com/api/guilds/${ctx.args[0]}/widget.json`
-        )
-      ).data as WidgetResponse);
+        ).catch(() => null)
+      )?.data as WidgetResponse);
   const _ = new MessageEmbed()
     .setColor(CLIENT_COLOUR)
     .setAuthor(`Lookup Information for ${ctx.args[0]}`)
@@ -102,13 +102,7 @@ export const execute = async (ctx: Context): Promise<boolean> => {
           }\``
       )
     );
-  if (_.fields.length === 0)
-    _.setDescription(
-      'Nothing was found... I currently only support **user IDs** and **server invite links**.'
-    ).setImage(
-      'https://cdn.dribbble.com/users/623808/screenshots/4012628/1-safe.jpg'
-    );
-  if (guild) {
+if (guild) {
     let g = guild as GuildPreview & { members?: any[] };
     _.setAuthor(`Guild Lookup for ${g.name}`)
       .addField(
@@ -127,6 +121,13 @@ export const execute = async (ctx: Context): Promise<boolean> => {
         }) as string
       );
   }
+  if (_.fields.length === 0)
+    _.setDescription(
+      'Nothing was found... I currently only support **user IDs** and **server invite links**.'
+    ).setImage(
+      'https://cdn.dribbble.com/users/623808/screenshots/4012628/1-safe.jpg'
+    );
+  
   ctx.message.reply({
     allowedMentions: { repliedUser: false, parse: [] },
     embed: _,
