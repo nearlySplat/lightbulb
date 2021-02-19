@@ -8,11 +8,11 @@ export const execute: CommandExecute = ({ message, args }) => {
   switch (args[0]) {
     case "b64":
     case "base64":
-      return base64({ message, args: args.slice(1) });
+      return base64({ message, args: args.slice(1) } as Context);
       break;
     case "uri":
     case "url":
-      return uri({ message, args: args.slice(1) });
+      return uri({ message, args: args.slice(1) } as Context);
       break;
   }
   return true;
