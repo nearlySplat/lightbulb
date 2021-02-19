@@ -31,7 +31,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
     auditLogs = await (message.guild as Guild).fetchAuditLogs();
   await channel.messages.fetch({});
   async function updateMessages(cases: (number | string)[]) {
-    cases.map(async (value) => {
+     for (let value of cases)  {
       const message1 =
         value == "l"
           ? channel?.messages.cache
@@ -83,7 +83,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
         });
         message1.edit(result);
       }
-    });
+    };
     return true;
   }
   if (args[0].includes("..")) {
