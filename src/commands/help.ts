@@ -16,7 +16,7 @@ export const execute: CommandExecute = ({ message, commands }) => {
         v =>
           !!v.meta &&
           getAccessLevel(v.meta.accessLevel as 0 | 1 | 2 | 3) <=
-            getCurrentLevel(message.member as GuildMember)
+            getCurrentLevel(message.member as GuildMember) && !v.meta.hidden
       ) as Collection<
         string,
         { execute: CommandExecute; meta: CommandMetadata }
