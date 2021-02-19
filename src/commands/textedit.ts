@@ -7,7 +7,7 @@ export const execute: CommandExecute = ({ message, args }) => {
   if (!["base64","uri","url","b64"].includes(args[0])) return message.reply(invalidArg("type")).then(v => false);
   switch (args[0]) {
     case "b64":
-    case "base64:
+    case "base64":
       return base64({ message, args: args.slice(1) });
       break;
     case "uri":
