@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
-import { CommandExecute, CommandMetadata } from '../types';
+import { CommandExecute, CommandMetadata, Context } from '../types';
 
 const invalidArg = (arg: string) => `__**Invalid Arguments!**__\n An argument for \`${arg}\` was \n- not specified or \n- not of the correct type.\n\nArguments for this command are: \`\`\`\n<type>: "base64" | "uri" | "url" | "b64" = What kind of encoding you want\n<action>: "encode" | "decode" = what you want me to do with your string\n<string>: string = the data you want me to encode/decode.\`\`\``
 export const execute: CommandExecute = ({ message, args }) => {
@@ -9,11 +9,9 @@ export const execute: CommandExecute = ({ message, args }) => {
     case "b64":
     case "base64":
       return base64({ message, args: args.slice(1) } as Context);
-      break;
     case "uri":
     case "url":
       return uri({ message, args: args.slice(1) } as Context);
-      break;
   }
   return true;
 };
