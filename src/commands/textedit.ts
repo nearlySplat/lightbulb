@@ -15,6 +15,7 @@ export const execute: CommandExecute = ({ message, args }) => {
       return uri({ message, args: args.slice(1) });
       break;
   }
+  return true;
 };
 
 const base64: CommandExecute = ({ message, args }) => {
