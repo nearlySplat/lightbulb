@@ -2,7 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { Context, CommandMetadata } from '../types';
 export const execute = ({ message, args }: Context): boolean | Promise<boolean> => {
-  if (isNaN(parseInt(args[0]))) return message.reply("Invalid hex color.").then(() => false)
+  if (isNaN(parseInt(args[0], 16))) return message.reply("Invalid hex color.").then(() => false)
   message.channel.send(
     new MessageEmbed()
       .setDescription(
