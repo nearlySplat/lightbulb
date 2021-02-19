@@ -13,7 +13,7 @@ export type Command = {
   meta?: CommandMetadata;
 };
 
-export type CommandExecute = (context: Context) => boolean;
+export type CommandExecute = (context: Context) => boolean | Promise<boolean>;
 
 export interface Context {
   client: Client;
