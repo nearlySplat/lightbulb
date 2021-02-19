@@ -24,7 +24,7 @@ export const execute = ({ message, args }: Context): boolean | Promise<boolean> 
 
 export const meta: CommandMetadata = {
   name: 'hex',
-  description: 'Get information about a hex color",
+  description: 'Get information about a hex color',
   accessLevel: 0,
   aliases: [],
 };
