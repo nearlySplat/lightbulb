@@ -20,8 +20,8 @@ export const execute = async (client: Client, guild: Guild, user: User) => {
             ?.has('SEND_MESSAGES')) ??
         false
     ) as TextChannel,
-    auditLogs = await guild.fetchAuditLogs(),
-    auditLogEntry = auditLogs.entries.find(
+    auditLogs = await guild.fetchAuditLogs();
+  let auditLogEntry = auditLogs.entries.find(
       value =>
         value.action == 'MEMBER_BAN_REMOVE' &&
         (value.target as { id: Snowflake })?.id === user.id
