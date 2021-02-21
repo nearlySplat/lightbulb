@@ -33,6 +33,7 @@ export const execute: CommandExecute = async ctx => {
       ctx.message.channel.send(_);
       return true;
     case 'bots':
+      await ctx.message.delete();
       if (ctx.message.channel.type == 'dm') return;
       else
         ctx.message.channel = ctx.message.channel as TextChannel | NewsChannel;
@@ -54,7 +55,7 @@ export const execute: CommandExecute = async ctx => {
       ctx.message.channel.bulkDelete(msgs).then(values => {
         ctx.message.reply(
           `<:goodboi:804856531082412042> Deleted ${values.size || 1} message(s).`
-        );
+        ).then(v => setTimeout(v.delete, 2000));
       });
       return true;
   }
