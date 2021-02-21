@@ -8,5 +8,6 @@ export const INTENTS = [
   Intents.FLAGS.GUILD_BANS,
   Intents.FLAGS.GUILD_MESSAGES,
   Intents.FLAGS.GUILDS,
+  Intents.FLAGS.GUILD_MEMBERS
 ].reduce((prev, current) => prev + current);
 export const CLIENT_COLOUR = 0xfcda7d;
