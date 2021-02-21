@@ -50,7 +50,7 @@ export const execute: CommandExecute = async ctx => {
         msgs = msgs
           .array()
           .reverse()
-          .slice(0, parseInt(ctx.args[1]) + 1);
+          .slice(0, parseInt(ctx.args[1]));
       ctx.message.channel.bulkDelete(msgs).then(values => {
         ctx.message.reply(
           `<:goodboi:804856531082412042> Deleted ${values.size} messages.`
