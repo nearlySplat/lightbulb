@@ -26,7 +26,14 @@ export const execute = async (client: Client, guild: Guild, user: User) => {
         value.action == 'MEMBER_BAN_REMOVE' &&
         (value.target as { id: Snowflake })?.id === user.id
     );
-  if (!auditLogEntry) return false;
+  while (!auditLogEntry) {
+    auditLogEntry = auditLogs.entries.find(
+      value =>
+        value.action == 'MEMBER_BAN_REMOVE' &&
+        (value.target as { id: Snowflake })?.id === user.id
+    ); 
+    if (auditLogEntry) break;
+  }
   if (channel) {
     const result = createLogMessage({
       compact: channel.topic?.includes('--compact'),
