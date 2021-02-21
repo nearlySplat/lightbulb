@@ -31,6 +31,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
     auditLogs = await (message.guild as Guild).fetchAuditLogs();
   await channel.messages.fetch({});
   async function updateMessages(cases: (number | string)[]) {
+     let err;
      for (let value of cases)  {
       const message1 =
         value == "l"
@@ -43,7 +44,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
                 v.content.startsWith(`\`[Case ${value}]\``) &&
                 v.author.id === message.client.user?.id
             );
-      if (!message1) return message.react("😔");
+      if (!message1) { err = true; break; };
       const matchedUser = message1.content
         .match(/ed]` \*\*[^#]+#\d{4}\*\* \(\d+\)/g)?.[0]
         ?.match(/\d{4}\d+/g)?.[0];
@@ -84,6 +85,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
         message1.edit(result);
       }
     };
+    if (err) throw "";
     return true;
   }
   if (args[0].includes("..")) {
