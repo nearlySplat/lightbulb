@@ -10,7 +10,8 @@
     "skipLibCheck": true,
     "strict": true,
     "moduleResolution": "node",
-    "module": "commonjs"
+    "module": "commonjs",
+    "experimentalDecorators": true
   },
   "include": ["src/**/*"],
   "compileOnSave": false,

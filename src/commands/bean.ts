@@ -17,13 +17,15 @@ export const execute = ({
         v.displayName.toLowerCase() == args.join(' ').toLowerCase()
     ) ??
     message.member;
-  message.reply(`***🔨 Successfully bent ${target.user.tag}***`);
+  message.reply(
+    `***<:bean:813134247505559572> Successfully beaned ${target.user.tag}***`
+  );
   return true;
 };
 
 export const meta: CommandMetadata = {
-  name: 'banne',
-  description: 'Banne a member!',
+  name: 'bean',
+  description: '<:bean:813134247505559572>',
   accessLevel: 0,
   aliases: [],
   hidden: true,

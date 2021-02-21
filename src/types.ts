@@ -1,6 +1,8 @@
 import {
   Client,
   Collection,
+  Guild,
+  GuildMember,
   GuildPreview,
   Message,
   PermissionFlags,
@@ -18,7 +20,7 @@ export type CommandExecute = (context: Context) => boolean | Promise<boolean>;
 export interface Context {
   client: Client;
   args: string[];
-  message: Message;
+  message: Message & { guild: Guild; member: GuildMember };
   commands: Collection<string, Command>;
   commandHandlerStarted: number;
   accessLevel: number;
@@ -27,9 +29,10 @@ export interface Context {
 export interface CommandMetadata {
   name: string;
   description: string;
-  aliases: string[] | [];
+  aliases: string[];
   userPermissions?: (keyof PermissionFlags)[] | bigint[];
   accessLevel: keyof AccessLevels | number;
+  hidden?: boolean;
 }
 
 export interface AccessLevels {

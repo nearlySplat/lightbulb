@@ -57,5 +57,5 @@ export const meta: CommandMetadata = {
   name: 'debug',
   description: 'Get debug information about the bot',
   accessLevel: 0,
-  aliases: [],
+  aliases: ['ping'],
 };
