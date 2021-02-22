@@ -6,7 +6,7 @@ export const execute = ({
 }: Context): boolean | Promise<boolean> => {
   if (!args[0])
     return message
-      .reply('Who am I going to ~~call~~ banne? ~~Ghostbusters!~~ Nobody!')
+      .reply('Who am I going to ~~call~~ bean? ~~Ghostbusters!~~ Nobody!')
       .then(() => false);
   const target: GuildMember =
     message.guild?.members.cache.get(args[0]?.replace(/(<@!?|>)/g, '')) ??
