@@ -58,5 +58,26 @@ export const execute: CommandExecute = async ctx => {
         ).then(v => setTimeout(() => v.delete(), 3000));
       });
       return true;
+    case 'regexp':
+      if (ctx.message.channel.type == 'dm' || !ctx.args[1]) return;
+      else
+        ctx.message.channel = ctx.message.channel as TextChannel | NewsChannel;
+      let msgs:
+        | Collection<string, Message>
+        | Message[] = await ctx.message.channel.messages.fetch({});
+      msgs = msgs
+        .filter(
+          v =>
+            new RegExp(ctx.args.slice(1).join(" "), "g").test(v.content) &&
+            Date.now() - v.createdTimestamp <= 1000 * 60 * 60 * 24 * 14
+        )
+        .sort((prev, curr) => prev.createdTimestamp - curr.createdTimestamp);
+      await ctx.message.delete();
+      ctx.message.channel.bulkDelete(msgs).then(values => {
+        ctx.message.reply(
+          `<:goodboi:804856531082412042> Deleted ${values.size || 1} message(s).`
+        );
+      });
+      return true;
   }
 };
