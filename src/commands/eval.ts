@@ -31,11 +31,6 @@ export const execute = async ({ message, args }: Context): Promise<boolean> => {
     output?.slice(0, 1850) + `\nTypeof [${type}] => ${output?.length}` ??
       'No output.',
     {
-      replyTo: message.id,
-      allowedMentions: {
-        repliedUser: false,
-        parse: [],
-      },
       code: 'js',
     }
   );
