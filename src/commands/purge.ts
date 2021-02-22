@@ -18,6 +18,11 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = async ctx => {
+  let msgs:
+        | Collection<string, Message>
+        | Message[]
+        | undefined
+  if (ctx.args[0] !== "help") msgs = await ctx.message.channel.messages.fetch({})
   switch (ctx.args[0]) {
     default:
     case 'help':
@@ -36,9 +41,6 @@ export const execute: CommandExecute = async ctx => {
       if (ctx.message.channel.type == 'dm') return;
       else
         ctx.message.channel = ctx.message.channel as TextChannel | NewsChannel;
-      let msgs:
-        | Collection<string, Message>
-        | Message[] = await ctx.message.channel.messages.fetch({});
       msgs = msgs
         .filter(
           v =>
@@ -62,9 +64,6 @@ export const execute: CommandExecute = async ctx => {
       if (ctx.message.channel.type == 'dm' || !ctx.args[1]) return;
       else
         ctx.message.channel = ctx.message.channel as TextChannel | NewsChannel;
-      let msgs:
-        | Collection<string, Message>
-        | Message[] = await ctx.message.channel.messages.fetch({});
       msgs = msgs
         .filter(
           v =>
