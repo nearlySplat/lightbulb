@@ -85,7 +85,6 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
         message1.edit(result);
       }
     };
-    if (err) throw "";
     return true;
   }
   if (args[0].includes("..")) {
@@ -97,7 +96,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
       .then((v) =>
         parseInt((v.first() as Message).content) === cases.length
           ? updateMessages(cases)
-              .catch(() => null)
+              // .catch(() => null)
               .then(
                 (v) =>
                   v ?
@@ -107,7 +106,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
       );
   } else
     updateMessages([args[0]])
-      .catch(() => null)
+      // .catch(() => null)
       .then((v) => (v ? message.channel.send("👌") : null));
 };
 
