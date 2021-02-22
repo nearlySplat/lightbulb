@@ -30,7 +30,8 @@ export const execute: CommandExecute = async ctx => {
         .setAuthor('Purge Help')
         .setDescription(
           `There are many features in this command.
-        - \`purge bots\`: deletes the last 100 messages that are by bots and are under 14 days old.
+        - \`purge bots [amount]\`: deletes the last 100 messages that are by bots and are under 14 days old. Optionally takes a second argument for an amount of messages to delete.
+        - \`purge regexp <regexp>\`: deletes messages matching that regexp.
         `.replace(/\n +/g, '\n')
         )
         .setColor(CLIENT_COLOUR)
