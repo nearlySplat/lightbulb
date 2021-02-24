@@ -13,7 +13,7 @@ export const execute = async (client: Client, guild: Guild, user: User) => {
   if (!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
   const channel = guild.channels.cache.find(
       value =>
-        (value.name?.match(/^💡(-log(s|ging)?)?$/g) &&
+        ((value.name?.match(/^💡(-log(s|ging)?)?$/g) || value.topic?.includes("--lightbulb-logs")) &&
           value.type == 'text' &&
           value
             .permissionsFor(guild.me as GuildMember)
