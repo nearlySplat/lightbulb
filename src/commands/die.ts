@@ -13,7 +13,7 @@ export const execute = ({
 export const meta: CommandMetadata = {
   name: 'die',
   description: 'die',
-  accessLevel: 6,
+  accessLevel: 3,
   aliases: [],
   hidden: true,
 };
