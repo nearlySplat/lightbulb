@@ -20,7 +20,7 @@ export const execute = async (client: Client, guild: Guild, user: User) => {
             ?.has('SEND_MESSAGES')) ??
         false
     ) as TextChannel,
-    auditLogs = await guild.fetchAuditLogs();
+    auditLogs = await guild.fetchAuditLogs({ type: "MEMBER_BAN_REMOVE" });
   let auditLogEntry = auditLogs.entries.find(
       value =>
         value.action == 'MEMBER_BAN_REMOVE' &&
