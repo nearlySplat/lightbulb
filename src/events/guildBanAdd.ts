@@ -46,7 +46,7 @@ export const execute = async (client: Client, guild: Guild, user: User) => {
         tag: auditLogEntry?.executor.tag,
       },
       reason: auditLogEntry?.reason,
-      case: getCases(guild),
+      case: await getCases(guild),
       action: 'Ban',
       emoji: "🔨"
     });
