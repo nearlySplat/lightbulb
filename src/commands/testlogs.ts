@@ -15,15 +15,15 @@ export const execute = async ({ message }: Context): boolean | Promise<boolean> 
     const result = createLogMessage({
       compact: channel.topic?.includes('--compact'),
       victim: {
-        tag: "1",
-        id: "Clyde#0000",
+        id: "0".repeat(18),
+        tag: "Clyde#0000",
       },
       perpetrator: {
         id: "0".repeat(17),
         tag: "Nelly#0000",
       },
       reason: `Mod Log test by **${message.author.tag}**`,
-      case: await getCases(message.guild),
+      case: 0,
       action: 'Ban',
       emoji: "🔨"
     });
