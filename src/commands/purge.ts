@@ -100,7 +100,7 @@ export const execute: CommandExecute = async ctx => {
       if (!isNaN(parseInt(ctx.args[0]))) {
         const amount = parseInt(ctx.args[0]);
         await ctx.message.delete();
-        return ctx.message.channel.bulkDelete(amount).then(() => true));
+        return ctx.message.channel.bulkDelete(amount).then(() => true);
       } else return false;
   }
 };
