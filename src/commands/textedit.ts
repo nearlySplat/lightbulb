@@ -4,7 +4,7 @@ import { CommandExecute, CommandMetadata, Context } from '../types';
 
 const invalidArg = (arg: string) => `__**Invalid Arguments!**__\n An argument for \`${arg}\` was \n- not specified or \n- not of the correct type.\n\nArguments for this command are: \`\`\`\n<type>: "base64" | "uri" | "url" | "b64" = What kind of encoding you want\n<action>: "encode" | "decode" = what you want me to do with your string\n<string>: string = the data you want me to encode/decode.\`\`\``
 export const execute: CommandExecute = ({ message, args }) => {
-  if (!["base64","uri","url","b64"].includes(args[0])) return message.reply(invalidArg("type")).then(v => false);
+  if (!["base64","uri","url","b64","binary"].includes(args[0])) return message.reply(invalidArg("type")).then(v => false);
   switch (args[0]) {
     case "b64":
     case "base64":
@@ -12,6 +12,8 @@ export const execute: CommandExecute = ({ message, args }) => {
     case "uri":
     case "url":
       return uri({ message, args: args.slice(1) } as Context);
+    case "binary":
+      return binary({ message, args: args.slice(1) } as Context)
   }
   return true;
 };
@@ -67,6 +69,33 @@ const uri: CommandExecute = ({ message, args }) => {
   });
   return true;
 };
+
+const binary: CommandExecute = ({ message, args }) => {
+  if (!args[0] || !["encode","decode"].includes(args[0])) return message.reply(invalidArg("action")).then(() => false);
+  if (!args[1]) return message.reply(invalidArg("data")).then(() => false);
+  const data = args[0] == "encode" ? args.slice(1).join(" ").split("").map(v => v.charCodeAt(0)).map(v => v.toString(2)) : args.slice(1).join(" ").split(" ").map(v => parseInt(v, 2)).map(v => v.toString(16)).map(v => eval(`"\\u${v.length >= 1 ? "0" : ""}${v.length >= 2 ? "0" : ""}${v.length >= 3 ? "0" : ""}${v}"`)).join("")
+  const _ = new MessageEmbed()
+    .setAuthor(`${args[0] == "decode" ? "Decoded" : "Encoded"} Binary Text`)
+    .setColor(CLIENT_COLOUR)
+    .setFooter(
+      `Requested by ${message.author.tag} (${message.author.id})`,
+      message.author.avatarURL() as string
+    )
+    .setDescription(
+      data
+    )
+    .setThumbnail(message.client.user?.avatarURL() as string)
+    .setTimestamp();
+  message.reply({
+    allowedMentions: {
+      repliedUser: false,
+      parse: [],
+    },
+    embed: _,
+  });
+  return true;
+};
+
 
 export const meta: CommandMetadata = {
   name: 'textedit',
