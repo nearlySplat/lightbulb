@@ -4,6 +4,7 @@ import {
   MessageEmbed,
   NewsChannel,
   Permissions,
+  Snowflake,
   TextChannel,
 } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
@@ -18,13 +19,12 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = async ctx => {
-  let msgs:
-        | Collection<string, Message>
-        | Message[]
-        | undefined
-  if (ctx.args[0] !== "help") msgs = await ctx.message.channel.messages.fetch({})
+  let msgs: MsgsCollectionType = [ctx.message] as MsgsCollectionType;
+
+  msgs = (ctx.args[0] === 'help'
+    ? []
+    : await ctx.message.channel.messages.fetch({})) as MsgsCollectionType;
   switch (ctx.args[0]) {
-    default:
     case 'help':
       const _ = new MessageEmbed()
         .setAuthor('Purge Help')
@@ -39,45 +39,79 @@ export const execute: CommandExecute = async ctx => {
       ctx.message.channel.send(_);
       return true;
     case 'bots':
-      if (ctx.message.channel.type == 'dm') return;
+      if (ctx.message.channel.type == 'dm') return false;
       else
         ctx.message.channel = ctx.message.channel as TextChannel | NewsChannel;
       msgs = msgs
         .filter(
-          v =>
+          (v: Message) =>
             v.author.bot &&
             Date.now() - v.createdTimestamp <= 1000 * 60 * 60 * 24 * 14
         )
-        .sort((prev, curr) => prev.createdTimestamp - curr.createdTimestamp);
+        .sort(
+          (prev: Message, curr: Message) =>
+            prev.createdTimestamp - curr.createdTimestamp
+        ) as MsgsCollectionType;
+      if (!msgs.array)
+        msgs.array = function (): Message[] {
+          return this as Message[];
+        };
       if (ctx.args[1])
         msgs = msgs
           .array()
           .reverse()
-          .slice(0, parseInt(ctx.args[1]));
+          .slice(0, parseInt(ctx.args[1])) as MsgsCollectionType;
+
       await ctx.message.delete();
       ctx.message.channel.bulkDelete(msgs).then(values => {
-        ctx.message.reply(
-          `<:goodboi:804856531082412042> Deleted ${values.size || 1} message(s).`
-        ).then(v => setTimeout(() => v.delete(), 3000));
+        ctx.message
+          .reply(
+            `<:goodboi:804856531082412042> Deleted ${
+              values.size || 1
+            } message(s).`
+          )
+          .then(v => setTimeout(() => v.delete(), 3000));
       });
       return true;
     case 'regexp':
-      if (ctx.message.channel.type == 'dm' || !ctx.args[1]) return;
+      if (ctx.message.channel.type == 'dm' || !ctx.args[1]) return false;
       else
         ctx.message.channel = ctx.message.channel as TextChannel | NewsChannel;
       msgs = msgs
         .filter(
           v =>
-            new RegExp(ctx.args.slice(1).join(" "), "g").test(v.content) &&
+            new RegExp(ctx.args.slice(1).join(' '), 'g').test(v.content) &&
             Date.now() - v.createdTimestamp <= 1000 * 60 * 60 * 24 * 14
         )
-        .sort((prev, curr) => prev.createdTimestamp - curr.createdTimestamp);
+        .sort(
+          (prev, curr) => prev.createdTimestamp - curr.createdTimestamp
+        ) as MsgsCollectionType;
       await ctx.message.delete();
       ctx.message.channel.bulkDelete(msgs).then(values => {
         ctx.message.reply(
-          `<:goodboi:804856531082412042> Deleted ${values.size || 1} message(s).`
+          `<:goodboi:804856531082412042> Deleted ${
+            values.size || 1
+          } message(s).`
         );
       });
       return true;
+    default:
+      if (ctx.message.channel.type === 'dm') return false;
+      if (!isNaN(parseInt(ctx.args[0]))) {
+        const amount = parseInt(ctx.args[0]);
+        await ctx.message.delete();
+        return ctx.message.channel.bulkDelete(amount).then(() => true));
+      } else return false;
   }
+};
+
+type MsgsCollectionType = (Collection<string, Message> | Message[]) & {
+  filter(
+    fn: (
+      value: Message,
+      index: number | string,
+      array: Collection<Snowflake, Message> | Message[]
+    ) => boolean
+  ): MsgsCollectionType;
+  array(): Message[];
 };
