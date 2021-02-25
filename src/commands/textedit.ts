@@ -73,7 +73,7 @@ const uri: CommandExecute = ({ message, args }) => {
 const binary: CommandExecute = ({ message, args }) => {
   if (!args[0] || !["encode","decode"].includes(args[0])) return message.reply(invalidArg("action")).then(() => false);
   if (!args[1]) return message.reply(invalidArg("data")).then(() => false);
-  const data = args[0] == "encode" ? args.slice(1).join(" ").split("").map(v => v.charCodeAt(0)).map(v => v.toString(2)) : args.slice(1).join(" ").split(" ").map(v => parseInt(v, 2)).map(v => v.toString(16)).map(v => eval(`"\\u${v.length >= 1 ? "0" : ""}${v.length >= 2 ? "0" : ""}${v.length >= 3 ? "0" : ""}${v}"`)).join("")
+  const data = args[0] == "encode" ? args.slice(1).join(" ").split("").map(v => v.charCodeAt(0)).map(v => v.toString(2)).join(" ") : args.slice(1).join(" ").split(" ").map(v => parseInt(v, 2)).map(v => v.toString(16)).map(v => eval(`"\\u${v.length >= 1 ? "0" : ""}${v.length >= 2 ? "0" : ""}${v.length >= 3 ? "0" : ""}${v}"`)).join("")
   const _ = new MessageEmbed()
     .setAuthor(`${args[0] == "decode" ? "Decoded" : "Encoded"} Binary Text`)
     .setColor(CLIENT_COLOUR)
