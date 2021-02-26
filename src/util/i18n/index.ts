@@ -1,21 +1,18 @@
 import { readdirSync } from 'fs';
-import * as en_UK_STRINGS from './en_UK/strings';
-
-export const strings: Record<
-  string,
-  Record<string, string | undefined> | undefined
-> = {
-  en_UK: en_UK_STRINGS,
-};
 
 export const localeList = readdirSync(__dirname).filter(
   v => !v.match(/\.[jt]s$/g)
 );
 
-export const get = (key: string, locale: string = 'en_UK'): string => {
+export const get = async (key: string, locale: string = 'en_UK'): Promise<string> => {
+  try {
+    const strings = await import(`./${locale}/strings.ts`);
+  } catch {
+    return 'Invalid locale.'
+  }
   return (
-    strings[locale][key] ??
-    `This I18n string has not been localised into ${locale} yet.`
+    strings[key] ??
+    `This I18n string (${key}) has not been localised into ${locale} yet.`
   );
 };
 
