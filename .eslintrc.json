@@ -12,6 +12,7 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "prefer-arrow-callback": "warn",
-    "multiline-ternary": "error"
+    "multiline-ternary": "error",
+    "no-undef": "warn"
   }
 }
