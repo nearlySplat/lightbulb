@@ -21,18 +21,18 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
     return;
   const channel = (message.guild as Guild).channels.cache.find(
       (value) =>
-        (value.name?.match(/^💡(-log(s|ging)?)?$/g) &&
+        ((value.name?.match(/^💡(-log(s|ging)?)?$/g) || value.topic?.includes("--lightbulb-logs")) &&
           value.type == "text" &&
           value
             .permissionsFor((message.guild as Guild).me as GuildMember)
             ?.has("SEND_MESSAGES")) ??
         false
-    ) as TextChannel,
-    auditLogs = await (message.guild as Guild).fetchAuditLogs();
+    ) as TextChannel;
   await channel.messages.fetch({});
   async function updateMessages(cases: (number | string)[]) {
      let err;
      for (let value of cases)  {
+      console.log(value, cases)
       const message1 =
         value == "l"
           ? channel?.messages.cache
@@ -52,12 +52,6 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
         ?.fetch(`${matchedUser}`)
         .catch(() => null);
       if (!user) throw message.react("😔");
-      const auditLogEntry = auditLogs.entries.find(
-        (value) =>
-          value.action == "MEMBER_BAN_ADD" &&
-          (value.target as { id: Snowflake })?.id === user.id
-      );
-      if (!auditLogEntry) return false;
       if (channel) {
         const result = createLogMessage({
           compact: channel.topic?.includes("--compact"),
@@ -69,7 +63,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
             id: message.author.id,
             tag: message.author.tag,
           },
-          reason: args.slice(1).join(" ") || auditLogEntry?.reason,
+          reason: args.slice(1).join(" ") || message1.content.match(/\n`[Reason]` .*/gi)?.[0].replace(/^\n`[Reason]` /gi, "") as string,
           case: parseInt(
             message1.content
               .match(/Case \d+/g)?.[0]

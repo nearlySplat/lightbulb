@@ -1,13 +1,14 @@
 import { inspect } from 'util';
 import { WHITELIST } from '../constants';
 import { CommandMetadata, Context } from '../types';
+import { transpile } from "typescript";
 
 export const execute = async ({ message, args }: Context): Promise<boolean> => {
   if (!WHITELIST.includes(message.author.id)) return true;
   const raw = args.join(' ');
   let output: (string & { name: string }) | undefined;
   try {
-    output = eval(raw);
+    output = transpile(raw);
   } catch (error) {
     output = error;
   }

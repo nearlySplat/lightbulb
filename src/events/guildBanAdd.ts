@@ -13,14 +13,14 @@ export const execute = async (client: Client, guild: Guild, user: User) => {
   if (!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
   const channel = guild.channels.cache.find(
       value =>
-        (value.name?.match(/^💡(-log(s|ging)?)?$/g) &&
+        ((value.name?.match(/^💡(-log(s|ging)?)?$/g) || value.topic?.includes("--lightbulb-logs")) &&
           value.type == 'text' &&
           value
             .permissionsFor(guild.me as GuildMember)
             ?.has('SEND_MESSAGES')) ??
         false
     ) as TextChannel,
-    auditLogs = await guild.fetchAuditLogs();
+    auditLogs = await guild.fetchAuditLogs({ type: "MEMBER_BAN_ADD" });
   let auditLogEntry = auditLogs.entries.find(
       value =>
         value.action == 'MEMBER_BAN_ADD' &&
@@ -46,7 +46,7 @@ export const execute = async (client: Client, guild: Guild, user: User) => {
         tag: auditLogEntry?.executor.tag,
       },
       reason: auditLogEntry?.reason,
-      case: getCases(auditLogs.entries),
+      case: await getCases(guild),
       action: 'Ban',
       emoji: "🔨"
     });
