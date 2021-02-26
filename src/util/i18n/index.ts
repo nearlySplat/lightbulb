@@ -6,7 +6,7 @@ export const localeList = readdirSync(__dirname).filter(
 
 export const get = async (key: string, locale: string = 'en_UK'): Promise<string> => {
   try {
-    const strings = await import(`./${locale}/strings.ts`);
+    const strings = await import(`./${locale}/strings`);
   } catch {
     return 'Invalid locale.'
   }
