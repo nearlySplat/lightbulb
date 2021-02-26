@@ -11,7 +11,9 @@
     "strict": true,
     "moduleResolution": "node",
     "module": "commonjs",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "useDefineForClassFields": true
   },
   "include": ["src/**/*"],
   "compileOnSave": false,

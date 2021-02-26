@@ -12,7 +12,6 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "prefer-arrow-callback": "warn",
-    "multiline-ternary": "error",
-    "typescript-eslint/prefer-nullish-coalescing": "error"
+    "multiline-ternary": "error"
   }
 }
