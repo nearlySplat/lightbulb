@@ -12,7 +12,7 @@ export const get = async (key: string, locale: string = 'en_UK'): Promise<string
   }
   return (
     strings[key] ??
-    `This I18n string (${key}) has not been localised into ${locale} yet.`
+    strings.I18N_KEY_NOT_FOUND
   );
 };
 
