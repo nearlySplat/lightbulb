@@ -11,7 +11,7 @@ export const execute = ({ message }: Context): boolean => {
       .setColor(CLIENT_COLOUR)
       .setAuthor(get('ABOUT_HEADER'))
       .setFooter(
-        interpolate(get('ABOUT_LONG_DESCRIPTION'), { requester: `${message.author.tag} (${message.author.id})` }),
+        interpolate(get('GENERIC_REQUESTED_BY'), { requester: `${message.author.tag} (${message.author.id})` }),
         message.author.avatarURL() as string
       )
       .setTimestamp()
