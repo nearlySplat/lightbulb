@@ -18,7 +18,7 @@ export const get = (key: string, locale: string = 'en_UK'): string => {
   if (!strings[locale]) return "Invalid locale.";
   return (
     strings[locale][key] ??
-    strings[locale].I18N_KEY_NOT_FOUND
+    interpolate(strings[locale].I18N_KEY_NOT_FOUND, { key, locale })
   );
 };
 
