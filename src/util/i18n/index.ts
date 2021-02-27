@@ -1,23 +1,28 @@
 import { readdirSync } from 'fs';
+import { loggr } from "../..";
 
 export const localeList = readdirSync(__dirname).filter(
   v => !v.match(/\.[jt]s$/g)
 );
 
-export const get = async (key: string, locale: string = 'en_UK'): Promise<string> => {
-  let strings;
-  try {
-    strings = await import(`./${locale}/strings`);
-  } catch {
-    return 'Invalid locale.'
-  }
+let strings = {};
+for (const locale of localeList) {
+  (async () => {
+    const data = await import(`./${locale}/strings`);
+    strings[locale] = data;
+    loggr.debug(`Loaded I18n locale ${locale}.`)
+  })()
+}
+
+export const get = (key: string, locale: string = 'en_UK'): string => {
+  if (!strings[locale]) return "Invalid locale.";
   return (
-    strings[key] ??
-    strings.I18N_KEY_NOT_FOUND
+    strings[locale][key] ??
+    strings[locale].I18N_KEY_NOT_FOUND
   );
 };
 
-export const interlop = (str: string, obj: Record<string, any>) => {
+export const interpolate = (str: string, obj: Record<string, any>) => {
   for (const [prop, val] of Object.entries(obj)) {
     str = str.replace(new RegExp(`{{${prop}}}`, 'g'), val);
   }
