@@ -16,3 +16,4 @@ export const BANNE_SUCCESSFUL = '***🔨Successfully bent {{target}}***';
 export const BANNE_NO_TARGET =
   'Who am I going to ~~call~~ banne? ~~Ghostbusters!~~ Nobody!';
 export const I18N_KEY_NOT_FOUND = "This key ({{key}}) has not been localised into {{locale}} yet."
+export const GENERIC_REQUESTED_BY = 'Requested by {{requester}}'
