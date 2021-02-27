@@ -1,28 +1,17 @@
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { Context, CommandMetadata } from '../types';
+import { get, interpolate } from '../util/i18n';
 export const execute = ({ message }: Context): boolean => {
   message.channel.send(
     new MessageEmbed()
       .setDescription(
-        `👋 Hi! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
-
-    **My features**:
-    - Logging
-    - Logging
-    - Logging
-
-    Aaand... that's about it! All you need to set me up is a channel called \`💡\`! Actually, the real RegExp for that is \`/^💡(-log(s|ging)?)?$/g\`, but we won't get into that stuff.
-
-    **What I log:**
-    - 🔨 Bans
-    - 🔧 Unbans
-    - 👢 Kicks (Coming Soon)`.replace(/\n +/g, '\n')
+        get('ABOUT_LONG_DESCRIPTION')
       )
       .setColor(CLIENT_COLOUR)
-      .setAuthor('About Me')
+      .setAuthor(get('ABOUT_HEADER'))
       .setFooter(
-        `Requested by ${message.author.tag} (${message.author.id})`,
+        interpolate(get('ABOUT_LONG_DESCRIPTION'), { requester: `${message.author.tag} (${message.author.id})` }),
         message.author.avatarURL() as string
       )
       .setTimestamp()
