@@ -28,3 +28,13 @@ export const interpolate = (str: string, obj: Record<string, any>) => {
   }
   return str;
 };
+
+export const getKeys = () => {
+  const arr = [];
+  for (const obj of Object.values(strings)) { 
+    for (const value of Object.keys(obj)) {
+      arr.push(value)
+    }
+  }
+  return [...(new Set(arr))];
+}
