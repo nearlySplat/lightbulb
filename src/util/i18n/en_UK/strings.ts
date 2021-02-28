@@ -19,3 +19,4 @@ export const I18N_KEY_NOT_FOUND = "This key ({{key}}) has not been localised int
 export const GENERIC_REQUESTED_BY = 'Requested by {{requester}}';
 export const BEAN_NO_TARGET = 'It seems Mr. Bean is going to be lonely today.';
 export const BEAN_SUCCESSFUL = '***<:bean:813134247505559572> Successfully beaned {{target}}***'
+export const DIE_SUCCESS = "*dies*"
