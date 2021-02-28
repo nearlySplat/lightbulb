@@ -2,13 +2,14 @@ import { Collection, GuildMember, MessageEmbed, ClientUser } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata } from '../types';
 import { getAccessLevel, getCurrentLevel } from '../util';
+import { get, interpolate } from "../util/i18n";
 
 export const execute: CommandExecute = ({ message, commands }) => {
   const _ = new MessageEmbed()
     .setAuthor('Help')
     .setColor(CLIENT_COLOUR)
     .setFooter(
-      `Requested by ${message.author.tag} (${message.author.id})`,
+      interpolate(get("GENERIC_REQUESTED_BY"), `${message.author.tag} (${message.author.id})`),
       message.author.avatarURL() as string
     )
     .setDescription(
@@ -27,10 +28,6 @@ export const execute: CommandExecute = ({ message, commands }) => {
     .setThumbnail((message.client.user as ClientUser).avatarURL() as string)
     .setTimestamp();
   message.reply({
-    allowedMentions: {
-      repliedUser: false,
-      parse: [],
-    },
     embed: _,
   });
   return true;
