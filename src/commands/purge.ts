@@ -9,7 +9,7 @@ import {
 } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata } from '../types';
-
+import { get } from "../util/i18n";
 export const meta: CommandMetadata = {
   accessLevel: 2,
   aliases: ['clear', 'prune'],
@@ -27,12 +27,9 @@ export const execute: CommandExecute = async ctx => {
   switch (ctx.args[0]) {
     case 'help':
       const _ = new MessageEmbed()
-        .setAuthor('Purge Help')
+        .setAuthor(get("PURGE_HELP_HEADER"))
         .setDescription(
-          `There are many features in this command.
-        - \`purge bots [amount]\`: deletes the last 100 messages that are by bots and are under 14 days old. Optionally takes a second argument for an amount of messages to delete.
-        - \`purge regexp <regexp>\`: deletes messages matching that regexp.
-        `.replace(/\n +/g, '\n')
+          get("PURGE_HELP_BODY")
         )
         .setColor(CLIENT_COLOUR)
         .setThumbnail(ctx.client.user?.avatarURL() as string);
@@ -63,15 +60,7 @@ export const execute: CommandExecute = async ctx => {
           .slice(0, parseInt(ctx.args[1])) as MsgsCollectionType;
 
       await ctx.message.delete();
-      ctx.message.channel.bulkDelete(msgs).then(values => {
-        ctx.message
-          .reply(
-            `<:goodboi:804856531082412042> Deleted ${
-              values.size || 1
-            } message(s).`
-          )
-          .then(v => setTimeout(() => v.delete(), 3000));
-      });
+      ctx.message.channel.bulkDelete(msgs);
       return true;
     case 'regexp':
       if (ctx.message.channel.type == 'dm' || !ctx.args[1]) return false;
@@ -87,13 +76,7 @@ export const execute: CommandExecute = async ctx => {
           (prev, curr) => prev.createdTimestamp - curr.createdTimestamp
         ) as MsgsCollectionType;
       await ctx.message.delete();
-      ctx.message.channel.bulkDelete(msgs).then(values => {
-        ctx.message.reply(
-          `<:goodboi:804856531082412042> Deleted ${
-            values.size || 1
-          } message(s).`
-        );
-      });
+      ctx.message.channel.bulkDelete(msgs)
       return true;
     default:
       if (ctx.message.channel.type === 'dm') return false;
