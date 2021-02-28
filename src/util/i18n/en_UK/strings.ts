@@ -23,3 +23,8 @@ export const DIE_SUCCESS = "*dies*";
 export const HEX_HEADER = "Hexadecimal Color #{{color}}";
 export const HEX_BODY = `**Hexadecimal Value**: #{{hex_value}}
                          **Decimal Value**: {{decimal_value}}`.replace(/\n +/g, "\n");
+export const PURGE_HELP_BODY = `There are many features in this command.
+                                - \`purge bots [amount]\`: deletes the last 100 messages that are by bots and are under 14 days old. Optionally takes a second argument for an amount of messages to delete.
+                                - \`purge regexp <regexp>\`: deletes messages matching that RegExp.
+                               `.replace(/\n +/g, '\n')
+export const PURGE_HELP_HEADER = "Purge Help"
