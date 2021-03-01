@@ -4,12 +4,12 @@ import { CommandExecute, CommandMetadata } from '../types';
 import { getAccessLevel, getCurrentLevel } from '../util';
 import { get, interpolate } from "../util/i18n";
 
-export const execute: CommandExecute = ({ message, commands }) => {
+export const execute: CommandExecute = ({ message, commands, locale }) => {
   const _ = new MessageEmbed()
     .setAuthor('Help')
     .setColor(CLIENT_COLOUR)
     .setFooter(
-      interpolate(get("GENERIC_REQUESTED_BY"), `${message.author.tag} (${message.author.id})`),
+      interpolate(get("GENERIC_REQUESTED_BY", locale), { requester: `${message.author.tag} (${message.author.id})` }),
       message.author.avatarURL() as string
     )
     .setDescription(

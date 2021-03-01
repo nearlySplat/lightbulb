@@ -39,6 +39,7 @@ export const execute = async (
         commands,
         commandHandlerStarted: timeStarted,
         accessLevel: getCurrentLevel(message.member as GuildMember),
+	locale: message.author.id === "728342296696979526" ? "uwu" : "en_UK",
       });
     else if (!isExclamation)
       return command.execute({
@@ -48,6 +49,7 @@ export const execute = async (
         commands,
         commandHandlerStarted: timeStarted,
         accessLevel: getCurrentLevel(message.member as GuildMember),
+	locale: message.author.id === "728342296696979526" ? "uwu" : "en_UK",
       });
     else return false;
   }

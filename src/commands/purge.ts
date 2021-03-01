@@ -27,9 +27,9 @@ export const execute: CommandExecute = async ctx => {
   switch (ctx.args[0]) {
     case 'help':
       const _ = new MessageEmbed()
-        .setAuthor(get("PURGE_HELP_HEADER"))
+        .setAuthor(get("PURGE_HELP_HEADER", ctx.locale))
         .setDescription(
-          get("PURGE_HELP_BODY")
+          get("PURGE_HELP_BODY", ctx.locale)
         )
         .setColor(CLIENT_COLOUR)
         .setThumbnail(ctx.client.user?.avatarURL() as string);

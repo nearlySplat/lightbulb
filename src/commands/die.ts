@@ -3,9 +3,10 @@ import { get } from "../util/i18n";
 export const execute = ({
   message,
   args,
+  locale
 }: Context): boolean | Promise<boolean> => {
   void message.reply(
-    get("DIE_SUCCESS")
+    get("DIE_SUCCESS", locale)
   );
   setImmediate(() => process.exit())
   return true;

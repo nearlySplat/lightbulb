@@ -5,7 +5,7 @@ export const localeList = readdirSync(__dirname).filter(
   v => !v.match(/\.[jt]s$/g)
 );
 
-let strings = {};
+let strings: { [index: string]: Record<string, string> } = {};
 for (const locale of localeList) {
   (async () => {
     const data = await import(`./${locale}/strings`);
