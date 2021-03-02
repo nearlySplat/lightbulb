@@ -2,6 +2,7 @@ import { Permissions } from "discord.js";
 import { CommandExecute, CommandMetadata } from "../types";
 import { getCases } from "../util";
 import { get, interpolate } from "../util/i18n";
+import { ERROR_CODES } from "../constants";
 export const execute: CommandExecute = async ({ message, args, locale }) => {
   if (!args[0]) return false;
   if (!message.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
@@ -23,16 +24,28 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
         .then(() => {
           message.channel.send(get("BAN_SUCCESSFUL", locale));
         });
-    } catch {
+    } catch (e) {
       message.channel.send(
         interpolate(get("GENERIC_ERROR", locale), {
-          code: "1 [BAN_UNSUCCESSFUL]",
+          code: ERROR_CODES.BAN_UNSUCCESSFUL,
+          message: e
         })
       );
     }
   };
   if (!member) {
     ban();
+  }
+  if (member.user.id === message.guild.ownerID) {
+    message.channel.send(interpolate(get("GENERIC_ERROR", locale), { code: ERROR_CODES.TARGET_IS_OWNER, message: "Target is owner" }));
+    return false;
+  }
+  if (member.user.id === message.client.user?.id) {
+    message.channel.send(interpolate(get("GENERIC_ERROR", locale), { code: ERROR_CODES.DISALLOWED_TARGET, message: "Disallowed target" }))
+    return false;
+  }
+  if (member.user.id === message.author.id) {
+    
   }
   if (member)
     if (
@@ -41,7 +54,7 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
         message.member.roles.highest.rawPosition
     ) {
       message.channel.send(
-        `One of us has insufficient permissions to ban \`${member.user.tag}\`.`
+        interpolate(get("BAN_INSUFFICIENT_PERMISSIONS", locale), { target: member.user.tag })
       );
       return false;
     } else {
