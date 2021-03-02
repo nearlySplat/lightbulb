@@ -4,8 +4,9 @@ import { CommandExecute, CommandMetadata } from '../types';
 import { getAccessLevel, getCurrentLevel } from '../util';
 import { get } from '../util/i18n';
 
-export const execute: CommandExecute = ({ message, commands }) => {
-  message.channel.send(get("HELP_ARRIVED"))
+export const execute: CommandExecute = ({ message, locale, commands, args }) => {
+  if (!args[0]) message.channel.send(get("HELP_ARRIVED", locale));
+  else message.channel.send(get(`${commands.has(args[0]) ? (commands.get(args[0])?.meta.name.toUpperCase() + "_DESCRIPTION") : "HELP_ARRIVED"}`, locale))
   return true;
 };
 
