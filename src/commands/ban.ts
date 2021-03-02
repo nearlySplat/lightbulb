@@ -17,7 +17,7 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
         .ban(target.id, {
           reason: `[ ${message.author.tag} ]: ${
             args.slice(1).join(" ") ||
-            "*responsible moderator, do `reason ${await getCases(message.guild) + 1} <reason>`*"
+            `*responsible moderator, do \`reason ${await getCases(message.guild) + 1} <reason>\`*`
           }`,
         })
         .then(() => {
