@@ -28,3 +28,6 @@ export const PURGE_HELP_BODY = `There are many features in this command.
                                 - \`purge regexp <regexp>\`: deletes messages matching that RegExp.
                                `.replace(/\n +/g, '\n')
 export const PURGE_HELP_HEADER = "Purge Help"
+export const HELP_ARRIVED = "Help has arrived!";
+export const GENERIC_ERROR = "An error occurred! Code: `{{code}}`, message: `{{message}}`."
+export const BAN_INSUFFICIENT_PERMISSIONS = "One of us doesn't have the required permissions to ban `{{target}}`"
