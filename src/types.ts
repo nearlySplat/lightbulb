@@ -24,6 +24,7 @@ export interface Context {
   commands: Collection<string, Command>;
   commandHandlerStarted: number;
   accessLevel: number;
+  locale: "uwu" | "en_UK";
 }
 
 export interface CommandMetadata {

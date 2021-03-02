@@ -5,7 +5,7 @@ export const localeList = readdirSync(__dirname).filter(
   v => !v.match(/\.[jt]s$/g)
 );
 
-let strings = {};
+let strings: { [index: string]: Record<string, string> } = {};
 for (const locale of localeList) {
   (async () => {
     const data = await import(`./${locale}/strings`);
@@ -28,3 +28,13 @@ export const interpolate = (str: string, obj: Record<string, any>) => {
   }
   return str;
 };
+
+export const getKeys = () => {
+  const arr = [];
+  for (const obj of Object.values(strings)) { 
+    for (const value of Object.keys(obj)) {
+      arr.push(value)
+    }
+  }
+  return [...(new Set(arr))];
+}
