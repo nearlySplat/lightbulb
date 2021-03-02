@@ -18,7 +18,7 @@ export const execute: CommandExecute = async ({
         message.channel.send(get("BAN_SUCCESSFUL", locale));
       });
     } catch {
-      message.channel.send(interpolate(get("GENERIC_ERROR", locale), { code: "1 [BAN_UNSUCCESSFUL]" })));
+      message.channel.send(interpolate(get("GENERIC_ERROR", locale), { code: "1 [BAN_UNSUCCESSFUL]" }));
     }
   }
   if (!member) {
