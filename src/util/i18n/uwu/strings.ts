@@ -1,25 +1,25 @@
-export const ABOUT_LONG_DESCRIPTION = `👋 Hi! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
+export const ABOUT_LONG_DESCRIPTION = `👋 Hewwo >~<! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
 
     **My features**:
     - Logging
     - Logging
     - Logging
 
-    Aaand... that's about it! All you need to set me up is a channel called \`💡\`! Actually, the real RegExp for that is \`/^💡(-log(s|ging)?)?$/g\`, but we won't get into that stuff.
+    Aaand... that's about it, senpai! All you need to be my fwend is a ✨ special ✨ text channel called \`💡\`! Actually, the weal uwu programmer wegex is \`/^💡(-log(s|ging)?)?$/g\`, but dat cwazy stuff is weiwd.
 
     **What I log:**
     - 🔨 Bans
     - 🔧 Unbans
     - 👢 Kicks (Coming Soon)`.replace(/\n +/g, '\n');
 export const ABOUT_HEADER = 'About Me';
-export const BANNE_SUCCESSFUL = '***🔨Successfully bent {{target}}***';
+export const BANNE_SUCCESSFUL = '***🔨 Successfully made {{target}} leave ;~;***';
 export const BANNE_NO_TARGET =
-  'Who am I going to ~~call~~ banne? ~~Ghostbusters!~~ Nobody!';
-export const I18N_KEY_NOT_FOUND = "This key ({{key}}) has not been localised into {{locale}} yet.";
-export const GENERIC_REQUESTED_BY = 'Requested by {{requester}}';
-export const BEAN_NO_TARGET = 'It seems Mr. Bean is going to be lonely today.';
-export const BEAN_SUCCESSFUL = '***<:bean:813134247505559572> Successfully beaned {{target}}***'
-export const DIE_SUCCESS = "*dies*";
+  'How could you do this to yourself? ;w;';
+export const I18N_KEY_NOT_FOUND = "Oh noes! {{key}} has not been uwu-ified!";
+export const GENERIC_REQUESTED_BY = '{{requester}} is special and used me!';
+export const BEAN_NO_TARGET = 'here you go, some fresh beans!';
+export const BEAN_SUCCESSFUL = '***<:bean:813134247505559572> gave some beans to {{target}}***'
+export const DIE_SUCCESS = "bye, senpai... ;;";
 export const HEX_HEADER = "Hexadecimal Color #{{color}}";
 export const HEX_BODY = `**Hexadecimal Value**: #{{hex_value}}
                          **Decimal Value**: {{decimal_value}}`.replace(/\n +/g, "\n");

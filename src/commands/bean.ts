@@ -1,12 +1,14 @@
 import { GuildMember } from 'discord.js';
 import { Context, CommandMetadata } from '../types';
+import { get, interpolate } from '../util/i18n';
 export const execute = ({
   message,
   args,
+  locale
 }: Context): boolean | Promise<boolean> => {
   if (!args[0])
     return message
-      .reply('Who am I going to ~~call~~ bean? ~~Ghostbusters!~~ Nobody!')
+      .reply(get('BEAN_NO_TARGET', locale))
       .then(() => false);
   const target: GuildMember =
     message.guild?.members.cache.get(args[0]?.replace(/(<@!?|>)/g, '')) ??
@@ -17,9 +19,7 @@ export const execute = ({
         v.displayName.toLowerCase() == args.join(' ').toLowerCase()
     ) ??
     message.member;
-  message.reply(
-    `***<:bean:813134247505559572> Successfully beaned ${target.user.tag}***`
-  );
+  message.reply(interpolate(get('BEAN_SUCCESSFUL', locale), { target: target.user.tag }));
   return true;
 };
 
