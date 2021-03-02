@@ -14,7 +14,7 @@ export const CLIENT_COLOUR = 0xfcda7d;
 export const ERROR_CODES = {
   BAN_UNSUCCESSFUL: 0,
   DISALLOWED_TARGET: 1,
-  OWNER_IS_TARGET: 2,
+  TARGET_IS_OWNER: 2,
   SELF_IS_MODERATION_TARGET: 3,
 };
 export const ERROR_MESSAGES = Object.keys(ERROR_CODES);
