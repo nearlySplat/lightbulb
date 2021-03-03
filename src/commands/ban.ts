@@ -22,7 +22,7 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
           }`,
         })
         .then(() => {
-          message.channel.send(get("BAN_SUCCESSFUL", locale));
+          message.channel.send(interpolate(get("BAN_SUCCESSFUL", locale), { target: target.tag }));
         });
     } catch (e) {
       message.channel.send(
