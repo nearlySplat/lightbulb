@@ -31,3 +31,4 @@ export const PURGE_HELP_HEADER = "Purge Help"
 export const HELP_ARRIVED = "Hewp has awwived!";
 export const GENERIC_ERROR = "A fucky wucky ewwor occuwwed ;w; (Code: `{{code}}`, message: `{{message}}`)"
 export const BAN_INSUFFICIENT_PERMISSIONS = "One of us can't ban `{{target}}` ;w;"
+export const BAN_SUCCESSFUL = "***Weebs out! ({{target}} was banished). 🔨***"
