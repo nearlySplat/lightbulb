@@ -15,7 +15,7 @@ export const getProgressBar = (len = 3, seperator = 'O', lineChar = '─') => {
     throw new TypeError("Paramater 'lineChar' must be of type string.");
   const num = Math.floor(Math.random() * len);
   const progress = Array.from({ length: len }, (_, i) =>
-    i === num - 1 ? seperator : lineChar
+    i === num ? seperator : lineChar
   ).join('');
   return progress;
 };
