@@ -25,7 +25,7 @@ export const execute = ({ message, args }: Context): boolean | Promise<boolean> 
       soundEmoji = "🔉";
       break;
     case 3:
-      soundEmoji = 🔊";
+      soundEmoji = "🔊";
   }
   message.channel.send(
     `**__Now Playing__**: ${args.join(" ").replace(/\b\w/g, v => v.toUpperCase())}\n${progress}\n${soundEmoji} ${sound}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(played)} / ${convert(rand)} ⠀                       ᴴᴰ ⚙ ❐`
