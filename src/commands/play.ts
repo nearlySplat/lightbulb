@@ -17,14 +17,14 @@ export const execute = ({ message, args }: Context): boolean | Promise<boolean> 
   const howMuchSound = (3 * (soundLocation / 100)).toFixed();
   let soundEmoji: string;
   switch (howMuchSound) {
-    case 0:
+    case "0":
       soundEmoji = "🔇";
       break;
-    case 1:
-    case 2:
+    case "1":
+    case "2":
       soundEmoji = "🔉";
       break;
-    case 3:
+    case "3":
       soundEmoji = "🔊";
   }
   message.channel.send(
