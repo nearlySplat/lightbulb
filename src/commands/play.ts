@@ -1,7 +1,7 @@
 import { Context, CommandMetadata } from '../types';
 import { getProgressBar } from '../util';
 // import { get, interpolate } from '../util/i18n';
-export const execute = ({ message }: Context): boolean | Promise<boolean> => {
+export const execute = ({ message, args }: Context): boolean | Promise<boolean> => {
   const progress = getProgressBar(36, ':radio_button:');
   const num = (progress.indexOf(':radio_button:') / progress.length) * 100;
   const flooredNum = Math.floor(num);
