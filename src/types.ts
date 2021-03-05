@@ -8,7 +8,6 @@ import {
   PermissionFlags,
   Snowflake,
 } from 'discord.js';
-import { loggr } from '.';
 
 export type Command = {
   execute: CommandExecute;
@@ -24,7 +23,7 @@ export interface Context {
   commands: Collection<string, Command>;
   commandHandlerStarted: number;
   accessLevel: number;
-  locale: "uwu" | "en_UK";
+  locale: 'uwu' | 'en_UK';
 }
 
 export interface CommandMetadata {

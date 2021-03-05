@@ -11,7 +11,7 @@ export const execute = async (
   if (!message.guild || !message.member) return false;
   async function handleCommand(
     prefix: string,
-    isExclamation: boolean = false
+    isExclamation = false
   ): Promise<boolean> {
     const timeStarted = Date.now();
     if (!message.content?.startsWith(prefix)) return false;
@@ -31,7 +31,7 @@ export const execute = async (
         getAccessLevel(command.meta.accessLevel as 0 | 1 | 2 | 3)
     )
       return false;
-    if (isExclamation && ['reason'].includes(commandName))
+    if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation)
       return command.execute({
         client,
         message: message as Message & { member: GuildMember; guild: Guild },
@@ -39,25 +39,17 @@ export const execute = async (
         commands,
         commandHandlerStarted: timeStarted,
         accessLevel: getCurrentLevel(message.member as GuildMember),
-	locale: message.author.id === "728342296696979526" ? "uwu" : "en_UK",
-      });
-    else if (!isExclamation)
-      return command.execute({
-        client,
-        message: message as Message & { member: GuildMember; guild: Guild },
-        args,
-        commands,
-        commandHandlerStarted: timeStarted,
-        accessLevel: getCurrentLevel(message.member as GuildMember),
-	locale: message.author.id === "728342296696979526" ? "uwu" : "en_UK",
+        locale: message.author.id === '728342296696979526' ? 'uwu' : 'en_UK',
       });
     else return false;
   }
-  for (let prefix of [
+  for (const prefix of [
     `<@${(client.user as ClientUser).id}>`,
-    `<@!${(client.user as ClientUser).id}>`,
+    `<@!${client.user!.id}>`,
     ...PREFIXES,
   ])
     handleCommand(prefix, prefix === '!');
   return true;
 };
+
+'a' || 'b';

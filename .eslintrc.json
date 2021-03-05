@@ -12,7 +12,8 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "prefer-arrow-callback": "warn",
-    "multiline-ternary": "error",
-    "no-undef": "warn"
+    "no-undef": "warn",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "warn"
   }
 }

@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "strict": true,
     "moduleResolution": "node",
-    "module": "commonjs",
+    "module": "CommonJS",
     "experimentalDecorators": true,
     "strictNullChecks": true,
     "useDefineForClassFields": true
