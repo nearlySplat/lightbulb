@@ -13,7 +13,7 @@ export const execute = ({ message }: Context): boolean | Promise<boolean> => {
     .replace(/^(\d{2})$/g, '0.$1')
     .replace(/^(\d{1})$/g, '0.0$1')
   message.channel.send(
-    `Now Playing: ${message.content.replace(/\b\w/g, v => v.toUpperCase())}\n${progress}\n${convert(played)}/${convert(rand)}`
+    `**__Now Playing__**: ${args.join(" ").replace(/\b\w/g, v => v.toUpperCase())}\n${progress}\n${convert(played)}/${convert(rand)}`
   );
   return true;
 };
