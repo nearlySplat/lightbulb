@@ -12,8 +12,23 @@ export const execute = ({ message, args }: Context): boolean | Promise<boolean> 
     .replace(/(\d)(\d{2})/g, '$1.$2')
     .replace(/^(\d{2})$/g, '0.$1')
     .replace(/^(\d{1})$/g, '0.0$1')
+  const soundBar = getProgressBar(4, "○");
+  const soundLocation = ((soundBar.indexOf("○") / soundBar.length) * 100).toFixed();
+  const howMuchSound = (3 * (soundLocation / 100)).toFixed();
+  let soundEmoji: string;
+  switch (howMuchSound) {
+    case 0:
+      soundEmoji = "🔇";
+      break;
+    case 1:
+    case 2:
+      soundEmoji = "🔉";
+      break;
+    case 3:
+      soundEmoji = 🔊";
+  }
   message.channel.send(
-    `**__Now Playing__**: ${args.join(" ").replace(/\b\w/g, v => v.toUpperCase())}\n${progress}\n${convert(played)}/${convert(rand)}`
+    `**__Now Playing__**: ${args.join(" ").replace(/\b\w/g, v => v.toUpperCase())}\n${progress}\n${soundEmoji} ${sound}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(played)} / ${convert(rand)} ⠀                       ᴴᴰ ⚙ ❐`
   );
   return true;
 };
