@@ -8,20 +8,6 @@ export const execute = async ({ message, args }: Context): Promise<boolean> => {
   const raw = args.join(' ');
   let output: any;
   try {
-    const lint = await new ESLint({
-      useEslintrc: true,
-    }).lintText(raw);
-    const mappedLint = lint
-      .map(v =>
-        v.messages
-          .map(
-            v => `Column ${v.column}: ${v.message} (Severity: ${v.severity})`
-          )
-          .join('\n')
-      )
-      .join('\n');
-    if (mappedLint)
-      return message.reply(mappedLint, { code: 'js' }).then(() => true);
     output = eval(
       transpile(raw, {
         experimentalDecorators: true,
