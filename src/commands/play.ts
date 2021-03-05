@@ -28,7 +28,7 @@ export const execute = ({ message, args }: Context): boolean | Promise<boolean> 
       soundEmoji = "🔊";
   }
   message.channel.send(
-    `**__Now Playing__**: ${args.join(" ").replace(/\b\w/g, v => v.toUpperCase())}\n${progress}\n${soundEmoji} ${sound}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(played)} / ${convert(rand)} ⠀                       ᴴᴰ ⚙ ❐`
+    `**__Now Playing__**: ${args.join(" ").replace(/\b\w/g, v => v.toUpperCase())}\n${progress}\n${soundEmoji} ${soundBar}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(played)} / ${convert(rand)} ⠀                       ᴴᴰ ⚙ ❐`
   );
   return true;
 };
