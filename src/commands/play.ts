@@ -5,7 +5,7 @@ export const execute = ({ message, args }: Context): boolean | Promise<boolean> 
   const progress = getProgressBar(36, ':radio_button:');
   const num = (progress.indexOf(':radio_button:') / progress.length) * 100;
   const flooredNum = Math.floor(num);
-  const rand = Math.floor(Math.random() * 300);
+  const rand = Math.floor(Math.random() * 1000);
   const played = rand * (flooredNum / 100);
   const convert = n => n
     .toFixed()
