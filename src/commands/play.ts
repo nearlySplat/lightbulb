@@ -7,16 +7,13 @@ export const execute = ({ message }: Context): boolean | Promise<boolean> => {
   const flooredNum = Math.floor(num);
   const rand = Math.floor(Math.random() * 300);
   const played = rand * (flooredNum / 100);
+  const convert = n => n
+    .toFixed()
+    .replace(/(\d)(\d{2})/g, '$1.$2')
+    .replace(/^(\d{2})$/g, '0.$1')
+    .replace(/^(\d{1})$/g, '0.0$1')
   message.channel.send(
-    `${progress}\n${played
-      .toFixed()
-      .replace(/(\d)(\d{2})/g, '$1.$2')
-      .replace(/^(\d{2})$/g, '0.$1')
-      .replace(/^(\d{1})$/g, '0.0$1')}/${rand
-      .toFixed()
-      .replace(/(\d)(\d{2})/g, '$1.$2')
-      .replace(/^(\d{2})$/g, '0.$1')
-      .replace(/^(\d{1})$/g, '0.0$1')}`
+    `Now Playing: ${message.content.replace(/\b\w/g, v => v.toUpperCase())}\n${progress}\n${convert(played)}/${convert(rand)}`
   );
   return true;
 };
