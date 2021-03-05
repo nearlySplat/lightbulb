@@ -18,7 +18,7 @@ export const execute = ({
         v.user.tag.toLowerCase() === args.join(' ').toLowerCase() ||
         v.displayName.toLowerCase() == args.join(' ').toLowerCase()
     ) ??
-    message.member;
+    ({ user: { tag: args.join(" ") } });
   message.reply(interpolate(get('BANNE_SUCCESSFUL', locale), { target: target.user.tag }));
   return true;
 };
