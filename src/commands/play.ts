@@ -1,3 +1,4 @@
+import { Util } from 'discord.js';
 import { Context, CommandMetadata } from '../types';
 import { getProgressBar } from '../util';
 // import { get, interpolate } from '../util/i18n';
@@ -33,12 +34,11 @@ export const execute = ({
     case '3':
       soundEmoji = '🔊';
   }
+  const title = Util.escapeMarkdown(
+    args.join(' ').replace(/\b\w/g, v => v.toUpperCase())
+  );
   message.channel.send(
-    `**${args
-      .join(' ')
-      .replace(/\b\w/g, v =>
-        v.toUpperCase()
-      )}**\n${progress}\n${soundEmoji} ${soundBar}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(
+    `**${title}**\n${progress}\n${soundEmoji} ${soundBar}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(
       played
     )} / ${convert(rand)} ⠀                       ᴴᴰ ⚙ ❐`
   );
