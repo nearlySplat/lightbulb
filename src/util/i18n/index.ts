@@ -10,7 +10,6 @@ for (const locale of localeList) {
   (async () => {
     const data = await import(`./${locale}/strings`);
     strings[locale] = data;
-    loggr.debug(`Loaded I18n locale ${locale}.`);
   })();
 }
 
@@ -36,6 +35,10 @@ export const interpolate = (
   return str;
 };
 
-export const getKeys = Object.values(strings)
-  .map(v => Object.values(v))
-  .flat();
+export const getKeys = [
+  ...new Set(
+    Object.values(strings)
+      .map(v => Object.values(v))
+      .flat()
+  ),
+];
