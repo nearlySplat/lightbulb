@@ -1,5 +1,5 @@
 import { Client, GuildMember, Message, ClientUser, Guild } from 'discord.js';
-import { commands } from '..';
+import { commands, slashCommands } from '..';
 import { PREFIXES } from '../constants';
 import { Command } from '../types';
 import { getAccessLevel, getCurrentLevel } from '../util';
@@ -23,7 +23,11 @@ export const execute = async (
         commands.get(args[0]) ??
         commands.find(value => value.meta?.aliases.includes(args[0]) ?? false),
       commandName = args[0];
-    if (!command) return false;
+    if (!command) {
+      if (slashCommands.has(commandName)) {
+        const output = slashCommands.get(commandName)!.execute({ interactionHandlerStarted: timeStarted, member: message.member, author: message.author, guild: message.guild, client: message.client, interaction: { member: { ...(message.member ?? {}), is_pending: !!message.member?.pending, joined_at: message.member?.joinedAt?.toString() } } })
+      }
+    };
     args = args.slice(1);
     if (
       command.meta?.accessLevel &&
@@ -39,7 +43,7 @@ export const execute = async (
         commands,
         commandHandlerStarted: timeStarted,
         accessLevel: getCurrentLevel(message.member as GuildMember),
-        locale: message.author.id === '728342296696979526' ? 'uwu' : 'en_UK',
+        locale: message.author.id === '728342296696979526' ? 'h' : 'en_UK',
       });
     else return false;
   }
