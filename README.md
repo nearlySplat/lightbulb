@@ -1,6 +1,8 @@
 # lightbulb
 The [TypeScript](https://typescriptlang.org) rewrite of [Eureka!](https://voidbots.net/bot/eureka).
 
+I spend a hecking [![time tracker](https://wakatime.com/badge/github/nearlySplat/lightbulb.svg)](https://wakatime.com/badge/github/nearlySplat/lightbulb) on this thing.
+
 ## Self-hosting
 Running this code will require TypeScript. To install typescript, run 
 ```bash

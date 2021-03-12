@@ -86,22 +86,13 @@ const binary: CommandExecute = ({ message, args }) => {
           .slice(1)
           .join(" ")
           .split("")
-          .map((v) => v.charCodeAt(0))
-          .map((v) => v.toString(2))
+          .map((v) => v.charCodeAt(0).toString(2))
           .join(" ")
       : args
           .slice(1)
           .join(" ")
           .split(" ")
-          .map((v) => parseInt(v, 2))
-          .map((v) => v.toString(16))
-          .map((v) =>
-            eval(
-              `"\\u${v.length >= 1 ? "0" : ""}${v.length >= 2 ? "0" : ""}${
-                v.length >= 3 ? "0" : ""
-              }${v}"`
-            )
-          )
+          .map((v) => String.fromCharCode(parseInt(v, 2)))
           .join("");
   const _ = new MessageEmbed()
     .setAuthor(`${args[0] == "decode" ? "Decoded" : "Encoded"} Binary Text`)
