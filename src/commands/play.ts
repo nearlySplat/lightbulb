@@ -12,11 +12,31 @@ export const execute = ({ message }: Context): boolean | Promise<boolean> => {
       .toFixed()
       .replace(/(\d)(\d{2})/g, '$1.$2')
       .replace(/^(\d{2})$/g, '0.$1')
-      .replace(/^(\d{1})$/g, '0.0$1')}/${rand
-      .toFixed()
-      .replace(/(\d)(\d{2})/g, '$1.$2')
-      .replace(/^(\d{2})$/g, '0.$1')
-      .replace(/^(\d{1})$/g, '0.0$1')}`
+      .replace(/^(\d{1})$/g, '0.0$1');
+  const soundBar = getProgressBar(4, '○');
+  const soundLocation = parseInt(
+    ((soundBar.indexOf('○') / soundBar.length) * 100).toFixed()
+  );
+  const howMuchSound = (3 * (soundLocation / 100)).toFixed();
+  let soundEmoji: string = '';
+  switch (howMuchSound) {
+    case '0':
+      soundEmoji = '🔇';
+      break;
+    case '1':
+    case '2':
+      soundEmoji = '🔉';
+      break;
+    case '3':
+      soundEmoji = '🔊';
+  }
+  const title = Util.escapeMarkdown(
+    args.join(' ').replace(/\b\w/g, v => v.toUpperCase())
+  );
+  message.channel.send(
+    `**${title}**\n${progress}\n${soundEmoji} ${soundBar}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(
+      played
+    )} / ${convert(rand)} ⠀                       ᴴᴰ ⚙ ❐`
   );
   return true;
 };
