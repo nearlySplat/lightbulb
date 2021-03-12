@@ -19,3 +19,4 @@ export const getProgressBar = (len = 3, seperator = 'O', lineChar = '─') => {
   ).join('');
   return progress;
 };
+export * from './parseCLIArgs';
