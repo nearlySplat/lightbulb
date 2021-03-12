@@ -99,6 +99,5 @@ client.on('raw', packet => {
     }
   });
 });
->>>>>>> Stashed changes
 
 client.login(process.env.TOKEN);

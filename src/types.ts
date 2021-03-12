@@ -12,7 +12,10 @@ import {
   StringResolvable,
   MessageEmbed,
   User,
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> cfd9101 (fix: this is the long-awaited merge)
 } from 'discord.js';
 
 export type Command = {
@@ -111,4 +114,7 @@ export type SlashCommandResponse = {
     flags?: 64;
   };
 };
+<<<<<<< HEAD
 >>>>>>> Stashed changes
+=======
+>>>>>>> cfd9101 (fix: this is the long-awaited merge)
