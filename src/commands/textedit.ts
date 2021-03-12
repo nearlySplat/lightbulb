@@ -1,35 +1,35 @@
-import { MessageEmbed } from "discord.js";
-import { CLIENT_COLOUR } from "../constants";
-import { CommandExecute, CommandMetadata, Context } from "../types";
+import { MessageEmbed } from 'discord.js';
+import { CLIENT_COLOUR } from '../constants';
+import { CommandExecute, CommandMetadata, Context } from '../types';
 
 const invalidArg = (arg: string) =>
   `__**Invalid Arguments!**__\n An argument for \`${arg}\` was \n- not specified or \n- not of the correct type.\n\nArguments for this command are: \`\`\`\n<type>: "base64" | "uri" | "url" | "b64" = What kind of encoding you want\n<action>: "encode" | "decode" = what you want me to do with your string\n<string>: string = the data you want me to encode/decode.\`\`\``;
 export const execute: CommandExecute = ({ message, args }) => {
-  if (!["base64", "uri", "url", "b64", "binary"].includes(args[0]))
-    return message.reply(invalidArg("type")).then((v) => false);
+  if (!['base64', 'uri', 'url', 'b64', 'binary'].includes(args[0]))
+    return message.reply(invalidArg('type')).then(v => false);
   switch (args[0]) {
-    case "b64":
-    case "base64":
+    case 'b64':
+    case 'base64':
       return base64({ message, args: args.slice(1) } as Context);
-    case "uri":
-    case "url":
+    case 'uri':
+    case 'url':
       return uri({ message, args: args.slice(1) } as Context);
-    case "binary":
+    case 'binary':
       return binary({ message, args: args.slice(1) } as Context);
   }
   return true;
 };
 
 const base64: CommandExecute = ({ message, args }) => {
-  if (!args[0] || !["encode", "decode"].includes(args[0]))
-    return message.reply(invalidArg("action")).then(() => false);
-  if (!args[1]) return message.reply(invalidArg("data")).then(() => false);
+  if (!args[0] || !['encode', 'decode'].includes(args[0]))
+    return message.reply(invalidArg('action')).then(() => false);
+  if (!args[1]) return message.reply(invalidArg('data')).then(() => false);
   const data = Buffer.from(
-    args.slice(1).join(" "),
-    args[0] == "decode" ? "base64" : undefined
-  ).toString(args[0] == "decode" ? "ascii" : "base64");
+    args.slice(1).join(' '),
+    args[0] == 'decode' ? 'base64' : undefined
+  ).toString(args[0] == 'decode' ? 'ascii' : 'base64');
   const _ = new MessageEmbed()
-    .setAuthor(`${args[0] == "decode" ? "Decoded" : "Encoded"} Base64 Text`)
+    .setAuthor(`${args[0] == 'decode' ? 'Decoded' : 'Encoded'} Base64 Text`)
     .setColor(CLIENT_COLOUR)
     .setFooter(
       `Requested by ${message.author.tag} (${message.author.id})`,
@@ -49,15 +49,15 @@ const base64: CommandExecute = ({ message, args }) => {
 };
 
 const uri: CommandExecute = ({ message, args }) => {
-  if (!args[0] || !["encode", "decode"].includes(args[0]))
-    return message.reply(invalidArg("action")).then(() => false);
-  if (!args[1]) return message.reply(invalidArg("data")).then(() => false);
+  if (!args[0] || !['encode', 'decode'].includes(args[0]))
+    return message.reply(invalidArg('action')).then(() => false);
+  if (!args[1]) return message.reply(invalidArg('data')).then(() => false);
   const data =
-    args[0] == "encode"
-      ? encodeURIComponent(args.slice(1).join(" "))
-      : decodeURIComponent(args.slice(1).join(" "));
+    args[0] == 'encode'
+      ? encodeURIComponent(args.slice(1).join(' '))
+      : decodeURIComponent(args.slice(1).join(' '));
   const _ = new MessageEmbed()
-    .setAuthor(`${args[0] == "decode" ? "Decoded" : "Encoded"} URI Component`)
+    .setAuthor(`${args[0] == 'decode' ? 'Decoded' : 'Encoded'} URI Component`)
     .setColor(CLIENT_COLOUR)
     .setFooter(
       `Requested by ${message.author.tag} (${message.author.id})`,
@@ -77,25 +77,23 @@ const uri: CommandExecute = ({ message, args }) => {
 };
 
 const binary: CommandExecute = ({ message, args }) => {
-  if (!args[0] || !["encode", "decode"].includes(args[0]))
-    return message.reply(invalidArg("action")).then(() => false);
-  if (!args[1]) return message.reply(invalidArg("data")).then(() => false);
+  if (!args[0] || !['encode', 'decode'].includes(args[0]))
+    return message.reply(invalidArg('action')).then(() => false);
+  if (!args[1]) return message.reply(invalidArg('data')).then(() => false);
   const data =
-    args[0] == "encode"
+    args[0] == 'encode'
       ? args
           .slice(1)
-          .join(" ")
-          .split("")
-          .map((v) => v.charCodeAt(0).toString(2))
-          .join(" ")
+          .join(' ')
+          .split('')
+          .map(v => v.charCodeAt(0).toString(2))
+          .join(' ')
       : args
           .slice(1)
-          .join(" ")
-          .split(" ")
-          .map((v) => String.fromCharCode(parseInt(v, 2)))
-          .join("");
+          .map(v => String.fromCharCode(parseInt(v, 2)))
+          .join('');
   const _ = new MessageEmbed()
-    .setAuthor(`${args[0] == "decode" ? "Decoded" : "Encoded"} Binary Text`)
+    .setAuthor(`${args[0] == 'decode' ? 'Decoded' : 'Encoded'} Binary Text`)
     .setColor(CLIENT_COLOUR)
     .setFooter(
       `Requested by ${message.author.tag} (${message.author.id})`,
@@ -115,8 +113,8 @@ const binary: CommandExecute = ({ message, args }) => {
 };
 
 export const meta: CommandMetadata = {
-  name: "textedit",
-  description: "Encode and decode URI and base64 strings.",
+  name: 'textedit',
+  description: 'Encode and decode URI and base64 strings.',
   accessLevel: 0,
   aliases: [],
 };

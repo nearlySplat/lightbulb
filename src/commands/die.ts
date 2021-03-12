@@ -1,14 +1,12 @@
 import { Context, CommandMetadata } from '../types';
-import { get } from "../util/i18n";
+import { get } from '../util/i18n';
 export const execute = ({
   message,
   args,
-  locale
+  locale,
 }: Context): boolean | Promise<boolean> => {
-  void message.reply(
-    get("DIE_SUCCESS", locale)
-  );
-  setImmediate(() => process.exit())
+  void message.reply(get('DIE_SUCCESS', locale));
+  setImmediate(() => process.exit());
   return true;
 };
 

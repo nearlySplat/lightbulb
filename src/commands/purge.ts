@@ -9,7 +9,7 @@ import {
 } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata } from '../types';
-import { get } from "../util/i18n";
+import { get } from '../util/i18n';
 export const meta: CommandMetadata = {
   accessLevel: 2,
   aliases: ['clear', 'prune'],
@@ -27,10 +27,8 @@ export const execute: CommandExecute = async ctx => {
   switch (ctx.args[0]) {
     case 'help':
       const _ = new MessageEmbed()
-        .setAuthor(get("PURGE_HELP_HEADER", ctx.locale))
-        .setDescription(
-          get("PURGE_HELP_BODY", ctx.locale)
-        )
+        .setAuthor(get('PURGE_HELP_HEADER', ctx.locale))
+        .setDescription(get('PURGE_HELP_BODY', ctx.locale))
         .setColor(CLIENT_COLOUR)
         .setThumbnail(ctx.client.user?.avatarURL() as string);
       ctx.message.channel.send(_);
@@ -76,7 +74,7 @@ export const execute: CommandExecute = async ctx => {
           (prev, curr) => prev.createdTimestamp - curr.createdTimestamp
         ) as MsgsCollectionType;
       await ctx.message.delete();
-      ctx.message.channel.bulkDelete(msgs)
+      ctx.message.channel.bulkDelete(msgs);
       return true;
     default:
       if (ctx.message.channel.type === 'dm') return false;

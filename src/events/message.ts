@@ -1,7 +1,7 @@
 import { Client, GuildMember, Message, ClientUser, Guild } from 'discord.js';
-import { commands, slashCommands } from '..';
+import { commands } from '..';
 import { PREFIXES } from '../constants';
-import { Command } from '../types';
+import { Command, SlashCommandContext } from '../types';
 import { getAccessLevel, getCurrentLevel } from '../util';
 
 export const execute = async (
@@ -25,9 +25,32 @@ export const execute = async (
       commandName = args[0];
     if (!command) {
       if (slashCommands.has(commandName)) {
-        const output = slashCommands.get(commandName)!.execute({ interactionHandlerStarted: timeStarted, member: message.member, author: message.author, guild: message.guild, client: message.client, interaction: { member: { ...(message.member ?? {}), is_pending: !!message.member?.pending, joined_at: message.member?.joinedAt?.toString() } } })
-      }
-    };
+        const output = slashCommands.get(commandName)!.execute({
+          interactionHandlerStarted: timeStarted,
+          member: message.member,
+          author: message.author,
+          guild: message.guild,
+          client: message.client,
+          interaction: {
+            member: {
+              ...(message.member ?? {}),
+              is_pending: !!message.member?.pending,
+              joined_at: message.member?.joinedAt?.toString() ?? '',
+            },
+            channel_id: message.channel.id,
+            guild_id: message.guild!.id,
+            user: message.guild ? null : message.author,
+            token: 'NormalMessage0',
+            id: message.id,
+            data: { name: commandName, id: '0' },
+          },
+          commandFuncs: {} as SlashCommandContext['commandFuncs'],
+        });
+        if (output)
+          client.api.channels[message.channel.id].messages.post(output.data);
+        return true;
+      } else return false;
+    }
     args = args.slice(1);
     if (
       command.meta?.accessLevel &&
@@ -43,7 +66,7 @@ export const execute = async (
         commands,
         commandHandlerStarted: timeStarted,
         accessLevel: getCurrentLevel(message.member as GuildMember),
-        locale: message.author.id === '728342296696979526' ? 'h' : 'en_UK',
+        locale: 'en_UK',
       });
     else return false;
   }
@@ -55,5 +78,3 @@ export const execute = async (
     handleCommand(prefix, prefix === '!');
   return true;
 };
-
-'a' || 'b';

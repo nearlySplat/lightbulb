@@ -1,16 +1,16 @@
 {
   "name": "lightbulb",
-  "version": "2.0.0",
+  "version": "1.10.6",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon dist",
     "watch": "tsc -w",
-    "pull": "git pull",
-    "compile": "tsc"
+    "compile": "tsc",
+    "pull": "git pull"
   },
   "author": "",
-  "license": "GPL-3.0-or-later",
+  "license": "ISC",
   "devDependencies": {
     "@types/eslint": "^7.2.6",
     "@typescript-eslint/eslint-plugin": "^4.15.1",

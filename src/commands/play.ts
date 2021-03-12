@@ -35,7 +35,8 @@ export const execute = ({
       soundEmoji = '🔊';
   }
   const title = Util.escapeMarkdown(
-    args.join(' ').replace(/\b\w/g, v => v.toUpperCase())
+    args.join(' ').replace(/\b\w/g, v => v.toUpperCase()) ||
+      'Who Asked (Feat: Nobody)'
   );
   message.channel.send(
     `**${title}**\n${progress}\n${soundEmoji} ${soundBar}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(
@@ -49,6 +50,6 @@ export const meta: CommandMetadata = {
   name: 'play',
   description: 'Play a song',
   accessLevel: 0,
-  aliases: [],
+  aliases: ['np', 'nowplaying'],
   hidden: true,
 };

@@ -21,9 +21,11 @@ export const execute = async (ctx: Context): Promise<boolean> => {
     guild: GuildLookupData =
       (await ctx.client.fetchGuildPreview(ctx.args[0]).catch(e => null)) ??
       ((
-        await axios.get(
-          `https://canary.discord.com/api/guilds/${ctx.args[0]}/widget.json`
-        ).catch(() => null)
+        await axios
+          .get(
+            `https://canary.discord.com/api/guilds/${ctx.args[0]}/widget.json`
+          )
+          .catch(() => null)
       )?.data as WidgetResponse);
   const _ = new MessageEmbed()
     .setColor(CLIENT_COLOUR)
@@ -61,7 +63,9 @@ export const execute = async (ctx: Context): Promise<boolean> => {
                 invite.guild?.vanityURLCode ?? 'None'
               }\`${
                 invite.guild?.approximateMemberCount || invite.memberCount
-                  ? `\n⇒ __Member Count__: ${invite.guild?.approximateMemberCount ?? invite.memberCount}`
+                  ? `\n⇒ __Member Count__: ${
+                      invite.guild?.approximateMemberCount ?? invite.memberCount
+                    }`
                   : ''
               }`
             : ''
@@ -96,7 +100,9 @@ export const execute = async (ctx: Context): Promise<boolean> => {
           g.approximateMemberCount ?? g.members?.length
         }\n${g.description ? `**Description**: ${g.description}\n` : ''}${
           g.features
-            ? `**Community Features**: ${g.features.map(v => `\`${v}\``).join(", ")}`
+            ? `**Community Features**: ${g.features
+                .map(v => `\`${v}\``)
+                .join(', ')}`
             : ''
         }`
       )
@@ -128,7 +134,7 @@ export const execute = async (ctx: Context): Promise<boolean> => {
     ).setImage(
       'https://cdn.dribbble.com/users/623808/screenshots/4012628/1-safe.jpg'
     );
-  
+
   ctx.message.reply({
     allowedMentions: { repliedUser: false, parse: [] },
     embed: _,

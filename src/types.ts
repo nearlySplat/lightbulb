@@ -7,9 +7,12 @@ import {
   Message,
   PermissionFlags,
   Snowflake,
+<<<<<<< Updated upstream
+=======
   StringResolvable,
   MessageEmbed,
-  User
+  User,
+>>>>>>> Stashed changes
 } from 'discord.js';
 
 export type Command = {
@@ -36,7 +39,7 @@ export interface CommandMetadata {
   userPermissions?: (keyof PermissionFlags)[] | bigint[];
   accessLevel: keyof AccessLevels | number;
   hidden?: boolean;
-  scope?: "guild" | "dm" | "slashMutualGuild" | "any"
+  scope?: 'guild' | 'dm' | 'slashMutualGuild' | 'any';
 }
 
 export interface AccessLevels {
@@ -63,49 +66,49 @@ export interface WidgetSuccessfulResponse {
 }
 
 export type GuildLookupData = WidgetResponse | GuildPreview | null;
+<<<<<<< Updated upstream
+=======
 export interface SlashCommand {
   execute: SlashCommandExecute;
-  meta: CommandMetadata
+  meta: CommandMetadata;
 }
 
-export type SlashCommandExecute = (context: SlashCommandContext) => SlashCommandResponse
+export type SlashCommandExecute = (
+  context: SlashCommandContext
+) => SlashCommandResponse;
+export type RecurringAnyFuncOrObj = Record<string, any> &
+  (<T>(...args: any[]) => T) &
+  { [key in string]: RecurringAnyFuncOrObj };
 
 export interface SlashCommandContext {
-  client: Client
-  interactionHandlerStarted: number
-  member: GuildMember | null
-  author: User
-  guild: Guild | null
-  interaction: Interaction
-};
+  client: Client;
+  interactionHandlerStarted: number;
+  member: GuildMember | null;
+  author: User;
+  guild: Guild | null;
+  interaction: Interaction;
+  commandFuncs: RecurringAnyFuncOrObj;
+}
 export interface Interaction {
   data: {
-    name: string,
-    id: Snowflake
-  },
-  channel_id: Snowflake,
-  guild_id: Snowflake,
-  member: {
-    user: Record<string, unknown>,
-    roles: Record<string, unknown>[],
-    premium_since?: string,
-    permissions: string,
-    pending: boolean,
-    nick?: string,
-    mute: boolean,
-    joined_at: string,
-    is_pending: boolean,
-    deaf: boolean,
-  },
-  id: Snowflake,
+    name: string;
+    id: Snowflake;
+    options?: any[];
+  };
+  channel_id?: Snowflake;
+  guild_id?: Snowflake;
+  member?: Record<string, any> | GuildMember | null;
+  id: Snowflake;
+  user?: Record<string, any> | User | null;
+  token: string;
 }
 
- export type SlashCommandResponse = {
-  type: 1 | 4 | 5,
+export type SlashCommandResponse = {
+  type: 1 | 4 | 5;
   data: {
-    content?: StringResolvable,
-    embeds?: (Record<string, any> | MessageEmbed)[],
-    flags?: 64,
-
-  }
- }
+    content?: StringResolvable;
+    embeds?: (Record<string, any> | MessageEmbed)[];
+    flags?: 64;
+  };
+};
+>>>>>>> Stashed changes

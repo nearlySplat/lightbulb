@@ -2,12 +2,16 @@ import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { Context, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
-export const execute = ({ message, locale }: Context): boolean => {
+export const execute = ({ message, locale, args }: Context): boolean => {
   message.channel.send(
     new MessageEmbed()
-      .setDescription(get('ABOUT_LONG_DESCRIPTION', locale))
+      .setDescription(
+        interpolate(get('STALLMAN_TEXT', locale), {
+          text: args.join(' ') || 'Linux',
+        })
+      )
       .setColor(CLIENT_COLOUR)
-      .setAuthor(get('ABOUT_HEADER', locale))
+      .setAuthor(get('STALLMAN_HEADER', locale))
       .setFooter(
         interpolate(get('GENERIC_REQUESTED_BY', locale), {
           requester: `${message.author.tag} (${message.author.id})`,
@@ -21,8 +25,8 @@ export const execute = ({ message, locale }: Context): boolean => {
 };
 
 export const meta: CommandMetadata = {
-  name: 'about',
-  description: 'Information about me!',
+  name: 'gnu',
+  description: 'Sends the Stallman GNU/Linux copy-pasta.',
   accessLevel: 0,
-  aliases: [],
+  aliases: ['stallman'],
 };
