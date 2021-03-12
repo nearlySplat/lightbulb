@@ -1,3 +1,5 @@
+import { Guild, GuildMember, TextChannel } from "discord.js";
+
 export * from './createLogMessage';
 export * from './loadFiles';
 export * from './noop';
@@ -20,4 +22,14 @@ export const getProgressBar = (len = 3, seperator = 'O', lineChar = '─') => {
   return progress;
 };
 export * as i18n from './i18n';
-export * from './parseCLIArgs'
+export * from './parseCLIArgs';
+export const getLogChannel = (guild: Guild) => guild.channels.cache.find(
+      value =>
+        ((value.name?.match(/^💡(-log(s|ging)?)?$/g) ||
+          (value as TextChannel).topic?.includes('--lightbulb-logs')) &&
+          value.type == 'text' &&
+          value
+            .permissionsFor(guild.me as GuildMember)
+            ?.has('SEND_MESSAGES')) ??
+        false
+    ) 

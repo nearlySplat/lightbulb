@@ -7,27 +7,19 @@ import {
   TextChannel,
   User,
 } from 'discord.js';
-import { createLogMessage, getCases } from '../util';
+import { createLogMessage, getCases, getLogChannel } from '../util';
 
 export const execute = async (client: Client, guild: Guild, user: User) => {
   if (!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
-  const channel = guild.channels.cache.find(
-      value =>
-        ((value.name?.match(/^💡(-log(s|ging)?)?$/g) ||
-          value.topic?.includes('--lightbulb-logs')) &&
-          value.type == 'text' &&
-          value
-            .permissionsFor(guild.me as GuildMember)
-            ?.has('SEND_MESSAGES')) ??
-        false
-    ) as TextChannel,
-    auditLogs = await guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' });
-  let auditLogEntry = auditLogs.entries.find(
+  let channel = getLogChannel(guild) as TextChannel,
+    auditLogs = await guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD', limit: 1 }),
+    auditLogEntry = auditLogs.entries.find(
     value =>
       value.action == 'MEMBER_BAN_ADD' &&
       (value.target as { id: Snowflake })?.id === user.id
   );
   while (!auditLogEntry) {
+    auditLogs = await guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD', limit: 1 });
     auditLogEntry = auditLogs.entries.find(
       value =>
         value.action == 'MEMBER_BAN_ADD' &&
