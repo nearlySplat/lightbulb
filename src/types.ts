@@ -7,15 +7,9 @@ import {
   Message,
   PermissionFlags,
   Snowflake,
-<<<<<<< Updated upstream
-=======
   StringResolvable,
   MessageEmbed,
   User,
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> cfd9101 (fix: this is the long-awaited merge)
 } from 'discord.js';
 
 export type Command = {
@@ -69,8 +63,6 @@ export interface WidgetSuccessfulResponse {
 }
 
 export type GuildLookupData = WidgetResponse | GuildPreview | null;
-<<<<<<< Updated upstream
-=======
 export interface SlashCommand {
   execute: SlashCommandExecute;
   meta: CommandMetadata;
@@ -114,7 +106,3 @@ export type SlashCommandResponse = {
     flags?: 64;
   };
 };
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> cfd9101 (fix: this is the long-awaited merge)
