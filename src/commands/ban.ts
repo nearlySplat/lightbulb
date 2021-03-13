@@ -5,7 +5,7 @@ import { get, interpolate } from '../util/i18n';
 import { ERROR_CODES, WHITELIST } from '../constants';
 export const execute: CommandExecute = async ({ message, args, locale }) => {
   if (!args[0]) return false;
-  if (!message.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
+  if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
     return false;
   const target = await message.client.users
     .fetch(args[0].replace(/(<@!?|>)/g, ''))
@@ -31,7 +31,7 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
     } catch (e) {
       message.channel.send(
         interpolate(get('GENERIC_ERROR', locale), {
-          code: ERROR_CODES.BAN_UNSUCCESSFUL,
+          code: ERROR_CODES.BAN_UNSUCCESSFUL.toString(),
           message: e,
         })
       );
@@ -43,7 +43,7 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
   if (member?.user.id === message.guild.ownerID) {
     message.channel.send(
       interpolate(get('GENERIC_ERROR', locale), {
-        code: ERROR_CODES.TARGET_IS_OWNER,
+        code: ERROR_CODES.TARGET_IS_OWNER.toString(),
         message: 'Target is owner',
       })
     );
@@ -55,7 +55,7 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
   ) {
     message.channel.send(
       interpolate(get('GENERIC_ERROR', locale), {
-        code: ERROR_CODES.DISALLOWED_TARGET,
+        code: ERROR_CODES.DISALLOWED_TARGET.toString(),
         message: 'Disallowed target',
       })
     );
@@ -64,7 +64,7 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
   if (member?.user.id === message.author.id) {
     message.channel.send(
       interpolate(get('GENERIC_ERROR', locale), {
-        code: ERROR_CODES.SELF_IS_MODERATION_TARGET,
+        code: ERROR_CODES.SELF_IS_MODERATION_TARGET.toString(),
         message: 'Self is moderation target',
       })
     );

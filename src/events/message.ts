@@ -1,5 +1,5 @@
 import { Client, GuildMember, Message, ClientUser, Guild } from 'discord.js';
-import { commands } from '..';
+import { commands, slashCommands } from '..';
 import { PREFIXES } from '../constants';
 import { Command, SlashCommandContext } from '../types';
 import { getAccessLevel, getCurrentLevel } from '../util';
@@ -67,6 +67,7 @@ export const execute = async (
         commandHandlerStarted: timeStarted,
         accessLevel: getCurrentLevel(message.member as GuildMember),
         locale: 'en_UK',
+	commandName
       });
     else return false;
   }

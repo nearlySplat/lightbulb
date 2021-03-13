@@ -4,10 +4,11 @@ import { config } from 'dotenv';
 import { readdirSync } from 'fs';
 import { join } from 'path';
 import { INTENTS } from './constants';
-import { Command } from './types';
+import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
 export const loggr = new CatLoggr();
 export const commands = loadFiles<Command>('../commands');
+export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
 const client = new Client({

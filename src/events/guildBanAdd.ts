@@ -12,14 +12,20 @@ import { createLogMessage, getCases, getLogChannel } from '../util';
 export const execute = async (client: Client, guild: Guild, user: User) => {
   if (!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
   let channel = getLogChannel(guild) as TextChannel,
-    auditLogs = await guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD', limit: 1 }),
+    auditLogs = await guild.fetchAuditLogs({
+      type: 'MEMBER_BAN_ADD',
+      limit: 1,
+    }),
     auditLogEntry = auditLogs.entries.find(
-    value =>
-      value.action == 'MEMBER_BAN_ADD' &&
-      (value.target as { id: Snowflake })?.id === user.id
-  );
+      value =>
+        value.action == 'MEMBER_BAN_ADD' &&
+        (value.target as { id: Snowflake })?.id === user.id
+    );
   while (!auditLogEntry) {
-    auditLogs = await guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD', limit: 1 });
+    auditLogs = await guild.fetchAuditLogs({
+      type: 'MEMBER_BAN_ADD',
+      limit: 1,
+    });
     auditLogEntry = auditLogs.entries.find(
       value =>
         value.action == 'MEMBER_BAN_ADD' &&

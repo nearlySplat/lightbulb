@@ -33,7 +33,13 @@ export const PURGE_HELP_BODY = `There are many features in this command.
                                 - \`purge regexp <regexp>\`: deletes messages matching that RegExp.
                                `.replace(/\n +/g, '\n');
 export const PURGE_HELP_HEADER = 'Purge Help';
-export const HELP_ARRIVED = 'Help has arrived!';
+export const HELP_ARRIVED = [
+  'Help has arrived!',
+  'Who ya gonna call? Light-busters!',
+  'Halp pls aaaaa',
+  'ok',
+  'fine...',
+];
 export const GENERIC_ERROR =
   'An error occurred! Code: `{{code}}`, message: `{{message}}`.';
 export const BAN_INSUFFICIENT_PERMISSIONS =
@@ -52,3 +58,20 @@ Many computer users run a modified version of the GNU system every day, without 
 There really is a {{text}}, and these people are using it, but it is just a part of the system they use. {{text}} is the kernel: the program in the system that allocates the machine's resources to the other programs that you run. The kernel is an essential part of an operating system, but useless by itself; it can only function in the context of a complete operating system. {{text}} is normally used in combination with the GNU operating system: the whole system is basically GNU with {{text}} added, or GNU/{{text}}. All the so-called {{text}} distributions are really distributions of GNU/{{text}}!
 `;
 export const STALLMAN_HEADER = 'Stallman GNU Copy-pasta';
+export const WHATGENDERAMI = [
+  'unicorn',
+  'attack helicopter',
+  'emerald',
+  'you!',
+  'cutie',
+  'cool person',
+  '\\*forgets about the conversation and hugs you*',
+  'h',
+  'diamond',
+  'ruby',
+  'gem',
+  'person'
+];
+export const WHATGENDERAMI_USE_I = "Use `whatgenderami` instead!";
+export const WHATGENDERARETHEY = ({ target, gender }:  { target: string; gender: string; }) => `${target} is ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
+export const WHATGENDERAMI_TEXT = ({ gender }:  { target: string; gender: string; }) => `You are ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;

@@ -26,10 +26,11 @@ export const get = (key: string, locale = 'en_UK'): string => {
 };
 
 export const interpolate = (
-  str: string,
+  str: string | ((obj: Object) => string),
   obj: Record<string, string>
 ): string => {
-  for (const [prop, val] of Object.entries(obj)) {
+  if (typeof str === "function") return str(obj);
+  else for (const [prop, val] of Object.entries(obj)) {
     str = str.replace(new RegExp(`{{${prop}}}`, 'g'), val);
   }
   return str;

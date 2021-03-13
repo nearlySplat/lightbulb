@@ -13,10 +13,10 @@ export const execute = async (client: Client, { guild, user }: GuildMember) => {
   let channel = getLogChannel(guild) as TextChannel,
     auditLogs = await guild.fetchAuditLogs({ type: 'MEMBER_KICK' }),
     auditLogEntry = auditLogs.entries.find(
-    value =>
-      value.action == 'MEMBER_KICK' &&
-      (value.target as { id: Snowflake })?.id === user.id
-  );
+      value =>
+        value.action == 'MEMBER_KICK' &&
+        (value.target as { id: Snowflake })?.id === user.id
+    );
   if (!auditLogEntry) return;
   if (channel) {
     const result = createLogMessage({
