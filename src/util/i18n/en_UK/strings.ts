@@ -70,8 +70,19 @@ export const WHATGENDERAMI = [
   'diamond',
   'ruby',
   'gem',
-  'person'
+  'person',
 ];
-export const WHATGENDERAMI_USE_I = "Use `whatgenderami` instead!";
-export const WHATGENDERARETHEY = ({ target, gender }:  { target: string; gender: string; }) => `${target} is ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
-export const WHATGENDERAMI_TEXT = ({ gender }:  { target: string; gender: string; }) => `You are ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
+export const WHATGENDERAMI_USE_I = 'Use `whatgenderami` instead!';
+export const WHATGENDERARETHEY = ({
+  target,
+  gender,
+}: {
+  target: string;
+  gender: string;
+}) => `${target} is ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
+export const WHATGENDERAMI_TEXT = ({
+  gender,
+}: {
+  target: string;
+  gender: string;
+}) => `You are ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;

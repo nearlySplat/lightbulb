@@ -1,7 +1,7 @@
 import { Intents } from 'discord.js';
 
 // TODO(nearlySplat): add more constants
-export const PREFIXES = ['💡', '!', 'bulb', 'pls'];
+export const PREFIXES = ['💡', 'bulb', 'pls'];
 export const WHITELIST = ['728342296696979526', '606279329844035594'];
 export const __prod__ = process.env.NODE_ENV === 'production';
 export const INTENTS = [

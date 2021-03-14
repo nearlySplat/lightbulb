@@ -1,5 +1,5 @@
 import { Guild, GuildMember, TextChannel } from 'discord.js';
-import {get as _get} from "lodash";
+import { get as _get } from 'lodash';
 
 export * from './createLogMessage';
 export * from './loadFiles';
@@ -34,14 +34,13 @@ export const getLogChannel = (guild: Guild) =>
       false
   );
 
-export const getMember = (guild: Guild, target: string) => [
-  "user.id", 
-  "user.tag", 
-  "displayName", 
-  "user.username"
-].map(pre => 
-  guild.members.cache.find(v => 
-    (_get(v, pre).toLowerCase?.() ?? 
-     _get(v, pre).toString().toLowerCase()) === target.toLowerCase())
-  )
-  .filter(v => !!v)[0]
+export const getMember = (guild: Guild, target: string) =>
+  ['user.id', 'user.tag', 'displayName', 'user.username']
+    .map(pre =>
+      guild.members.cache.find(
+        v =>
+          (_get(v, pre).toLowerCase?.() ??
+            _get(v, pre).toString().toLowerCase()) === target.toLowerCase()
+      )
+    )
+    .filter(v => !!v)[0];

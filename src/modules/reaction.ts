@@ -3,6 +3,7 @@ import { Client, MessageReaction, User } from 'discord.js';
 export const selfStarShaming = {
   emitter: 'on',
   eventName: 'messageReactionAdd',
+  guildablePath: 'params[0].message.guild.id',
   execute: async (
     client: Client,
     reaction: MessageReaction,

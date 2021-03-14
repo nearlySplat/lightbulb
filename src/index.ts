@@ -6,6 +6,7 @@ import { join } from 'path';
 import { INTENTS } from './constants';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
+import { guilds as guildConfig } from './modules/config.json';
 export const loggr = new CatLoggr();
 export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
@@ -45,6 +46,7 @@ type LightbulbModule = {
   execute: (client: Client, ...params: any[]) => boolean | Promise<boolean>;
   name: string;
   emitter: 'on' | 'once';
+  guildablePath: string;
 };
 
 for (const [, modules] of loadFiles<Record<string, LightbulbModule>>(
@@ -53,7 +55,20 @@ for (const [, modules] of loadFiles<Record<string, LightbulbModule>>(
   for (const [name, value] of Object.entries(modules)) {
     console.log(name, value);
     client[value.emitter](value.eventName, (...params) => {
-      loggr.debug('m e r');
+      // @ts-ignore
+      if (
+        !(
+          eval(value.guildablePath) in guildConfig ||
+          guildConfig[
+            eval(value.guildablePath) as string
+          ]?.enabledModules.includes('reaction.selfStarShaming') ||
+          (guildConfig[eval(value.guildablePath) as string] as Record<
+            'enabledModules',
+            string[]
+          >)?.enabledModules.includes('reaction.*')
+        )
+      )
+        return;
       value.execute(client, ...params);
     });
     console.log(`Loaded module ${name}`);
@@ -90,8 +105,7 @@ client.on('raw', packet => {
         reaction,
         client.users.cache.get(packet.d.user_id) as User
       );
-    }
-    if (packet.t === 'MESSAGE_REACTION_REMOVE') {
+    } else if (packet.t === 'MESSAGE_REACTION_REMOVE') {
       client.emit(
         'messageReactionRemove',
         reaction,

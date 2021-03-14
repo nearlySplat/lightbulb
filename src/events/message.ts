@@ -9,6 +9,8 @@ export const execute = async (
   message: Message
 ): Promise<boolean> => {
   if (!message.guild || !message.member) return false;
+  const isKsIn = !!(await message.guild!.members.fetch("236726289665490944").catch(() => null))
+  // console.log(isKsIn)
   async function handleCommand(
     prefix: string,
     isExclamation = false
@@ -75,7 +77,7 @@ export const execute = async (
     `<@${(client.user as ClientUser).id}>`,
     `<@!${client.user!.id}>`,
     ...PREFIXES,
-  ])
+  ].filter(v => v !== 'pls' || !isKsIn))
     handleCommand(prefix, prefix === '!');
   return true;
 };

@@ -29,10 +29,11 @@ export const interpolate = (
   str: string | ((obj: Object) => string),
   obj: Record<string, string>
 ): string => {
-  if (typeof str === "function") return str(obj);
-  else for (const [prop, val] of Object.entries(obj)) {
-    str = str.replace(new RegExp(`{{${prop}}}`, 'g'), val);
-  }
+  if (typeof str === 'function') return str(obj);
+  else
+    for (const [prop, val] of Object.entries(obj)) {
+      str = str.replace(new RegExp(`{{${prop}}}`, 'g'), val);
+    }
   return str;
 };
 

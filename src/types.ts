@@ -14,7 +14,7 @@ import {
 
 export type Command = {
   execute: CommandExecute;
-  meta?: CommandMetadata;
+  meta: CommandMetadata;
 };
 
 export type CommandExecute = (context: Context) => boolean | Promise<boolean>;
@@ -35,7 +35,7 @@ export interface CommandMetadata {
   description: string;
   aliases: string[];
   userPermissions?: (keyof PermissionFlags)[] | bigint[];
-  accessLevel: keyof AccessLevels | number;
+  accessLevel: keyof AccessLevels | 0 | 1 | 2 | 3;
   hidden?: boolean;
   scope?: 'guild' | 'dm' | 'slashMutualGuild' | 'any';
 }
