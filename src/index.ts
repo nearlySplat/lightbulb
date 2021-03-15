@@ -47,6 +47,7 @@ type LightbulbModule = {
   name: string;
   emitter: 'on' | 'once';
   guildablePath: string;
+  restricted: boolean;
 };
 
 for (const [, modules] of loadFiles<Record<string, LightbulbModule>>(
@@ -57,6 +58,7 @@ for (const [, modules] of loadFiles<Record<string, LightbulbModule>>(
     client[value.emitter](value.eventName, (...params) => {
       // @ts-ignore
       if (
+        value.restricted &&
         !(
           eval(value.guildablePath) in guildConfig ||
           guildConfig[

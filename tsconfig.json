@@ -13,7 +13,8 @@
     "module": "CommonJS",
     "experimentalDecorators": true,
     "strictNullChecks": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "esModuleInterop": true
   },
   "include": ["src/**/*"],
   "compileOnSave": false,

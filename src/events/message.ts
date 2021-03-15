@@ -9,7 +9,9 @@ export const execute = async (
   message: Message
 ): Promise<boolean> => {
   if (!message.guild || !message.member) return false;
-  const isKsIn = !!(await message.guild!.members.fetch("236726289665490944").catch(() => null))
+  const isKsIn = !!(await message
+    .guild!.members.fetch('236726289665490944')
+    .catch(() => null));
   // console.log(isKsIn)
   async function handleCommand(
     prefix: string,
@@ -69,7 +71,7 @@ export const execute = async (
         commandHandlerStarted: timeStarted,
         accessLevel: getCurrentLevel(message.member as GuildMember),
         locale: 'en_UK',
-	commandName
+        commandName,
       });
     else return false;
   }

@@ -18,7 +18,8 @@ export const execute: CommandExecute = ({
             getCurrentLevel(message.member as GuildMember) >=
             getAccessLevel(v.meta.accessLevel)
         )
-        .map(({ meta: { name, description } }) => name + ' - ' + description), { code: 'md' }
+        .map(({ meta: { name, description } }) => name + ' - ' + description),
+      { code: 'md' }
     );
   else message.channel.send('Use `help` for specific command information');
   return true;
