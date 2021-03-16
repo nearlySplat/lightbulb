@@ -13,12 +13,12 @@ export const splatMarkov = {
       .readFileSync(path.join(__dirname, 'markov.txt'), 'utf-8')
       .split(EOL);
     if (
-      !message.content.match(/^splat(t(er(xl)?)?)?pls/) &&
+      !message.content.match(/^splat ?pls/) &&
       message.author.id !== '728342296696979526'
     )
       return false;
     else if (
-      !message.content.match(/^splat(t(er(xl)?)?)?pls/) &&
+      !message.content.match(/^splat ?pls/) &&
       message.author.id === '728342296696979526'
     ) {
       if (
@@ -32,9 +32,9 @@ export const splatMarkov = {
       console.log('written kek');
       return true;
     }
-    console.log(markov);
     const words = markov.reduce((a, b) => a + ' ' + b).split(/ +/);
-    if (message.content.match(/\S+/g)?.[1] === 'analyze') {
+    const args = message.content.replace(/^splat ?pls ?/g, '').split(/\s+/)
+    if (args[0] === 'analyze') {
       const upObj = (o: { [k in string]: number }) => {
         for (const word of words) o[word] = o[word] ? o[word] + 1 : 1;
         return o;
@@ -50,8 +50,8 @@ export const splatMarkov = {
        const conv = (o: T) => Object.entries(o).sort(([,a], [,b]) => b - a).slice(0, 3).map(([K,V]) => `${K} (\`${V}\`)`).join(", ")
        message.channel.send(`Analyzed markov!\n\nMost common words: ${conv(dict.words)}.\nMost common start of sentences: ${conv(dict.starts)}.\nMost common end of senteces: ${conv(dict.ends)}`)
        return true;
-    }
-    let getWord = () => words[Math.floor(Math.random() * words.length)],
+    } else if (args[0] === "count") return message.channel.send(markov.length + " messages collected").then(() => true);
+    let getWord = () => markov.map(v => v.match("\\S+")?.[0] ?? v)[Math.floor(Math.random() * markov.length)],
       word = message.content.match(/\S+/g)?.[1] ?? getWord(),
       text = word;
     const averArr: number[] = [];
@@ -64,7 +64,11 @@ export const splatMarkov = {
       ) + 1;
     let num = getNum();
     while (num <= 3) num = getNum();
-    if (!markov.some(v => v.match(new RegExp(`\\b${word}\\b`)))) {
+    console.log(word)
+    if (!markov.some(v => v.match(new RegExp(`\\b${word.replace(
+                /[()\][\/\$\^\*\+\?]/g,
+                v => '\\' + v
+              )}\\b`)))) {
       message.channel.send("They've never said that, sorry...");
       return false;
     }
