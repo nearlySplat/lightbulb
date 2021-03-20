@@ -4,6 +4,7 @@ export const selfStarShaming = {
   emitter: 'on',
   eventName: 'messageReactionAdd',
   guildablePath: 'params[0].message.guild.id',
+  restricted: true,
   execute: async (
     client: Client,
     reaction: MessageReaction,
