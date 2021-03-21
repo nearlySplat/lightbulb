@@ -44,7 +44,7 @@ export const GENERIC_ERROR =
   'An error occurred! Code: `{{code}}`, message: `{{message}}`.';
 export const BAN_INSUFFICIENT_PERMISSIONS =
   "One of us doesn't have the required permissions to ban `{{target}}`";
-export const BAN_SUCCESSFUL = '***🔨 {{target}} was successfully banned.***';
+export const BAN_SUCCESSFUL = '🔨 **{{target}}** was successfully banned.';
 export const MEMBERCOUNT_TEXT = `**__{{guild}}__**
                                 {{guild}} has \`{{count}}\` members.s
                                 `.replace(/\n +/g, '\n');
@@ -86,3 +86,4 @@ export const WHATGENDERAMI_TEXT = ({
   target: string;
   gender: string;
 }) => `You are ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
+export const UNBAN_SUCCESSFUL = "🔧 **{{target}}** was successfully unbanned. They were previously banned for: \n```md\n{{bannedFor}}\n```"
