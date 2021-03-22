@@ -62,7 +62,13 @@ export const execute = async (
         getAccessLevel(command.meta.accessLevel as 0 | 1 | 2 | 3)
     )
       return false;
-    let paramInstance = await CommandParameters.from(command.meta, args);
+    let paramInstance;
+    try {
+      paramInstance = await CommandParameters.from(command.meta, args);
+    } catch (e) {
+      CommandParameters.triggerError(message.channel.send, e)
+      return false;
+    }
     if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation)
       return command.execute({
         client,

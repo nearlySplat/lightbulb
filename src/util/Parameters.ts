@@ -87,6 +87,12 @@ export class CommandParameters implements PrimitiveArray {
       );
     this._data = { arr };
   }
+  static triggerError(fn: (s: string) => any | void, s: [string, string]) {
+    return fn(CommandParameters._getErrorMsg(...s));
+  }
+  static _getErrorMsg(param:string,message?:string) {
+    return `<:badboi:804856457798615090> Error for parameter \`${param}\`: \`\`\`md\n${message || "Incorrect type"}\n\`\`\``  
+  }
   static getType(str: string): ParameterType {
     if (isNaN(parseFloat(str)))
       if (['true', 'false'].includes(str.toLowerCase())) return 'bool';
@@ -111,9 +117,7 @@ export class CommandParameters implements PrimitiveArray {
     instance.parseData(Array.isArray(args) ? args.join(' ') : args);
     const checkResult = instance.checkTypes();
     if (Object.values(checkResult.errs)[0])
-      throw Object.entries(checkResult.errs).map(
-        ([k, v]) => `Error for argument ${k}: ${v}`
-      )[0];
+      throw Object.entries(checkResult.errs)[0];
     else return instance;
   }
   public data: Record<string, string> | null = null;
