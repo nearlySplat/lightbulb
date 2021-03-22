@@ -11,6 +11,7 @@ import {
   MessageEmbed,
   User,
 } from 'discord.js';
+import { CommandParameters, Parameter } from './util';
 
 export type Command = {
   execute: CommandExecute;
@@ -21,7 +22,7 @@ export type CommandExecute = (context: Context) => boolean | Promise<boolean>;
 
 export interface Context {
   client: Client;
-  args: string[];
+  args: string[] | CommandParameters;
   message: Message & { guild: Guild; member: GuildMember };
   commands: Collection<string, Command>;
   commandHandlerStarted: number;
@@ -38,6 +39,7 @@ export interface CommandMetadata {
   accessLevel: keyof AccessLevels | 0 | 1 | 2 | 3;
   hidden?: boolean;
   scope?: 'guild' | 'dm' | 'slashMutualGuild' | 'any';
+  params?: Parameter[];
 }
 
 export interface AccessLevels {

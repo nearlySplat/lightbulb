@@ -2,7 +2,7 @@ import { Client, GuildMember, Message, ClientUser, Guild } from 'discord.js';
 import { commands, slashCommands } from '..';
 import { PREFIXES } from '../constants';
 import { Command, SlashCommandContext } from '../types';
-import { getAccessLevel, getCurrentLevel } from '../util';
+import { CommandParameters, getAccessLevel, getCurrentLevel } from '../util';
 
 export const execute = async (
   client: Client,
@@ -62,11 +62,12 @@ export const execute = async (
         getAccessLevel(command.meta.accessLevel as 0 | 1 | 2 | 3)
     )
       return false;
+    let paramInstance = await CommandParameters.from(command.meta, args);
     if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation)
       return command.execute({
         client,
         message: message as Message & { member: GuildMember; guild: Guild },
-        args,
+        args: paramInstance,
         commands,
         commandHandlerStarted: timeStarted,
         accessLevel: getCurrentLevel(message.member as GuildMember),
