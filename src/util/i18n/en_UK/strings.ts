@@ -86,4 +86,5 @@ export const WHATGENDERAMI_TEXT = ({
   target: string;
   gender: string;
 }) => `You are ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
-export const UNBAN_SUCCESSFUL = "🔧 **{{target}}** was successfully unbanned. They were previously banned for: \n```md\n{{bannedFor}}\n```"
+export const UNBAN_SUCCESSFUL =
+  '🔧 **{{target}}** was successfully unbanned. They were previously banned for: \n```md\n{{bannedFor}}\n```';

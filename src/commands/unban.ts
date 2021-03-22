@@ -10,19 +10,22 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
     .fetch(args[0].replace(/(<@!?|>)/g, ''))
     .catch(() => null);
   if (!target) return false;
-  const banInfo = await message.guild.fetchBan(target.id).catch(() => null)
+  const banInfo = await message.guild.fetchBan(target.id).catch(() => null);
   const unban = async () => {
     try {
       await message.guild.members
-        .unban(target.id, 
+        .unban(
+          target.id,
           `[ ${message.author.tag} ]: ${
-            args.slice(1).join(' ') ||
-            `No reason provided.`
-	  }`
+            args.slice(1).join(' ') || `No reason provided.`
+          }`
         )
         .then(() => {
           message.channel.send(
-            interpolate(get('UNBAN_SUCCESSFUL', locale), { target: target.tag, bannedFor: banInfo!.reason })
+            interpolate(get('UNBAN_SUCCESSFUL', locale), {
+              target: target.tag,
+              bannedFor: banInfo!.reason,
+            })
           );
         });
     } catch (e) {
@@ -36,14 +39,13 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
   };
   if (banInfo) {
     unban();
-  }
-  else if (!banInfo) {
+  } else if (!banInfo) {
     message.channel.send(
       interpolate(get('GENERIC_ERROR', locale), {
         code: ERROR_CODES.UNBAN_NOT_BANNED.toString(),
-	message: "Target is not banned from the guild",
+        message: 'Target is not banned from the guild',
       })
-    )
+    );
     return false;
   }
   return true;
