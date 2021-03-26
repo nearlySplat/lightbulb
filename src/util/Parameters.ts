@@ -21,7 +21,7 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
       // @ts-ignore
       this[index] = value;
     if (Object.values(obj).filter(v => v !== "").length < this._data.arr.filter(v => !v.optional).length) throw {_name:"SIZE_NOT_SATISFIED"}
-    return Object.fromEntries(Object.entries(obj).filter(([,V]) => V !== ""));
+    return obj
   }
   get length(): number {
     return [...this].length
