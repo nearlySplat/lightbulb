@@ -120,6 +120,7 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
         name: 'args',
         type: 'string',
         rest: true,
+        optional: true
       });
     }
     instance.parseData(Array.isArray(args) ? args.join(' ') : args);
