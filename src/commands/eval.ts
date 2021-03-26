@@ -2,7 +2,6 @@ import { inspect } from 'util';
 import { WHITELIST } from '../constants';
 import { CommandMetadata, Context } from '../types';
 import { transpile } from 'typescript';
-import { ESLint } from 'eslint';
 export const execute = async ({ message, args }: Context): Promise<boolean> => {
   if (!WHITELIST.includes(message.author.id)) return true;
   const raw = args.join(' ');
@@ -46,7 +45,7 @@ export const execute = async ({ message, args }: Context): Promise<boolean> => {
           depth: 0,
         }) as string & { name: string });
   message.channel.send(
-    output?.slice(0, 1850) + `\nTypeof [${type}] => ${output?.length}` ??
+    (output?.slice(0, 1850) + "\nTypeof ["+type+"] => "+output?.length) ??
       'No output.',
     {
       code: 'js',
@@ -60,4 +59,9 @@ export const meta: CommandMetadata = {
   description: 'Evaluate JavaScript code.',
   accessLevel: 3,
   aliases: [],
+  params: [{
+    name: "code",
+    type: "string",
+    rest: true
+  }]
 };

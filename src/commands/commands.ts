@@ -30,4 +30,10 @@ export const meta: CommandMetadata = {
   description: 'Lists the commands of the bot.',
   accessLevel: 0,
   aliases: [],
+  params: [{
+    name: "args",
+    type: "string",
+    rest: true,
+    optional: true
+  }]
 };

@@ -64,9 +64,12 @@ export const execute = async (
       return false;
     let paramInstance;
     try {
-      paramInstance = await CommandParameters.from(command.meta, args);
+      paramInstance = await CommandParameters.from<string>(command.meta, args);
     } catch (e) {
-      CommandParameters.triggerError(message.channel.send, e)
+      CommandParameters.triggerError(
+        message.channel.send.bind(message.channel),
+        e
+      );
       return false;
     }
     if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation)

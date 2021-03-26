@@ -1,5 +1,5 @@
 import CatLoggr from 'cat-loggr/ts';
-import { Client, WSEventType, User, TextChannel } from 'discord.js';
+import { Client, WSEventType, User, TextChannel, Snowflake } from 'discord.js';
 import { config } from 'dotenv';
 import { readdirSync } from 'fs';
 import { join } from 'path';
@@ -12,6 +12,12 @@ export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
+const moduleConfig: {
+    [k in Snowflake]: {
+      enabledModules: string[];
+      staffRole?: Snowflake
+    }
+} = guildConfig
 const client = new Client({
   allowedMentions: { users: [], roles: [], parse: [], repliedUser: false },
   presence: {
@@ -50,7 +56,7 @@ type LightbulbModule = {
   restricted: boolean;
 };
 
-for (const [, modules] of loadFiles<Record<string, LightbulbModule>>(
+for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
   '../modules'
 )) {
   for (const [name, value] of Object.entries(modules)) {
@@ -61,13 +67,13 @@ for (const [, modules] of loadFiles<Record<string, LightbulbModule>>(
         value.restricted &&
         !(
           eval(value.guildablePath) in guildConfig ||
-          guildConfig[
+          moduleConfig[
             eval(value.guildablePath) as string
-          ]?.enabledModules.includes('reaction.selfStarShaming') ||
-          (guildConfig[eval(value.guildablePath) as string] as Record<
+          ]?.enabledModules.includes(`${filename}.${name}`) ||
+          (moduleConfig[eval(value.guildablePath) as string] as Record<
             'enabledModules',
             string[]
-          >)?.enabledModules.includes('reaction.*')
+          >)?.enabledModules.includes(`${filename}.*`)
         )
       )
         return;

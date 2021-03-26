@@ -44,3 +44,5 @@ export const getMember = (guild: Guild, target: string) =>
       )
     )
     .filter(v => !!v)[0];
+
+export const toProperCase = (str: string) => str.replace(/\b\w/g, v => v.toUpperCase())

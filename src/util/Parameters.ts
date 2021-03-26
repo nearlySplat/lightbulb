@@ -1,6 +1,6 @@
 import { CommandMetadata } from '../types';
 
-export class CommandParameters implements PrimitiveArray {
+export class CommandParameters<T extends string> implements PrimitiveArray {
   [key: number]: string;
   private _data: ParametersData;
   parseData(str: string) {
@@ -17,10 +17,14 @@ export class CommandParameters implements PrimitiveArray {
       obj[(parameter as Parameter).name] = value;
     }
     this.data = obj;
-    // @ts-ignore
     for (const [index, value] of Object.values(obj).map((v, i) => [i, v]))
+      // @ts-ignore
       this[index] = value;
-    return obj;
+    if (Object.values(obj).filter(v => v !== "").length < this._data.arr.filter(v => !v.optional).length) throw {_name:"SIZE_NOT_SATISFIED"}
+    return Object.fromEntries(Object.entries(obj).filter(([,V]) => V !== ""));
+  }
+  get length(): number {
+    return [...this].length
   }
   checkTypes(obj: Record<string, any> = this.data as Record<string, string>) {
     const _data = this._data.arr;
@@ -38,7 +42,10 @@ export class CommandParameters implements PrimitiveArray {
       value = value as string;
       index = index as number;
       data = data as ParameterType;
-      switch (data) {
+      if (_data[index].options) {
+        if (!_data[index].options!.includes(value)) errs[_data[index].name] = `Expected one of options ${_data[index].options!.join(", ")}, but recieved ${value}.` as const;
+	else successes.push(_data[index].name)
+      } else if (value === "") {} else switch (data) {
         case 'string':
           successes.push(_data[index].name);
           break;
@@ -87,11 +94,12 @@ export class CommandParameters implements PrimitiveArray {
       );
     this._data = { arr };
   }
-  static triggerError(fn: (s: string) => any | void, s: [string, string]) {
-    return fn(CommandParameters._getErrorMsg(...s));
+  static triggerError(fn: (s: string) => any | void, s: [string, string] | { _name: "SIZE_NOT_SATISFIED" }) {
+    return fn(CommandParameters._getErrorMsg(Array.isArray(s) ? s[0] : s, Array.isArray(s) ? s[1] : undefined));
   }
-  static _getErrorMsg(param:string,message?:string) {
-    return `<:badboi:804856457798615090> Error for parameter \`${param}\`: \`\`\`md\n${message || "Incorrect type"}\n\`\`\``  
+  static _getErrorMsg(param:string | {_name: "SIZE_NOT_SATISFIED"},message?:string) {
+    // @ts-ignore
+    return param._name === "SIZE_NOT_SATISFIED" ? "Not enough parameters passed. Refer to `help <command>` for details." :  `Error for parameter \`${param}\`: \`\`\`md\n${message || "Incorrect type"}\n\`\`\``  
   }
   static getType(str: string): ParameterType {
     if (isNaN(parseFloat(str)))
@@ -100,10 +108,10 @@ export class CommandParameters implements PrimitiveArray {
     else if (parseFloat(str).toString().includes('.')) return 'float';
     else return 'int';
   }
-  static async from(
+  static async from<T extends string>(
     meta: CommandMetadata,
     args: string | string[]
-  ): Promise<CommandParameters> {
+  ): Promise<CommandParameters<T>> {
     let instance;
     if (meta && meta.params) {
       instance = new CommandParameters(...meta.params);
@@ -115,12 +123,17 @@ export class CommandParameters implements PrimitiveArray {
       });
     }
     instance.parseData(Array.isArray(args) ? args.join(' ') : args);
-    const checkResult = instance.checkTypes();
-    if (Object.values(checkResult.errs)[0])
-      throw Object.entries(checkResult.errs)[0];
+    let checkResult: {
+      errs: Record<string, string>,
+      successes: string[]
+    }
+    console.log(instance.data, instance._data.arr.length)
+    checkResult = instance.checkTypes();
+    if (Object.values(checkResult!.errs)[0])
+      throw Object.entries(checkResult!.errs)[0];
     else return instance;
   }
-  public data: Record<string, string> | null = null;
+  public data!: Record<T, string>;
   *[Symbol.iterator]() {
     for (const v of Object.entries(this)
       .filter(([K]) => !isNaN(parseInt(K)))
@@ -145,11 +158,13 @@ export type Parameter = {
   name: string;
   type: ParameterType;
   rest?: boolean;
+  optional?: boolean;
+  options?: string[];
 };
 
 type ParameterType = 'int' | 'float' | 'string' | 'bool';
 
-type ParameterTypeCheckingError = `Expected type ${ParameterType}, recieved ${ParameterType}`;
+type ParameterTypeCheckingError = `Expected type ${ParameterType}, recieved ${ParameterType}` | `Expected one of options ${any}, but recieved ${string}.`;
 
 interface PrimitiveArray {
   [k: number]: string;

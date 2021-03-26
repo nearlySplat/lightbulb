@@ -18,11 +18,11 @@ export type Command = {
   meta: CommandMetadata;
 };
 
-export type CommandExecute = (context: Context) => boolean | Promise<boolean>;
+export type CommandExecute<T extends string = string> = (context: Context<T>) => boolean | Promise<boolean>;
 
-export interface Context {
+export interface Context<T extends string = string> {
   client: Client;
-  args: string[] | CommandParameters;
+  args: CommandParameters<T>;
   message: Message & { guild: Guild; member: GuildMember };
   commands: Collection<string, Command>;
   commandHandlerStarted: number;

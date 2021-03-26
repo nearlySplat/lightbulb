@@ -1,10 +1,8 @@
-import { Collection, GuildMember, MessageEmbed, ClientUser } from 'discord.js';
-import { CLIENT_COLOUR } from '../constants';
-import { CommandExecute, CommandMetadata } from '../types';
-import { getAccessLevel, getCurrentLevel } from '../util';
+import {CommandExecute, CommandMetadata} from '../types';
+import { toProperCase } from '../util';
 import { get } from '../util/i18n';
 
-export const execute: CommandExecute = ({
+export const execute: CommandExecute<"commandName"> = ({
   message,
   locale,
   commands,
@@ -14,7 +12,7 @@ export const execute: CommandExecute = ({
   else
     message.channel.send(
       (commands.has(args[0])
-        ? commands.get(args[0])!.meta?.description
+        ? `\`\`\`ini\n${constructHelpCommand(commands.get(args.data!.commandName)!.meta)}\`\`\``
         : get('HELP_ARRIVED', locale)) ?? 'No data.'
     );
   return true;
@@ -25,4 +23,15 @@ export const meta: CommandMetadata = {
   description: 'Lists the commands of the bot.',
   accessLevel: 0,
   aliases: [],
+  params: [{
+      name: "commandName",
+      type: "string",
+      optional: true
+    }]
 };
+
+function constructHelpCommand(cmd: CommandMetadata) {
+  const data: [string, string][] = Object.entries(cmd).map<[string, any]>(([K,V]) => [toProperCase(K), V]).filter(([,V]) => typeof V === "string");
+  if (cmd.params) data.push(["Usage", cmd.params.map(v => `${v.optional ? "[" : "<"}${v.name} :: ${v.options ? v.options.map(v => `"${v}"`).join(" | ") : v.type}${v.optional ? "]" : ">"}`).join(" ")]);
+  return data.map(([K,V]) => `[${K}]: ${V}`).join("\n")
+}
