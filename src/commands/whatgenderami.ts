@@ -8,7 +8,7 @@ export const execute: CommandExecute = ({
   commandName,
   args,
 }) => {
-  if (!args.length && commandName === 'whatgenderami')
+  if (!args.data.user && commandName === 'whatgenderami')
     return message.channel
       .send(
         interpolate(get('WHATGENDERAMI_TEXT', locale), {
@@ -16,15 +16,15 @@ export const execute: CommandExecute = ({
         })
       )
       .then(() => true);
-  if (!args.length)
+  if (!args.data.user)
     return message.channel
       .send(get('WHATGENDERAMI_USE_I', locale))
       .then(() => false);
   else {
     const user =
-      getMember(message.guild, args.join(' '))?.user ?? args.join(' ');
+      getMember(message.guild, args.data.user)?.user ?? args.join(' ');
     // @ts-ignore
-    const target = (user.tag ?? args.join(' '))?.replace(
+    const target = (user.tag ?? args.data.user)?.replace(
       /^[^#]+/g,
       v => `**${v}**`
     );
@@ -43,4 +43,10 @@ export const meta: CommandMetadata = {
   description: 'what is your true gender',
   accessLevel: 0,
   aliases: ['whatgenderis'],
+  params: [{
+    name: "user",
+    type: "string",
+    optional: true,
+    rest: true
+  }]
 };
