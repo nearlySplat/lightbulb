@@ -6,7 +6,7 @@ export const execute = ({
   locale,
 }: Context): boolean | Promise<boolean> => {
   void message.reply(get('DIE_SUCCESS', locale));
-  setImmediate(() => process.exit());
+  setImmediate(() => process.exit(+args.data.code));
   return true;
 };
 
@@ -16,4 +16,11 @@ export const meta: CommandMetadata = {
   accessLevel: 3,
   aliases: [],
   hidden: true,
+  params: [
+    {
+      name: 'code',
+      type: 'int',
+      optional: true,
+    },
+  ],
 };

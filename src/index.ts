@@ -13,11 +13,11 @@ export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
 const moduleConfig: {
-    [k in Snowflake]: {
-      enabledModules: string[];
-      staffRole?: Snowflake
-    }
-} = guildConfig
+  [k in Snowflake]: {
+    enabledModules: string[];
+    staffRole?: Snowflake;
+  };
+} = guildConfig;
 const client = new Client({
   allowedMentions: { users: [], roles: [], parse: [], repliedUser: false },
   presence: {

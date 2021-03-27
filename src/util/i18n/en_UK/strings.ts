@@ -88,5 +88,6 @@ export const WHATGENDERAMI_TEXT = ({
 }) => `You are ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
 export const UNBAN_SUCCESSFUL =
   '🔧 **{{target}}** was successfully unbanned. They were previously banned for: \n```md\n{{bannedFor}}\n```';
-export const MESSAGEINFO_CHANNEL_NOT_FOUND = "No such channel could be found.";
-export const MESSAGEINFO_MESSAGE_NOT_FOUND = "No such message exists in this channel."
+export const MESSAGEINFO_CHANNEL_NOT_FOUND = 'No such channel could be found.';
+export const MESSAGEINFO_MESSAGE_NOT_FOUND =
+  'No such message exists in this channel.';

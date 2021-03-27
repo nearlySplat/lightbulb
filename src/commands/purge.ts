@@ -16,15 +16,27 @@ export const meta: CommandMetadata = {
   description: 'Clear messages from a chat. Run `purge help` for help.',
   name: 'purge',
   userPermissions: [Permissions.FLAGS.MANAGE_MESSAGES],
+  params: [
+    {
+      name: 'criteria',
+      type: 'string',
+      options: ['all', 'bots', 'help'],
+    },
+    {
+      name: 'amount',
+      type: 'int',
+      optional: true,
+    },
+  ],
 };
 
-export const execute: CommandExecute = async ctx => {
+export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
   let msgs: MsgsCollectionType = [ctx.message] as MsgsCollectionType;
 
-  msgs = (ctx.args[0] === 'help'
+  msgs = (ctx.args.data.criteria === 'help'
     ? []
     : await ctx.message.channel.messages.fetch({})) as MsgsCollectionType;
-  switch (ctx.args[0]) {
+  switch (ctx.args.data.criteria) {
     case 'help':
       const _ = new MessageEmbed()
         .setAuthor(get('PURGE_HELP_HEADER', ctx.locale))
@@ -51,7 +63,7 @@ export const execute: CommandExecute = async ctx => {
         msgs.array = function (): Message[] {
           return this as Message[];
         };
-      if (ctx.args[1])
+      if (ctx.args.data.amount)
         msgs = msgs
           .array()
           .reverse()
@@ -60,30 +72,16 @@ export const execute: CommandExecute = async ctx => {
       await ctx.message.delete();
       ctx.message.channel.bulkDelete(msgs);
       return true;
-    case 'regexp':
-      if (ctx.message.channel.type == 'dm' || !ctx.args[1]) return false;
-      else
-        ctx.message.channel = ctx.message.channel as TextChannel | NewsChannel;
-      msgs = msgs
-        .filter(
-          v =>
-            new RegExp(ctx.args.slice(1).join(' '), 'g').test(v.content) &&
-            Date.now() - v.createdTimestamp <= 1000 * 60 * 60 * 24 * 14
-        )
-        .sort(
-          (prev, curr) => prev.createdTimestamp - curr.createdTimestamp
-        ) as MsgsCollectionType;
-      await ctx.message.delete();
-      ctx.message.channel.bulkDelete(msgs);
-      return true;
-    default:
+
+    case 'all':
       if (ctx.message.channel.type === 'dm') return false;
-      if (!isNaN(parseInt(ctx.args[0]))) {
+      if (!isNaN(parseInt(ctx.args.data.amount))) {
         const amount = parseInt(ctx.args[0]);
         await ctx.message.delete();
         return ctx.message.channel.bulkDelete(amount).then(() => true);
       } else return false;
   }
+  return true;
 };
 
 type MsgsCollectionType = (Collection<string, Message> | Message[]) & {

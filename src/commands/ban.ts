@@ -1,14 +1,16 @@
 import { Permissions } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
-import { getCases } from '../util';
 import { get, interpolate } from '../util/i18n';
 import { ERROR_CODES, WHITELIST } from '../constants';
-export const execute: CommandExecute = async ({ message, args, locale }) => {
-  if (!args[0]) return false;
+export const execute: CommandExecute<'user' | 'reason'> = async ({
+  message,
+  args,
+  locale,
+}) => {
   if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
     return false;
   const target = await message.client.users
-    .fetch(args[0].replace(/(<@!?|>)/g, ''))
+    .fetch(args.data.user.replace(/(<@!?|>)/g, ''))
     .catch(() => null);
   if (!target) return false;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
@@ -17,10 +19,7 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
       await message.guild.members
         .ban(target.id, {
           reason: `[ ${message.author.tag} ]: ${
-            args.slice(1).join(' ') ||
-            `*responsible moderator, do \`reason ${
-              (await getCases(message.guild)) + 1
-            } <reason>\`*`
+            args.data.reason || `None provided`
           }`,
         })
         .then(() => {
@@ -94,4 +93,16 @@ export const meta: CommandMetadata = {
   accessLevel: 2,
   aliases: [],
   hidden: false,
+  params: [
+    {
+      name: 'user',
+      type: 'string',
+    },
+    {
+      name: 'reason',
+      type: 'string',
+      rest: true,
+      optional: true,
+    },
+  ],
 };

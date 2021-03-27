@@ -45,7 +45,7 @@ export const execute = async ({ message, args }: Context): Promise<boolean> => {
           depth: 0,
         }) as string & { name: string });
   message.channel.send(
-    (output?.slice(0, 1850) + "\nTypeof ["+type+"] => "+output?.length) ??
+    output?.slice(0, 1850) + '\nTypeof [' + type + '] => ' + output?.length ??
       'No output.',
     {
       code: 'js',
@@ -59,9 +59,11 @@ export const meta: CommandMetadata = {
   description: 'Evaluate JavaScript code.',
   accessLevel: 3,
   aliases: [],
-  params: [{
-    name: "code",
-    type: "string",
-    rest: true
-  }]
+  params: [
+    {
+      name: 'code',
+      type: 'string',
+      rest: true,
+    },
+  ],
 };

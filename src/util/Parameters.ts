@@ -16,15 +16,20 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
     for (const [parameter, value] of data) {
       obj[(parameter as Parameter).name] = value;
     }
+    obj = Object.fromEntries(Object.entries(obj).filter(([, V]) => V !== ''));
     this.data = obj;
+    // @ts-ignore
     for (const [index, value] of Object.values(obj).map((v, i) => [i, v]))
-      // @ts-ignore
       this[index] = value;
-    if (Object.values(obj).filter(v => v !== "").length < this._data.arr.filter(v => !v.optional).length) throw {_name:"SIZE_NOT_SATISFIED"}
-    return obj
+    if (
+      Object.values(obj).filter(v => v !== '').length <
+      this._data.arr.filter(v => !v.optional).length
+    )
+      throw { _name: 'SIZE_NOT_SATISFIED' };
+    return obj;
   }
   get length(): number {
-    return [...this].length
+    return [...this].length;
   }
   checkTypes(obj: Record<string, any> = this.data as Record<string, string>) {
     const _data = this._data.arr;
@@ -43,44 +48,49 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
       index = index as number;
       data = data as ParameterType;
       if (_data[index].options) {
-        if (!_data[index].options!.includes(value)) errs[_data[index].name] = `Expected one of options ${_data[index].options!.join(", ")}, but recieved ${value}.` as const;
-	else successes.push(_data[index].name)
-      } else if (value === "") {} else switch (data) {
-        case 'string':
-          successes.push(_data[index].name);
-          break;
-        case 'int':
-          if (
-            !isNaN(parseFloat(value)) &&
-            !parseFloat(value).toString().includes('.')
-          )
+        if (!_data[index].options!.includes(value))
+          errs[_data[index].name] = `Expected one of options ${_data[
+            index
+          ].options!.join(', ')}, but recieved ${value}.` as const;
+        else successes.push(_data[index].name);
+      } else if (value === '') {
+      } else
+        switch (data) {
+          case 'string':
             successes.push(_data[index].name);
-          else
-            errs[_data[index].name] = `Expected type ${
-              _data[index].type as ParameterType
-            }, recieved ${CommandParameters.getType(
-              value
-            )}` as ParameterTypeCheckingError;
-          break;
-        case 'float':
-          if (!isNaN(parseFloat(value))) successes.push(_data[index].name);
-          else
-            errs[_data[index].name] = `Expected type ${
-              _data[index].type
-            }, recieved ${CommandParameters.getType(
-              value
-            )}` as ParameterTypeCheckingError;
-          break;
-        case 'bool':
-          if (['true', 'false'].includes(value.toLowerCase()))
-            successes.push(_data[index].name);
-          else
-            errs[_data[index].name] = `Expected type ${
-              _data[index].type
-            }, recieved ${CommandParameters.getType(
-              value
-            )}` as ParameterTypeCheckingError;
-      }
+            break;
+          case 'int':
+            if (
+              !isNaN(parseFloat(value)) &&
+              !parseFloat(value).toString().includes('.')
+            )
+              successes.push(_data[index].name);
+            else
+              errs[_data[index].name] = `Expected type ${
+                _data[index].type as ParameterType
+              }, recieved ${CommandParameters.getType(
+                value
+              )}` as ParameterTypeCheckingError;
+            break;
+          case 'float':
+            if (!isNaN(parseFloat(value))) successes.push(_data[index].name);
+            else
+              errs[_data[index].name] = `Expected type ${
+                _data[index].type
+              }, recieved ${CommandParameters.getType(
+                value
+              )}` as ParameterTypeCheckingError;
+            break;
+          case 'bool':
+            if (['true', 'false'].includes(value.toLowerCase()))
+              successes.push(_data[index].name);
+            else
+              errs[_data[index].name] = `Expected type ${
+                _data[index].type
+              }, recieved ${CommandParameters.getType(
+                value
+              )}` as ParameterTypeCheckingError;
+        }
     }
     return { successes, errs };
   }
@@ -94,12 +104,27 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
       );
     this._data = { arr };
   }
-  static triggerError(fn: (s: string) => any | void, s: [string, string] | { _name: "SIZE_NOT_SATISFIED" }) {
-    return fn(CommandParameters._getErrorMsg(Array.isArray(s) ? s[0] : s, Array.isArray(s) ? s[1] : undefined));
+  static triggerError(
+    fn: (s: string) => any | void,
+    s: [string, string] | { _name: 'SIZE_NOT_SATISFIED' }
+  ) {
+    return fn(
+      CommandParameters._getErrorMsg(
+        Array.isArray(s) ? s[0] : s,
+        Array.isArray(s) ? s[1] : undefined
+      )
+    );
   }
-  static _getErrorMsg(param:string | {_name: "SIZE_NOT_SATISFIED"},message?:string) {
+  static _getErrorMsg(
+    param: string | { _name: 'SIZE_NOT_SATISFIED' },
+    message?: string
+  ) {
     // @ts-ignore
-    return param._name === "SIZE_NOT_SATISFIED" ? "Not enough parameters passed. Refer to `help <command>` for details." :  `Error for parameter \`${param}\`: \`\`\`md\n${message || "Incorrect type"}\n\`\`\``  
+    return param._name === 'SIZE_NOT_SATISFIED'
+      ? 'Not enough parameters passed. Refer to `help <command>` for details.'
+      : `Error for parameter \`${param}\`: \`\`\`md\n${
+          message || 'Incorrect type'
+        }\n\`\`\``;
   }
   static getType(str: string): ParameterType {
     if (isNaN(parseFloat(str)))
@@ -125,10 +150,10 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
     }
     instance.parseData(Array.isArray(args) ? args.join(' ') : args);
     let checkResult: {
-      errs: Record<string, string>,
-      successes: string[]
-    }
-    console.log(instance.data, instance._data.arr.length)
+      errs: Record<string, string>;
+      successes: string[];
+    };
+    console.log(instance.data, instance._data.arr.length);
     checkResult = instance.checkTypes();
     if (Object.values(checkResult!.errs)[0])
       throw Object.entries(checkResult!.errs)[0];
@@ -165,7 +190,9 @@ export type Parameter = {
 
 type ParameterType = 'int' | 'float' | 'string' | 'bool';
 
-type ParameterTypeCheckingError = `Expected type ${ParameterType}, recieved ${ParameterType}` | `Expected one of options ${any}, but recieved ${string}.`;
+type ParameterTypeCheckingError =
+  | `Expected type ${ParameterType}, recieved ${ParameterType}`
+  | `Expected one of options ${any}, but recieved ${string}.`;
 
 interface PrimitiveArray {
   [k: number]: string;

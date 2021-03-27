@@ -22,3 +22,4 @@ export enum ERROR_CODES {
   UNBAN_NOT_BANNED,
 }
 export const ERROR_MESSAGES = Object.keys(ERROR_CODES);
+export const PAGINATION_REACTIONS = ['⬅️', '◀️', '⏹', '▶️', '➡️'];

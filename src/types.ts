@@ -18,7 +18,9 @@ export type Command = {
   meta: CommandMetadata;
 };
 
-export type CommandExecute<T extends string = string> = (context: Context<T>) => boolean | Promise<boolean>;
+export type CommandExecute<T extends string = string> = (
+  context: Context<T>
+) => boolean | Promise<boolean>;
 
 export interface Context<T extends string = string> {
   client: Client;
