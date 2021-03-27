@@ -1,5 +1,5 @@
 import { CommandExecute, CommandMetadata } from '../types';
-import { toProperCase } from '../util';
+import { accessLevels, getAccessLevel, toProperCase } from '../util';
 import { get } from '../util/i18n';
 
 export const execute: CommandExecute<'commandName'> = ({
@@ -37,7 +37,7 @@ export const meta: CommandMetadata = {
 function constructHelpCommand(cmd: CommandMetadata) {
   const data: [string, string][] = Object.entries(cmd)
     .map<[string, any]>(([K, V]) => [toProperCase(K), V])
-    .filter(([, V]) => typeof V === 'string');
+    .filter(([, V]) => ["string", "number"].includes(typeof V));
   if (cmd.params)
     data.push([
       'Usage',
@@ -50,5 +50,6 @@ function constructHelpCommand(cmd: CommandMetadata) {
         )
         .join(' '),
     ]);
+  data[data.findIndex(([K]) => K === "AccessLevel") ?? data.length] = ["AccessLevel", Object.keys(accessLevels)[getAccessLevel(cmd.accessLevel)]];
   return data.map(([K, V]) => `[${K}]: ${V}`).join('\n');
 }
