@@ -1,5 +1,6 @@
 import { CommandMetadata } from '../types';
 
+// @ts-ignore
 export class CommandParameters<T extends string>
   extends Array<string>
   implements PrimitiveArray {
@@ -7,7 +8,7 @@ export class CommandParameters<T extends string>
   private _data: ParametersData;
   parseData(str: string) {
     const _data = this._data.arr;
-    let params = str.split(' ');
+    let params = str.match(/("[^"]+"|\S+)/g)?.map(v => v.replace(/(^"|"$)/g, "")) ?? [str]
     if (_data[_data.length - 1].rest == true)
       params = [
         ...params.slice(0, _data.length - 1),

@@ -14,7 +14,9 @@
     "experimentalDecorators": true,
     "strictNullChecks": true,
     "useDefineForClassFields": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "newLine": "lf",
+    "pretty": true
   },
   "include": ["src/**/*"],
   "compileOnSave": false,
