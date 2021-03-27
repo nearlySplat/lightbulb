@@ -8,7 +8,7 @@
     "watch": "tsc -w",
     "compile": "tsc",
     "pull": "git pull",
-    "run": "if pm2 ls | grep lightbulb; pm2 restart lightbulb; else; node dist; end"
+    "run": "pm2 restart lightbulb"
   },
   "author": "",
   "license": "ISC",
