@@ -1,3 +1,5 @@
+import { Parameter } from '../../Parameters';
+
 export const ABOUT_LONG_DESCRIPTION = `👋 Hi! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
 
     **My features**:
@@ -28,10 +30,28 @@ export const HEX_BODY = `**Hexadecimal Value**: #{{hex_value}}
   /\n +/g,
   '\n'
 );
-export const PURGE_HELP_BODY = `There are many features in this command.
-                                - \`purge bots [amount]\`: deletes the last 100 messages that are by bots and are under 14 days old. Optionally takes a second argument for an amount of messages to delete.
-                                - \`purge regexp <regexp>\`: deletes messages matching that RegExp.
-                               `.replace(/\n +/g, '\n');
+export const PURGE_KEYWORD_EXPLANATIONS = {
+  help: 'Gets help for the command.',
+  bots: 'Purges messages sent by bots.',
+  all: 'No criterion.',
+};
+export const PURGE_HELP_BODY = ({ data }: { data: Parameter[] }) =>
+  `There are many features in this command.
+                                ${data[0]
+                                  .options!.map(
+                                    v =>
+                                      `\`${v}\`: ${
+                                        PURGE_KEYWORD_EXPLANATIONS[
+                                          v as keyof typeof PURGE_KEYWORD_EXPLANATIONS
+                                        ]
+                                      }`
+                                  )
+                                  .join('\n')}
+
+                 		All of these options (except for \`help\`, of course) take an optional \`amount\` argument, which defaults to \`0\`.`.replace(
+    /\n\s*/g,
+    '\n'
+  );
 export const PURGE_HELP_HEADER = 'Purge Help';
 export const HELP_ARRIVED = [
   'Help has arrived!',
@@ -39,6 +59,8 @@ export const HELP_ARRIVED = [
   'Halp pls aaaaa',
   'ok',
   'fine...',
+  'no',
+  'use `bulb commands` instead',
 ];
 export const GENERIC_ERROR =
   'An error occurred! Code: `{{code}}`, message: `{{message}}`.';

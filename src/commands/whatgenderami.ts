@@ -43,10 +43,12 @@ export const meta: CommandMetadata = {
   description: 'what is your true gender',
   accessLevel: 0,
   aliases: ['whatgenderis'],
-  params: [{
-    name: "user",
-    type: "string",
-    optional: true,
-    rest: true
-  }]
+  params: [
+    {
+      name: 'user',
+      type: 'string',
+      optional: true,
+      rest: true,
+    },
+  ],
 };

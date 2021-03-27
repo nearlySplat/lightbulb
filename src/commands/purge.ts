@@ -9,7 +9,7 @@ import {
 } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata } from '../types';
-import { get } from '../util/i18n';
+import { get, interpolate } from '../util/i18n';
 export const meta: CommandMetadata = {
   accessLevel: 2,
   aliases: ['clear', 'prune'],
@@ -40,7 +40,12 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
     case 'help':
       const _ = new MessageEmbed()
         .setAuthor(get('PURGE_HELP_HEADER', ctx.locale))
-        .setDescription(get('PURGE_HELP_BODY', ctx.locale))
+        // @ts-ignore
+        .setDescription(
+          interpolate(get('PURGE_HELP_BODY', ctx.locale), {
+            data: ctx.args._data.arr,
+          })
+        )
         .setColor(CLIENT_COLOUR)
         .setThumbnail(ctx.client.user?.avatarURL() as string);
       ctx.message.channel.send(_);

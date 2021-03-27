@@ -11,6 +11,7 @@ export const INTENTS = [
   Intents.FLAGS.GUILD_MEMBERS,
   Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
   Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+  Intents.FLAGS.GUILD_PRESENCES,
 ].reduce((prev, current) => prev + current);
 export const CLIENT_COLOUR = 0xfcda7d;
 export enum ERROR_CODES {

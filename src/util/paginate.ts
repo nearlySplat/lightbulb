@@ -6,7 +6,7 @@ import {
   TextChannel,
   User,
 } from 'discord.js';
-import {loggr} from '..';
+import { loggr } from '..';
 import { PAGINATION_REACTIONS } from '../constants';
 
 export const paginate = (
@@ -50,7 +50,7 @@ export const paginate = (
       } else return false;
     });
     collector.on('collect', (reaction, user) => {
-      loggr.debug("reaction: ", reaction.emoji.name)
+      loggr.debug('reaction: ', reaction.emoji.name);
       void reaction.users.remove(user.id).catch(() => null);
       if (reaction.emoji.name in handlers)
         handlers[reaction.emoji.name](reaction, user);

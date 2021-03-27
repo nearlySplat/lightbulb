@@ -1,6 +1,8 @@
 import { CommandMetadata } from '../types';
 
-export class CommandParameters<T extends string> implements PrimitiveArray {
+export class CommandParameters<T extends string>
+  extends Array<string>
+  implements PrimitiveArray {
   [key: number]: string;
   private _data: ParametersData;
   parseData(str: string) {
@@ -19,8 +21,10 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
     obj = Object.fromEntries(Object.entries(obj).filter(([, V]) => V !== ''));
     this.data = obj;
     // @ts-ignore
-    for (const [index, value] of Object.values(obj).map((v, i) => [i, v]))
-      this[index] = value;
+    for (let [index, value] of Object.values(obj).map((v, i) => [i, v])) {
+      index = index as number;
+      this[index] = value as string;
+    }
     if (
       Object.values(obj).filter(v => v !== '').length <
       this._data.arr.filter(v => !v.optional).length
@@ -95,6 +99,7 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
     return { successes, errs };
   }
   constructor(...arr: Parameter[]) {
+    super(arr.length);
     const types = ['int', 'float', 'string', 'bool'];
     if (!arr.every(v => types.includes(v.type)))
       throw new TypeError(
@@ -145,7 +150,7 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
         name: 'args',
         type: 'string',
         rest: true,
-        optional: true
+        optional: true,
       });
     }
     instance.parseData(Array.isArray(args) ? args.join(' ') : args);
@@ -165,12 +170,6 @@ export class CommandParameters<T extends string> implements PrimitiveArray {
       .filter(([K]) => !isNaN(parseInt(K)))
       .map(([, V]) => V))
       yield v;
-  }
-  slice(n: number, e?: number) {
-    return [...this].slice(n, e);
-  }
-  join(sep?: string) {
-    return [...this].join(sep);
   }
 }
 

@@ -37,7 +37,7 @@ export const meta: CommandMetadata = {
 function constructHelpCommand(cmd: CommandMetadata) {
   const data: [string, string][] = Object.entries(cmd)
     .map<[string, any]>(([K, V]) => [toProperCase(K), V])
-    .filter(([, V]) => ["string", "number"].includes(typeof V));
+    .filter(([, V]) => ['string', 'number'].includes(typeof V));
   if (cmd.params)
     data.push([
       'Usage',
@@ -50,6 +50,9 @@ function constructHelpCommand(cmd: CommandMetadata) {
         )
         .join(' '),
     ]);
-  data[data.findIndex(([K]) => K === "AccessLevel") ?? data.length] = ["AccessLevel", Object.keys(accessLevels)[getAccessLevel(cmd.accessLevel)]];
+  data[data.findIndex(([K]) => K === 'AccessLevel') ?? data.length] = [
+    'AccessLevel',
+    Object.keys(accessLevels)[getAccessLevel(cmd.accessLevel)],
+  ];
   return data.map(([K, V]) => `[${K}]: ${V}`).join('\n');
 }
