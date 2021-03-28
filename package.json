@@ -8,7 +8,8 @@
     "watch": "tsc -w",
     "compile": "tsc",
     "pull": "git pull",
-    "run": "pm2 restart lightbulb"
+    "run": "pm2 restart lightbulb",
+    "prepare": "husky install"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +17,8 @@
     "@types/eslint": "^7.2.6",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
-    "eslint": "^7.20.0"
+    "eslint": "^7.20.0",
+    "husky": "^5.2.0"
   },
   "dependencies": {
     "@discordjs/collection": "^0.1.6",

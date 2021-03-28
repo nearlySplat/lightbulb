@@ -43,7 +43,7 @@ Lightbulb is a Discord Bot made by Splatterxl. You are free to use its code in y
 1. credit the actual author in a prominent place in your code, e.g. a `NOTICE` file.
 
 ```
-Copyright (C) <year>  <name of author>
+Copyright (C) 2020 Splatterxl
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -55,5 +55,6 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public Licen
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```

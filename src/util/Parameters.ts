@@ -8,7 +8,8 @@ export class CommandParameters<T extends string>
   private _data: ParametersData;
   parseData(str: string) {
     const _data = this._data.arr;
-    let params = str.match(/("[^"]+"|\S+)/g)?.map(v => v.replace(/(^"|"$)/g, "")) ?? [str]
+    let params = str.match(/(\S+)/g)//?.map(v => v.trim().replace(/(^"|"$)/g, "")) ?? [str]
+    ?? [str]
     if (_data[_data.length - 1].rest == true)
       params = [
         ...params.slice(0, _data.length - 1),

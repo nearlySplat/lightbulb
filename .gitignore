@@ -6,3 +6,5 @@ yarn.lock
 src/modules/config.json
 src/modules/markov.json
 src/modules/markov.txt
+src/migration/* 
+

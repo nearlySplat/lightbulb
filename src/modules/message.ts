@@ -1,5 +1,5 @@
-import { Client, Message, User } from 'discord.js';
-import { WHITELIST } from '../constants';
+import { Client, Message, Util } from 'discord.js';
+import { PREFIXES } from '../constants';
 import fs from 'graceful-fs';
 import path from 'path';
 import { EOL } from 'os';
@@ -22,7 +22,7 @@ export const splatMarkov = {
       message.author.id === '728342296696979526'
     ) {
       if (
-        /^(\w+(\s+)?pls|pls ?|[!+×÷=\/_€£¥₩@#$^&*()\-':;!?,.\]\[])/g.test(
+        new RegExp(String.raw`^(\w+(\s+)?pls|${PREFIXES.join(" ?|")} ?|<@!?${client.user!.id}> ?| ?|eureka ?|\w?[!+×÷=\/_€£¥₩@#$^&*()\-':;!?,.\]\[])`, 'g').test(
           message.content
         )
       )
@@ -53,7 +53,7 @@ export const splatMarkov = {
         Object.entries(o)
           .sort(([, a], [, b]) => b - a)
           .slice(0, 3)
-          .map(([K, V]) => `${K} (\`${V}\`)`)
+          .map(([K, V]) => `${Util.escapeInlineCode(K) || "nothing?! must be a bug."} (\`${V}\`)`)
           .join(', ');
       message.channel.send(
         `Analyzed markov!\n\nMost common words: ${conv(

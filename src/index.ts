@@ -1,7 +1,6 @@
 import CatLoggr from 'cat-loggr/ts';
 import { Client, WSEventType, User, TextChannel, Snowflake } from 'discord.js';
 import { config } from 'dotenv';
-import { readdirSync } from 'fs';
 import { join } from 'path';
 import { INTENTS } from './constants';
 import { Command, SlashCommand } from './types';
@@ -12,6 +11,22 @@ export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
+import "reflect-metadata";
+import {createConnection} from "typeorm";
+export let connectionName = "default";
+import {User as U} from "./entity/User";
+createConnection({
+  type: "postgres",
+  database: "splat",
+  username: "splat",
+  password: "mabuis1",
+  port: 5432,
+  entities: [U],
+  logging: true,
+}).then((c) => {
+  console.log("Connected to database", c.name)
+  connectionName = c.name
+}).catch(console.error);
 const moduleConfig: {
   [k in Snowflake]: {
     enabledModules: string[];
