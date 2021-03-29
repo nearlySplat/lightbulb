@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2020 Splaterxl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -24,8 +24,7 @@ export class CommandParameters<T extends string>
   private _data: ParametersData;
   parseData(str: string) {
     const _data = this._data.arr;
-    let params = str.match(/(\S+)/g)//?.map(v => v.trim().replace(/(^"|"$)/g, "")) ?? [str]
-    ?? [str]
+    let params = str.match(/(\S+)/g) ?? [str]; //?.map(v => v.trim().replace(/(^"|"$)/g, "")) ?? [str]
     if (_data[_data.length - 1].rest == true)
       params = [
         ...params.slice(0, _data.length - 1),

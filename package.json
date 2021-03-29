@@ -9,7 +9,8 @@
     "compile": "tsc",
     "pull": "git pull",
     "run": "pm2 restart lightbulb",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "format": "fish scripts/format.fish"
   },
   "author": "",
   "license": "ISC",

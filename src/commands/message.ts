@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2020 Splaterxl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -54,9 +54,9 @@ const keywords = {
     latest: async (_: Message, c: TextChannel) =>
       await c.messages
         .fetch({
-          limit: 1,
+          limit: 2,
         })
-        .then(v => v.first()),
+        .then(v => v.last()),
     this: (m: Message) => m,
   },
   handleKeyword = (word: keyof typeof keywords, m: Message, c: TextChannel) =>
@@ -107,6 +107,11 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
        **__Created At__**: ${target.createdAt.toLocaleString()} (UNIX time: ${
     target.createdTimestamp
   })
+        **__Reactions__**: ${
+          target.reactions.cache
+            .map(v => `${v.emoji.toString()} (${v.count})`)
+            .join(' | ') || 'None'
+        }
              **__Link__**: [Jump!](${target.url})`
     .replace(/\n */g, '\n')
     .replace(/(__)?\*\*(__)?/g, '**');
@@ -117,7 +122,7 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
         iconURL: target.author.avatarURL() || target.author.defaultAvatarURL,
         url: message.url,
       },
-      color: 'YELLOW',
+      color: message.guild.me!.roles.highest.color,
       description: text,
       footer: {
         text: i18n.interpolate(i18n.get('GENERIC_REQUESTED_BY', locale), {

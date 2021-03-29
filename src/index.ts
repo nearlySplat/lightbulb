@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2020 Splaterxl
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -27,22 +27,24 @@ export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
-import "reflect-metadata";
-import {createConnection} from "typeorm";
-export let connectionName = "default";
-import {User as U} from "./entity/User";
+import 'reflect-metadata';
+import { createConnection } from 'typeorm';
+export let connectionName = 'default';
+import { User as U } from './entity/User';
 createConnection({
-  type: "postgres",
-  database: "splat",
-  username: "splat",
-  password: "mabuis1",
+  type: 'postgres',
+  database: 'splat',
+  username: 'splat',
+  password: 'mabuis1',
   port: 5432,
   entities: [U],
   logging: true,
-}).then((c) => {
-  console.log("Connected to database", c.name)
-  connectionName = c.name
-}).catch(console.error);
+})
+  .then(c => {
+    console.log('Connected to database', c.name);
+    connectionName = c.name;
+  })
+  .catch(console.error);
 const moduleConfig: {
   [k in Snowflake]: {
     enabledModules: string[];
