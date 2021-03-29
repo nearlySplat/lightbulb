@@ -31,9 +31,11 @@ yarn global add typescript && yarn && tsc && node dist
 
 ## Contributing
 
-Read the `.eslintrc.yml` file or run `eslint .` to fix code style errors. Then, format the code with [Prettier](https://prettier.io) using the `.prettierrc` file.
+This projects uses the [Conventional Commits standard](https://www.conventionalcommits.org/en/v1.0.0/) for commits. If you want to generate your commit message interactively, use `yarn commit`. Commit messages are linted befote commit using Git Hooks via Husky.
 
-Also, try to use [the Conventional Commits stuff thing](https://www.conventionalcommits.org/en/v1.0.0/). Yes, I sometimes don't use it. I still haven't figured out how to rename Git Commits.
+License headers are applied to every file before commit, if you want your name to be explicitly mentioned contact a maintainer.
+
+Every file is also formatted before commit using Husky, again.
 
 ## Legal Stuff
 
