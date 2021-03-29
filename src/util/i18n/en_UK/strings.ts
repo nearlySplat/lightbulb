@@ -124,8 +124,20 @@ export const WHATGENDERAMI_TEXT = ({
   target: string;
   gender: string;
 }) => `You are ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
-export const UNBAN_SUCCESSFUL =
-  '🔧 **{{target}}** was successfully unbanned. They were previously banned for: \n```md\n{{bannedFor}}\n```';
+export const UNBAN_SUCCESSFUL = ({
+  target,
+  subjectPronoun,
+  singular,
+  bannedFor,
+}: Record<string, string>) =>
+  `🔧 **${target}** was successfully unbanned. ${subjectPronoun.replace(
+    /^\w/g,
+    v => v.toUpperCase()
+  )} ${
+    Boolean(singular) ? 'was' : 'were'
+  } previously banned for: \n\`\`\`md\n${bannedFor}\n\`\`\``;
 export const MESSAGEINFO_CHANNEL_NOT_FOUND = 'No such channel could be found.';
 export const MESSAGEINFO_MESSAGE_NOT_FOUND =
   'No such message exists in this channel.';
+export const BAN_CONFIRMATION =
+  'Are you sure you want to ban {{objectPronoun}}? (y/N)';

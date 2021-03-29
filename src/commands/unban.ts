@@ -18,14 +18,26 @@ import { Permissions } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { ERROR_CODES } from '../constants';
-export const execute: CommandExecute = async ({ message, args, locale }) => {
-  if (!args[0]) return false;
+import { User } from '../entity/User';
+export const execute: CommandExecute<'user' | 'reason'> = async ({
+  message,
+  args,
+  locale,
+}) => {
   if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
     return false;
   const target = await message.client.users
-    .fetch(args[0].replace(/(<@!?|>)/g, ''))
+    .fetch(args.data.user.replace(/(<@!?|>)/g, ''))
     .catch(() => null);
   if (!target) return false;
+  const { singularOrPluralPronoun, subjectPronoun } = (await User.findOne({
+    where: {
+      userid: target.id,
+    },
+  })) ?? {
+    subjectPronoun: 'they',
+    singularOrPluralPronoun: 'plural',
+  };
   const banInfo = await message.guild.fetchBan(target.id).catch(() => null);
   const unban = async () => {
     try {
@@ -33,7 +45,7 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
         .unban(
           target.id,
           `[ ${message.author.tag} ]: ${
-            args.slice(1).join(' ') || `No reason provided.`
+            args.data.reason || `No reason provided.`
           }`
         )
         .then(() => {
@@ -41,6 +53,8 @@ export const execute: CommandExecute = async ({ message, args, locale }) => {
             interpolate(get('UNBAN_SUCCESSFUL', locale), {
               target: target.tag,
               bannedFor: banInfo!.reason,
+              singular: (singularOrPluralPronoun === 'singular').toString(),
+              subjectPronoun,
             })
           );
         });
@@ -73,4 +87,16 @@ export const meta: CommandMetadata = {
   accessLevel: 2,
   aliases: [],
   hidden: false,
+  params: [
+    {
+      name: 'user',
+      type: 'string',
+    },
+    {
+      name: 'reason',
+      type: 'string',
+      optional: true,
+      rest: true,
+    },
+  ],
 };

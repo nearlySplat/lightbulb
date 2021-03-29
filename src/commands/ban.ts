@@ -18,6 +18,7 @@ import { Permissions } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { ERROR_CODES, WHITELIST } from '../constants';
+import { User } from '../entity/User';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
   args,
@@ -29,8 +30,28 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, ''))
     .catch(() => null);
   if (!target) return false;
+  const { objectPronoun } = (await User.findOne({
+    where: {
+      userid: target.id,
+    },
+  })) ?? { objectPronoun: 'them' };
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async () => {
+    await message.channel.send(
+      interpolate(get('BAN_CONFIRMATION', locale), { objectPronoun })
+    );
+    const m = (
+      await message.channel.awaitMessages(
+        m => m.author.id === message.author.id,
+        { max: 1 }
+      )
+    ).first();
+    if (
+      !['yes', 'y', 'ofc', 'true', '1', 'accept'].includes(
+        m.content.toLowerCase()
+      )
+    )
+      return message.channel.send('Aborted.');
     try {
       await message.guild.members
         .ban(target.id, {
