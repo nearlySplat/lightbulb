@@ -47,7 +47,10 @@ export const splatMarkov = {
       )
         return false;
       markov.push(message.cleanContent);
-      fs.writeFileSync(path.join(__dirname, 'markov.txt'), markov.join(EOL));
+      fs.writeFileSync(
+        path.join(__dirname, 'markov.txt'),
+        markov.filter(v => v.split(/ +/).length >= 5).join(EOL)
+      );
       console.log('written kek');
       return true;
     }
@@ -122,7 +125,6 @@ export const splatMarkov = {
     }
     console.log(num, averArr);
     function makeSentence() {
-      console.log(num, text);
       for (let i = 0; i < num; i++) {
         const sarr = markov
           .map(v =>
@@ -131,46 +133,46 @@ export const splatMarkov = {
                 String.raw`\b(${word.replace(
                   /[()\][\/\$\^\*\+\?]/g,
                   v => '\\' + v
-                )})\b([,\.!\?;:\-'"/)([\]](\S+)?)?(\s+\S+)?`,
+                )})\b([,\.!\?;:\-'"/)([\]](\S+)?)?(\s*\S+)?`,
                 'gi'
               )
             )
           )
           .filter(v => v)
           .flat(2);
-        console.log(
-          'markov data: ',
-          markov,
-          'first match for word',
-          markov.find(v => v.includes(word))
-        );
-        const obj: Record<string, number> = {};
+        const obj: Record<string, number> = sarr.length ? {} : { '.': 1 };
         console.log(sarr);
-        for (const a of sarr)
-          obj[a as string] = obj[a as string] ? obj[a as string] + 1 : 1;
-        if (sarr.length) {
-          console.log(obj);
-          let _seq = Object.entries(obj)
-            .reduce(([ak, av], [bk, bv]) => (av >= bv ? [ak, av] : [bk, bv]))[0]
-            .match(/\S+/g) ?? [''];
-          const seq = _seq[1] ?? _seq[0];
-          if (seq === word) {
-          } else {
-            const t = seq;
-            text += t ? ' ' + t : '';
-            word = seq;
+        if (
+          (sarr.length === 0 ||
+            !sarr.every(v => v.toLowerCase() !== word.toLowerCase())) &&
+          text.split(/ +/).length <= 5
+        ) {
+          // text += [...text].reverse()[0] === "." ? "" : ".";
+          word = getWord();
+        } else {
+          for (const a of sarr)
+            obj[a as string] = obj[a as string] ? obj[a as string] + 1 : 1;
+          if (sarr.length) {
+            console.log(obj);
+            let _seq = Object.entries(obj)
+              .reduce(([ak, av], [bk, bv]) =>
+                av >= bv ? [ak, av] : [bk, bv]
+              )[0]
+              .match(/\S+/g) ?? [''];
+            const seq = _seq[1] ?? _seq[0];
+            if (seq === word) {
+            } else {
+              const t = seq;
+              text += t ? ' ' + t : '';
+              word = seq;
+            }
           }
         }
       }
     }
     makeSentence();
-    if (args[0])
-      while (!text.includes(args[0])) {
-        text = getWord();
-        makeSentence();
-      }
     message.channel.send(
-      `Well, splat once said...\n> <:splat:821046564474585128> **Splatterxl#8999**\n> ${text}`
+      `Well, splat once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
     );
     return true;
   },

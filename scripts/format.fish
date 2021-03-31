@@ -5,5 +5,5 @@ if test -z "$files"
 else
 	echo "Oh no! Some files are unformatted!"
 	prettier --write $files
+	git add $files
 end
-echo "Done!"

@@ -59,10 +59,11 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
         // @ts-ignore
         .setDescription(
           interpolate(get('PURGE_HELP_BODY', ctx.locale), {
+            // @ts-ignore
             data: ctx.args._data.arr,
           })
         )
-        .setColor(CLIENT_COLOUR)
+        .setColor(ctx.message.guild.me.roles.highest.color)
         .setThumbnail(ctx.client.user?.avatarURL() as string);
       ctx.message.channel.send(_);
       return true;
@@ -88,7 +89,7 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
         msgs = msgs
           .array()
           .reverse()
-          .slice(0, parseInt(ctx.args[1])) as MsgsCollectionType;
+          .slice(0, parseInt(ctx.args.data.amount)) as MsgsCollectionType;
 
       await ctx.message.delete();
       ctx.message.channel.bulkDelete(msgs);
@@ -97,8 +98,9 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
     case 'all':
       if (ctx.message.channel.type === 'dm') return false;
       if (!isNaN(parseInt(ctx.args.data.amount))) {
-        const amount = parseInt(ctx.args[0]);
+        const amount = parseInt(ctx.args.data.amount);
         await ctx.message.delete();
+        console.log(amount);
         return ctx.message.channel.bulkDelete(amount).then(() => true);
       } else return false;
   }

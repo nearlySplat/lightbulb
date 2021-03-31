@@ -29,6 +29,9 @@ Runs `tsc` in watch mode. This will compile your code when you save the file.
 yarn global add typescript && yarn && tsc && node dist
 ```
 
+## Running the bot
+You'll need a PostgreSQL database of the name `splat` and username `splat`, password `mabuis1` for this to work uwu.
+
 ## Contributing
 
 This projects uses the [Conventional Commits standard](https://www.conventionalcommits.org/en/v1.0.0/) for commits. If you want to generate your commit message interactively, use `yarn commit`. Commit messages are linted befote commit using Git Hooks via Husky.

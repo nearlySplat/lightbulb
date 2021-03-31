@@ -20,16 +20,16 @@ import { Permissions, PermissionFlags } from 'discord.js';
 export const execute: CommandExecute = ({ message, args }) => {
   message.reply(
     `<https://discord.com/oauth2/authorize?client_id=${
-      args[0]?.replace(/(<@!?|>)/g, '') || message.client.user?.id
+      args.data.application?.replace(/(<@!?|>)/g, '') || message.client.user?.id
     }&scope=bot${
-      args[1]
-        ? `&permissions=${args
-            .slice(1)
+      args.data.perms
+        ? `&permissions=${args.data.perms
+            .split(' +')
             .map(v =>
               v === 'admin'
                 ? Permissions.FLAGS.ADMINISTRATOR
                 : Permissions.FLAGS[v.toUpperCase() as keyof PermissionFlags] ??
-                  0
+                  BigInt(+v)
             )
             .reduce((prev, curr) => prev + curr)}`
         : ''
@@ -43,4 +43,16 @@ export const meta: CommandMetadata = {
   description: 'Gets an invite link for me or any bot.',
   accessLevel: 0,
   aliases: [],
+  params: [
+    {
+      name: 'application',
+      type: 'string',
+    },
+    {
+      name: 'perms',
+      type: 'string',
+      rest: true,
+      optional: true,
+    },
+  ],
 };

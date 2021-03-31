@@ -50,7 +50,7 @@ export const execute: CommandExecute<'target'> = async ({
         .catch(() => null)),
     lightbulbUserData = await User.findOne({
       where: {
-        userid: message.author.id,
+        userid: user.id,
       },
     });
   if (!user) {
@@ -82,7 +82,7 @@ export const execute: CommandExecute<'target'> = async ({
     .addField(
       'Lightbulb-generated User Information',
       lightbulbUserData
-        ? `**Developer**: ${lightbulbUserData.isDeveloper}
+        ? `**Developer**: ${!!lightbulbUserData.isDeveloper}
 	      **Pronouns**: ${formatPronouns(lightbulbUserData.pronouns)}`.replace(
             /\n[\t\n ]*/g,
             '\n'
