@@ -19,6 +19,7 @@ import { PREFIXES } from '../constants';
 import fs from 'graceful-fs';
 import path from 'path';
 import { EOL } from 'os';
+import { shuffle } from 'lodash';
 export const splatMarkov = {
   emitter: 'on',
   eventName: 'message',
@@ -98,7 +99,7 @@ export const splatMarkov = {
         markov.map(v => v.match('\\S+')?.[0] ?? v)[
           Math.floor(Math.random() * markov.length)
         ],
-      word = getWord(),
+      word = args[0] || getWord(),
       text = word;
     const averArr: number[] = [];
     for (const str of markov) averArr.push(str.length);
@@ -109,43 +110,31 @@ export const splatMarkov = {
       ) + 1;
     let num = getNum();
     while (num <= 3) num = getNum();
-    console.log(word);
-    if (
-      args[0] &&
-      !markov.some(v =>
-        v.match(
-          new RegExp(
-            `\\b${args[0].replace(/[()\][\/\$\^\*\+\?]/g, v => '\\' + v)}\\b`
-          )
-        )
-      )
-    ) {
+    const regexp = () =>
+      new RegExp(
+        String.raw`\b(${word.replace(
+          /[()\][\/\$\^\*\+\?]/g,
+          v => '\\' + v
+        )})\b([,\.!\?;:\-'"/)([\]](\S+)?)?(\s*\S+)?`,
+        'gi'
+      );
+    if (args[0] && !markov.some(v => regexp().test(v))) {
       message.channel.send("They've never said that, sorry...");
       return false;
     }
     console.log(num, averArr);
     function makeSentence() {
       for (let i = 0; i < num; i++) {
+        console.log(word);
         const sarr = markov
-          .map(v =>
-            v.match(
-              new RegExp(
-                String.raw`\b(${word.replace(
-                  /[()\][\/\$\^\*\+\?]/g,
-                  v => '\\' + v
-                )})\b([,\.!\?;:\-'"/)([\]](\S+)?)?(\s*\S+)?`,
-                'gi'
-              )
-            )
-          )
+          .map(v => v.match(regexp()))
           .filter(v => v)
-          .flat(2);
+          .flat();
         const obj: Record<string, number> = sarr.length ? {} : { '.': 1 };
-        console.log(sarr);
         if (
           (sarr.length === 0 ||
             !sarr.every(v => v.toLowerCase() !== word.toLowerCase())) &&
-          text.split(/ +/).length <= 5
+          text.split(/\s+/).length <= 5
         ) {
           // text += [...text].reverse()[0] === "." ? "" : ".";
           word = getWord();
@@ -155,12 +144,31 @@ export const splatMarkov = {
           if (sarr.length) {
             console.log(obj);
             let _seq = Object.entries(obj)
-              .reduce(([ak, av], [bk, bv]) =>
-                av >= bv ? [ak, av] : [bk, bv]
-              )[0]
-              .match(/\S+/g) ?? [''];
-            const seq = _seq[1] ?? _seq[0];
-            if (seq === word) {
+              .sort(([, a], [, b]) => b - a)
+              .map(v => v[0]);
+            console.log(_seq);
+            let newSeq = _seq.filter(([, v], _, a) => v === a[0][1]);
+            newSeq = newSeq.length < 3 ? _seq.slice(0, 3) : newSeq;
+            _seq = shuffle(newSeq);
+            let seq: string = _seq[
+              Math.floor(Math.random() * _seq.length)
+            ].split(/\s+/) as any;
+            seq = seq[1] ?? seq[0];
+            function check(n: number) {
+              return seq == text.split(/\s+/).reverse()[n];
+            }
+            function recCheck(n: number) {
+              let i = 0,
+                c = false;
+              while (!c && i < n) {
+                c = check(i);
+                i++;
+              }
+              return c;
+            }
+            if (seq === word || recCheck(5)) {
+              if (text.split(/\s+/).length < 5) word = getWord();
+              console.log(text.split(/\s+/).length < 5, word, text);
             } else {
               const t = seq;
               text += t ? ' ' + t : '';
@@ -171,6 +179,7 @@ export const splatMarkov = {
       }
     }
     makeSentence();
+    console.log(text.split(/\s+/).length, text);
     message.channel.send(
       `Well, splat once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
     );

@@ -30,11 +30,17 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, ''))
     .catch(() => null);
   if (!target) return false;
-  const { objectPronoun } = (await User.findOne({
-    where: {
-      userid: target.id,
-    },
-  })) ?? { objectPronoun: 'them' };
+  let user: { objectPronoun: string };
+  try {
+    user = (await User.findOne({
+      where: {
+        userid: target.id,
+      },
+    }).catch(() => null)) ?? { objectPronoun: 'them' };
+  } catch {
+    user = { objectPronoun: 'them' };
+  }
+  const { objectPronoun } = user;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async () => {
     await message.channel.send(

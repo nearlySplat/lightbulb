@@ -63,3 +63,20 @@ export const getMember = (guild: Guild, target: string) =>
 
 export const toProperCase = (str: string) =>
   str.replace(/\b\w/g, v => v.toUpperCase());
+
+export const shuffle = <T>(arr: T[]) => {
+  return range(Math.max(arr.length / 5, 5))
+    .map<T[]>((_, i) => arr.slice(i, i + 5))
+    .flat();
+};
+
+export const range = (n: number) => Array(n).fill(null);
+
+export const chunk = (n: number, x: string | number) => {
+  let arr = [];
+  for (const i of typeof x === 'string'
+    ? x.match(new RegExp(`[\s\S]{1,${n}}`, 'g'))
+    : range(x / n))
+    arr.push(i);
+  return arr;
+};

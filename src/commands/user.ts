@@ -52,7 +52,7 @@ export const execute: CommandExecute<'target'> = async ({
       where: {
         userid: user.id,
       },
-    });
+    }).catch(() => null);
   if (!user) {
     message.channel.send('no such user could be found');
     return false;

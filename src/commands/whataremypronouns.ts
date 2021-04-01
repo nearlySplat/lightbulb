@@ -26,16 +26,18 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = async ctx => {
-  let data = await User.findOne({
-    where: {
-      userid: ctx.message.author.id,
-    },
-  }).catch(() => null);
+  let data: User;
+  try {
+    data = await User.findOne({
+      where: {
+        userid: ctx.message.author.id,
+      },
+    }).catch(() => null);
+  } catch {}
   if (!data) {
-    const newData = new User();
-    newData.userid = ctx.message.author.id;
-    newData.save();
-    data = newData;
+    ctx.message.channel.send(
+      'You do not have any data in our database. `they/them` pronouns will be assumed unless you explicitly set them to anything else.'
+    );
   }
   const embed = new MessageEmbed()
     .setAuthor(

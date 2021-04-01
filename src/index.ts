@@ -44,6 +44,7 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 export let connectionName = 'default';
 import { User as U } from './entity/User';
+export let hasConnection = false;
 createConnection({
   type: 'postgres',
   database: 'splat',
@@ -56,8 +57,9 @@ createConnection({
   .then(c => {
     console.log('Connected to database', c.name);
     connectionName = c.name;
+    hasConnection = true;
   })
-  .catch(console.error);
+  .catch(e => ((hasConnection = false), console.error(e)));
 if (!process.send)
   throw new Error('This process should be started in FORK mode.');
 const moduleConfig: {

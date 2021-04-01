@@ -30,14 +30,20 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, ''))
     .catch(() => null);
   if (!target) return false;
-  const { singularOrPluralPronoun, subjectPronoun } = (await User.findOne({
-    where: {
-      userid: target.id,
-    },
-  })) ?? {
-    subjectPronoun: 'they',
-    singularOrPluralPronoun: 'plural',
-  };
+  let user: { subjectPronoun: string; singularOrPluralPronoun: string };
+  try {
+    user = (await User.findOne({
+      where: {
+        userid: target.id,
+      },
+    }).catch(() => null)) ?? {
+      subjectPronoun: 'they',
+      singularOrPluralPronoun: 'plural',
+    };
+  } catch {
+    user = { subjectPronoun: 'them', singularOrPluralPronoun: 'plural' };
+  }
+  const { subjectPronoun, singularOrPluralPronoun } = user;
   const banInfo = await message.guild.fetchBan(target.id).catch(() => null);
   const unban = async () => {
     try {

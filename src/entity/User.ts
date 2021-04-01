@@ -22,7 +22,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ObjectType,
 } from 'typeorm';
+import { hasConnection } from '..';
 
 @Entity()
 export class User extends BaseEntity {
@@ -66,4 +68,9 @@ export class User extends BaseEntity {
 
   @Column()
   isDeveloper: boolean;
+
+  static get findOne(): (...args: any[]) => Promise<User | null> {
+    if (hasConnection) return (...a: any[]) => BaseEntity.findOne<User>(...a);
+    else return async (): Promise<null> => null;
+  }
 }
