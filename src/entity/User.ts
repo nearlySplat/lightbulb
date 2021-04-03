@@ -69,8 +69,10 @@ export class User extends BaseEntity {
   @Column()
   isDeveloper: boolean;
 
-  static get findOne(): (...args: any[]) => Promise<User | null> {
-    if (hasConnection) return (...a: any[]) => BaseEntity.findOne<User>(...a);
+  static get findOneSafe(): typeof hasConnection extends boolean
+    ? typeof User.findOne
+    : () => Promise<null> {
+    if (hasConnection) return User.findOne;
     else return async (): Promise<null> => null;
   }
 }

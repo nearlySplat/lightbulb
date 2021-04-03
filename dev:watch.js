@@ -1,5 +1,5 @@
 const child_process = require('child_process');
-const readline = require("readline")
+const readline = require('readline');
 const getMainProcess = () =>
   child_process.fork(__dirname + '/dist/index.js', {
     silent: true,
@@ -67,17 +67,17 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       } else missed = 0;
     }, 1000);
   }, 1000);
-  (async () => {
-    for(;;) {
+  async () => {
+    for (;;) {
       const i = readline.readline();
-      console.log("Input read: ", i)
-      if (i === "rs") {
-        proc.kill('SIGTERM')
-	missed = 0
-	ready = false
-	proc = getMainProcess()
-	pipe()
+      console.log('Input read: ', i);
+      if (i === 'rs') {
+        proc.kill('SIGTERM');
+        missed = 0;
+        ready = false;
+        proc = getMainProcess();
+        pipe();
       }
     }
-  })
+  };
 })();

@@ -30,6 +30,7 @@ yarn global add typescript && yarn && tsc && node dist
 ```
 
 ## Running the bot
+
 You'll need a PostgreSQL database of the name `splat` and username `splat`, password `mabuis1` for this to work uwu.
 
 ## Contributing
