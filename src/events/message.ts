@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Client, GuildMember, Message, ClientUser, Guild } from 'discord.js';
-import { commands, slashCommands } from '..';
+import { Client, ClientUser, Guild, GuildMember, Message } from 'discord.js';
+import { commands } from '..';
 import { PREFIXES } from '../constants';
-import { Command, SlashCommandContext } from '../types';
+import { Command } from '../types';
 import { CommandParameters, getAccessLevel, getCurrentLevel } from '../util';
+import { tags } from '../util/tags';
 
 export const execute = async (
   client: Client,
@@ -44,30 +45,12 @@ export const execute = async (
         commands.find(value => value.meta?.aliases.includes(args[0]) ?? false),
       commandName = args[0];
     if (!command) {
-      if (slashCommands.has(commandName)) {
-        const output = slashCommands.get(commandName)!.execute({
-          interactionHandlerStarted: timeStarted,
-          member: message.member,
-          author: message.author,
-          guild: message.guild,
-          client: message.client,
-          interaction: {
-            member: {
-              ...(message.member ?? {}),
-              is_pending: !!message.member?.pending,
-              joined_at: message.member?.joinedAt?.toString() ?? '',
-            },
-            channel_id: message.channel.id,
-            guild_id: message.guild!.id,
-            user: message.guild ? null : message.author,
-            token: 'NormalMessage0',
-            id: message.id,
-            data: { name: commandName, id: '0' },
-          },
-          commandFuncs: {} as SlashCommandContext['commandFuncs'],
-        });
-        if (output)
-          client.api.channels[message.channel.id].messages.post(output.data);
+      if (tags.has(args.join(' '))) {
+        console.log('no command, resorting to tag');
+        let result = tags.get(args.join(' '));
+        if (Array.isArray(result))
+          result = result[Math.floor(Math.random() * result.length)];
+        message.channel.send(result);
         return true;
       } else return false;
     }

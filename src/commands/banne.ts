@@ -14,16 +14,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { GuildMember } from 'discord.js';
+import { GuildMember, TextChannel } from 'discord.js';
 import { CommandMetadata, CommandExecute } from '../types';
-import { getMember } from '../util';
+import { createLogMessage, getLogChannel, getMember } from '../util';
 import { get, interpolate } from '../util/i18n';
-export const execute: CommandExecute<'user'> = ({ message, args, locale }) => {
+export const execute: CommandExecute<'user' | 'reason'> = ({
+  message,
+  args,
+  locale,
+}) => {
   const target =
     getMember(message.guild, args.data.user) ??
-    ({ user: { tag: args.data.user } } as GuildMember);
+    ({ user: { tag: args.data.user, id: '0' } } as GuildMember);
   message.reply(
     interpolate(get('BANNE_SUCCESSFUL', locale), { target: target.user.tag })
+  );
+  const channel = getLogChannel(message.guild) as TextChannel;
+  if (!channel) return true;
+  channel.send(
+    createLogMessage({
+      compact: channel.topic.includes('--compact'),
+      victim: target.user,
+      perpetrator: message.author,
+      action: 'Bend',
+      context: '... wait no, `[bent]`',
+      emoji: '🔨',
+      case: Infinity,
+      reason: args.data.reason,
+    })
   );
   return true;
 };
@@ -38,7 +56,12 @@ export const meta: CommandMetadata = {
     {
       name: 'user',
       type: 'string',
+    },
+    {
+      name: 'reason',
+      type: 'string',
       rest: true,
+      optional: true,
     },
   ],
 };

@@ -28,22 +28,22 @@ console.log('[PROCESS_CHILD] Logged messages.');
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import CatLoggr from 'cat-loggr/ts';
-import { Client, WSEventType, User, TextChannel, Snowflake } from 'discord.js';
+import { Client, Snowflake, TextChannel, User, WSEventType } from 'discord.js';
 import { config } from 'dotenv';
 import { join } from 'path';
+import 'reflect-metadata';
+import { createConnection } from 'typeorm';
 import { INTENTS } from './constants';
+import { User as U } from './entity/User';
+import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
-import { guilds as guildConfig } from './modules/config.json';
 export const loggr = new CatLoggr();
 export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
-import 'reflect-metadata';
-import { createConnection } from 'typeorm';
 export let connectionName = 'default';
-import { User as U } from './entity/User';
 export let hasConnection = false;
 createConnection({
   type: 'postgres',

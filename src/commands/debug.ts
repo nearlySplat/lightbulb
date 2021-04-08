@@ -38,9 +38,10 @@ export const execute = async ({
         INTENTS
       )
         .toArray()
-        .map(v => `\`${v}\``)}).
+        .map(v => `\`${v}\``)
+        .join(', ')}).
         - I am ${
-          !(await client.fetchApplication()).botPublic ? '**not** ' : ''
+          !(await client.application.fetch()).botPublic ? '**not** ' : ''
         }available to invite to guilds.
         - Available events are ${events
           .map(

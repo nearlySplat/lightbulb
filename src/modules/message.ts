@@ -14,7 +14,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Client, Message, Util } from 'discord.js';
+import {
+  ChannelLogsQueryOptions,
+  Client,
+  Collection,
+  Message,
+  Team,
+  Util,
+} from 'discord.js';
 import { PREFIXES } from '../constants';
 import fs from 'graceful-fs';
 import path from 'path';
@@ -26,6 +33,13 @@ export const splatMarkov = {
   guildablePath: 'params[0].guild.id',
   restricted: false,
   execute: async (client: Client, message: Message): Promise<boolean> => {
+    const INVALID = (t: string) =>
+      [
+        ...PREFIXES,
+        client.user.toString(),
+        'eureka',
+        ...'+×÷=/_@#$%^&*()-:;!?,.',
+      ].some(v => t.startsWith(v));
     let markov = fs
       .readFileSync(path.join(__dirname, 'markov.txt'), 'utf-8')
       .split(EOL);
@@ -38,21 +52,9 @@ export const splatMarkov = {
       !message.content.match(/^splat ?pls/) &&
       message.author.id === '728342296696979526'
     ) {
-      if (
-        new RegExp(
-          String.raw`^(\w+(\s+)?pls|${PREFIXES.join(' ?|')} ?|<@!?${
-            client.user!.id
-          }> ?| ?|eureka ?|\w?[!+×÷=\/_€£¥₩@#$^&*()\-':;!?,.\]\[])`,
-          'g'
-        ).test(message.content)
-      )
-        return false;
+      if (INVALID(message.content)) return false;
       markov.push(message.cleanContent);
-      fs.writeFileSync(
-        path.join(__dirname, 'markov.txt'),
-        markov.filter(v => v.split(/ +/).length >= 5).join(EOL)
-      );
-      console.log('written kek');
+      fs.writeFileSync(path.join(__dirname, 'markov.txt'), markov.join(EOL));
       return true;
     }
     const words = markov.reduce((a, b) => a + ' ' + b).split(/ +/);
@@ -95,11 +97,53 @@ export const splatMarkov = {
       return message.channel
         .send(markov.length + ' messages collected')
         .then(() => true);
+    else if (args[0] === 'load') {
+      if (!message.client.application.owner)
+        message.client.application = await message.client.application.fetch();
+      if (
+        message.author.id !== message.client.application.owner.id &&
+        !(message.client.application.owner as Team).members.has(
+          message.author.id
+        )
+      )
+        return message.channel
+          .send('You are not authorized to do this.')
+          .then(() => true);
+      const msgs = await message.channel.messages
+        .fetch(
+          (args[1]
+            ? args[1]
+            : {
+                limit: 100,
+              }) as ChannelLogsQueryOptions,
+          true,
+          true
+        )
+        .then((t: Collection<string, Message> | Message) =>
+          t instanceof Collection
+            ? t.filter(
+                v => v.author.id === message.author.id && !INVALID(v.content)
+              )
+            : !INVALID(t.content)
+        );
+      markov.push(
+        ...((msgs instanceof Collection ? msgs : [msgs]).map as (
+          fn: (m: Message) => string
+        ) => string[])(v => v.cleanContent)
+      );
+      fs.writeFileSync(path.join(__dirname, 'markov.txt'), markov.join(EOL));
+      message.channel.send(
+        `Successfully loaded ${
+          msgs instanceof Collection ? msgs.size : 1
+        } message(s)`
+      );
+      return true;
+    }
     let getWord = () =>
         markov.map(v => v.match('\\S+')?.[0] ?? v)[
           Math.floor(Math.random() * markov.length)
         ],
-      word = args[0] || getWord(),
+      word = getWord(),
       text = word;
     const averArr: number[] = [];
     for (const str of markov) averArr.push(str.length);
@@ -118,14 +162,8 @@ export const splatMarkov = {
         )})\b([,\.!\?;:\-'"/)([\]](\S+)?)?(\s*\S+)?`,
         'gi'
       );
-    if (args[0] && !markov.some(v => regexp().test(v))) {
-      message.channel.send("They've never said that, sorry...");
-      return false;
-    }
-    console.log(num, averArr);
     function makeSentence() {
       for (let i = 0; i < num; i++) {
-        console.log(word);
         const sarr = markov
           .map(v => v.match(regexp()))
           .filter(v => v)
@@ -142,11 +180,9 @@ export const splatMarkov = {
           for (const a of sarr)
             obj[a as string] = obj[a as string] ? obj[a as string] + 1 : 1;
           if (sarr.length) {
-            console.log(obj);
             let _seq = Object.entries(obj)
               .sort(([, a], [, b]) => b - a)
               .map(v => v[0]);
-            console.log(_seq);
             let newSeq = _seq.filter(([, v], _, a) => v === a[0][1]);
             newSeq = newSeq.length < 3 ? _seq.slice(0, 3) : newSeq;
             _seq = shuffle(newSeq);
@@ -168,7 +204,6 @@ export const splatMarkov = {
             }
             if (seq === word || recCheck(5)) {
               if (text.split(/\s+/).length < 5) word = getWord();
-              console.log(text.split(/\s+/).length < 5, word, text);
             } else {
               const t = seq;
               text += t ? ' ' + t : '';
@@ -179,7 +214,20 @@ export const splatMarkov = {
       }
     }
     makeSentence();
-    console.log(text.split(/\s+/).length, text);
+    const argR = new RegExp('\\b' + args[0] + '\\b');
+    if (args[0] && !argR.test(text)) {
+      message.channel.startTyping(50);
+      for (let i = 0; i < 30 && !argR.test(text); i++) {
+        text = getWord();
+        word = text;
+        makeSentence();
+      }
+      if (!argR.test(text))
+        return message.channel
+          .send("I couldn't make a sentence for that word...")
+          .then(() => true);
+      message.channel.stopTyping();
+    }
     message.channel.send(
       `Well, splat once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
     );
