@@ -29,7 +29,6 @@ export const execute = async (
   const isKsIn = !!(await message
     .guild!.members.fetch('236726289665490944')
     .catch(() => null));
-  // console.log(isKsIn)
   async function handleCommand(
     prefix: string,
     isExclamation = false
@@ -63,7 +62,7 @@ export const execute = async (
       return false;
     let paramInstance;
     try {
-      paramInstance = await CommandParameters.from<string>(command.meta, args);
+      paramInstance = await CommandParameters.from(command.meta, args);
     } catch (e) {
       CommandParameters.triggerError(
         message.channel.send.bind(message.channel),

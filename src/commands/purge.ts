@@ -27,7 +27,7 @@ import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 export const meta: CommandMetadata = {
-  accessLevel: 2,
+  accessLevel: 1,
   aliases: ['clear', 'prune'],
   description: 'Clear messages from a chat. Run `purge help` for help.',
   name: 'purge',

@@ -14,25 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Client, MessageReaction, User } from 'discord.js';
+import { Snowflake } from 'discord.js';
+import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 
-export const selfStarShaming = {
-  emitter: 'on',
-  eventName: 'messageReactionAdd',
-  guildablePath: 'params[0].message.guild.id',
-  restricted: true,
-  execute: async (
-    _client: Client,
-    reaction: MessageReaction,
-    user: User
-  ): Promise<boolean> => {
-    if (
-      reaction.message.author?.id === user?.id &&
-      reaction.emoji.name === '⭐'
-    )
-      reaction.message.channel.send(
-        `Self-star detected by ${user} (**${user.username}**#${user.discriminator}) on message \`${reaction.message.id}\``
-      );
-    return true;
-  },
-};
+@Entity()
+export class StarboardEntry extends BaseEntity {
+  @PrimaryColumn()
+  id: Snowflake;
+
+  @Column()
+  correspondingMessage: Snowflake;
+
+  @Column()
+  starboardChannel: Snowflake;
+
+  @Column()
+  stars: number = 0;
+
+  @Column()
+  originalChannel: Snowflake;
+}

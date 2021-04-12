@@ -30,6 +30,7 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
     const m = await message.channel.send(`$ ${args.data.commands}`, {
       code: 'xl',
     });
+    let exited: string;
     const data: Buffer[] = [];
     let col = {
       start: 0,
@@ -44,9 +45,19 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
         .slice(0, 1850);
     const update = () =>
       m.edit(
-        `$ ${args.data.commands}\n\n${get_lines(data.join(''))}\n\nColumns ${
-          col.start
-        }-${col.end} of ${data.join('').split(/(\r?\n)+/).length}`,
+        `$ ${args.data.commands}\n\n${get_lines(data.join(''))}${`\n\n${
+          exited ? exited : ''
+        }${
+          exited && col.end >= data.join('').split(/(\r?\n)+/).length
+            ? ' | '
+            : ''
+        }${
+          col.end >= data.join('').split(/(\r?\n)+/).length
+            ? ` Columns ${col.start}-${col.end} of ${
+                data.join('').split(/(\r?\n)+/).length
+              }`
+            : ''
+        }`.trim()}`,
         { code: 'xl' }
       );
     const update_lines = (t: 'up' | 'down') => {
@@ -76,14 +87,17 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
     child.on('error', handler);
 
     child.on('exit', (code, signal) => {
-      data.push(Buffer.from('Exited with '));
+      let d = 'Exited with ';
+      function push(t: Buffer) {
+        d += t.toString();
+      }
       if (signal || code) {
-        if (signal) data.push(Buffer.from(`signal ${signal}`));
-        if (code && signal) data.push(Buffer.from(' and '));
-        if (code) data.push(Buffer.from(`code ${code}`));
-      } else data.push(Buffer.from('code 0'));
-      data.push(Buffer.from('.'));
-
+        if (signal) push(Buffer.from(`signal ${signal}`));
+        if (code && signal) push(Buffer.from(' and '));
+        if (code) push(Buffer.from(`code ${code}`));
+      } else push(Buffer.from('code 0'));
+      push(Buffer.from('.'));
+      exited = d;
       update();
       coll.stop();
       res(!!code);

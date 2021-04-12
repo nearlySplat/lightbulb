@@ -3,13 +3,13 @@ process.on('message', message => {
   if (message.seq) seq = message.seq;
 });
 setInterval(() => {
-  process.send({
+  process.send?.({
     op: 2,
     seq,
     m: 'PING',
   });
 }, 1000);
-setTimeout(() => process.send({ op: 3 }), 10000);
+setTimeout(() => process.send?.({ op: 3 }), 10000);
 console.log('[PROCESS_CHILD] Logged messages.');
 /*
  * Copyright (C) 2020 Splaterxl
@@ -28,12 +28,24 @@ console.log('[PROCESS_CHILD] Logged messages.');
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import CatLoggr from 'cat-loggr/ts';
-import { Client, Snowflake, TextChannel, User, WSEventType } from 'discord.js';
+import {
+  Client,
+  Emoji,
+  MessageReaction,
+  ReactionEmoji,
+  ReactionUserManager,
+  Snowflake,
+  TextChannel,
+  User,
+  WSEventType,
+} from 'discord.js';
 import { config } from 'dotenv';
+import { get } from 'lodash';
 import { join } from 'path';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import { INTENTS } from './constants';
+import { StarboardEntry } from './entity/StarboardEntry';
 import { User as U } from './entity/User';
 import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
@@ -51,7 +63,7 @@ createConnection({
   username: 'splat',
   password: 'mabuis1',
   port: 5432,
-  entities: [U],
+  entities: [U, StarboardEntry],
   logging: true,
 })
   .then(c => {
@@ -60,8 +72,6 @@ createConnection({
     hasConnection = true;
   })
   .catch(e => ((hasConnection = false), console.error(e)));
-if (!process.send)
-  throw new Error('This process should be started in FORK mode.');
 const moduleConfig: {
   [k in Snowflake]: {
     enabledModules: string[];
@@ -96,7 +106,7 @@ for (const [event, { execute }] of loadFiles<EventType>('../events/ws')) {
   loggr.debug(`Loaded WebSocket event ${event}`);
 }
 
-type LightbulbModule = {
+export type LightbulbModule = {
   ws?: boolean;
   eventName: string;
   execute: (client: Client, ...params: any[]) => boolean | Promise<boolean>;
@@ -110,26 +120,24 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
   '../modules'
 )) {
   for (const [name, value] of Object.entries(modules)) {
-    console.log(name, value);
     client[value.emitter](value.eventName, (...params) => {
+      const id = get(
+        params[0],
+        value.guildablePath.replace(/^params\[0]\./, '')
+      ) as string;
       // @ts-ignore
       if (
         value.restricted &&
         !(
-          eval(value.guildablePath) in guildConfig ||
-          moduleConfig[
-            eval(value.guildablePath) as string
-          ]?.enabledModules.includes(`${filename}.${name}`) ||
-          (moduleConfig[eval(value.guildablePath) as string] as Record<
-            'enabledModules',
-            string[]
-          >)?.enabledModules.includes(`${filename}.*`)
+          id in moduleConfig &&
+          (moduleConfig[id].enabledModules.includes(`${filename}.${name}`) ||
+            moduleConfig[id]?.enabledModules.includes(`${filename}.*`))
         )
       )
         return;
       value.execute(client, ...params);
     });
-    console.log(`Loaded module ${name}`);
+    loggr.info(`Loaded module ${name}`);
   }
 }
 
@@ -138,10 +146,9 @@ client.on('raw', packet => {
   // We don't want this to run on unrelated packets
   if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t))
     return;
+
   // Grab the channel to check the message from
   const channel = client.channels.cache.get(packet.d.channel_id) as TextChannel;
-  // There's no need to emit if the message is cached, because the event will fire anyway for that
-  if (channel!.messages.cache.has(packet.d.message_id)) return;
   // Since we have confirmed the message is not cached, let's fetch it
   channel!.messages.fetch(packet.d.message_id).then(message => {
     // Emojis can have identifiers of name:id format, so we have to account for that case as well
@@ -149,17 +156,58 @@ client.on('raw', packet => {
       ? `${packet.d.emoji.name}:${packet.d.emoji.id}`
       : packet.d.emoji.name;
     // This gives us the reaction we need to emit the event properly, in top of the message object
-    const reaction = message.reactions.resolve(emoji);
+    let reaction =
+      packet.t === 'MESSAGE_REACTION_REMOVE' &&
+      message.reactions.resolve(emoji);
     // Adds the currently reacting user to the reaction's users collection.
     if (reaction)
       reaction.users.cache.set(
         packet.d.user_id,
         client.users.cache.get(packet.d.user_id) as User
       );
+    else {
+      reaction = ({
+        count: 0,
+        message,
+        client,
+        get emoji() {
+          return new ReactionEmoji(
+            (this as unknown) as MessageReaction,
+            packet.d.emoji
+          );
+        },
+        _emoji: packet.d.emoji,
+        partial: false,
+        me: false,
+        toJSON() {
+          return { ...this };
+        },
+        async remove(): Promise<null> {
+          return null;
+        },
+        get users() {
+          const h = {
+            get(): {} {
+              return new Proxy({}, h);
+            },
+          };
+          return new Proxy({}, h) as ReactionUserManager;
+        },
+        async fetch() {
+          return this;
+        },
+      } as unknown) as MessageReaction;
+    }
+
     // Check which type of event it is before emitting
     if (packet.t === 'MESSAGE_REACTION_ADD') {
       client.emit(
         'messageReactionAdd',
+        reaction,
+        client.users.cache.get(packet.d.user_id) as User
+      );
+      client.emit(
+        'actualMessageReactionAdd',
         reaction,
         client.users.cache.get(packet.d.user_id) as User
       );
@@ -169,7 +217,13 @@ client.on('raw', packet => {
         reaction,
         client.users.cache.get(packet.d.user_id) as User
       );
+      client.emit(
+        'actualMessageReactionRemove',
+        reaction,
+        client.users.cache.get(packet.d.user_id) as User
+      );
     }
+    console.log(reaction);
   });
 });
 

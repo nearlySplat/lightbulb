@@ -19,6 +19,7 @@ import {
   Client,
   Collection,
   Message,
+  MessageFlags,
   Team,
   Util,
 } from 'discord.js';
@@ -41,7 +42,10 @@ export const splatMarkov = {
         ...'+×÷=/_@#$%^&*()-:;!?,.',
       ].some(v => t.startsWith(v));
     let markov = fs
-      .readFileSync(path.join(__dirname, 'markov.txt'), 'utf-8')
+      .readFileSync(
+        path.join(__dirname, '..', '..', 'etc', 'markov.txt'),
+        'utf-8'
+      )
       .split(EOL);
     if (
       !message.content.match(/^splat ?pls/) &&
@@ -54,7 +58,10 @@ export const splatMarkov = {
     ) {
       if (INVALID(message.content)) return false;
       markov.push(message.cleanContent);
-      fs.writeFileSync(path.join(__dirname, 'markov.txt'), markov.join(EOL));
+      fs.writeFileSync(
+        path.join(__dirname, '..', '..', 'etc', 'markov.txt'),
+        markov.join(EOL)
+      );
       return true;
     }
     const words = markov.reduce((a, b) => a + ' ' + b).split(/ +/);
@@ -131,7 +138,10 @@ export const splatMarkov = {
           fn: (m: Message) => string
         ) => string[])(v => v.cleanContent)
       );
-      fs.writeFileSync(path.join(__dirname, 'markov.txt'), markov.join(EOL));
+      fs.writeFileSync(
+        path.join(__dirname, '..', '..', 'etc', 'markov.txt'),
+        markov.join(EOL)
+      );
       message.channel.send(
         `Successfully loaded ${
           msgs instanceof Collection ? msgs.size : 1
@@ -139,6 +149,7 @@ export const splatMarkov = {
       );
       return true;
     }
+    message.channel.startTyping();
     let getWord = () =>
         markov.map(v => v.match('\\S+')?.[0] ?? v)[
           Math.floor(Math.random() * markov.length)
@@ -216,7 +227,6 @@ export const splatMarkov = {
     makeSentence();
     const argR = new RegExp('\\b' + args[0] + '\\b');
     if (args[0] && !argR.test(text)) {
-      message.channel.startTyping(50);
       for (let i = 0; i < 30 && !argR.test(text); i++) {
         text = getWord();
         word = text;
@@ -226,11 +236,17 @@ export const splatMarkov = {
         return message.channel
           .send("I couldn't make a sentence for that word...")
           .then(() => true);
-      message.channel.stopTyping();
     }
-    message.channel.send(
-      `Well, splat once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
-    );
+    message.channel
+      .send(
+        `Well, splat once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
+      )
+      .then(t =>
+        t.edit({
+          flags: MessageFlags.FLAGS.SUPPRESS_EMBEDS,
+        })
+      );
+    message.channel.stopTyping(true);
     return true;
   },
 };
