@@ -49,9 +49,8 @@ export const execute = async (
         commands.find(value => value.meta?.aliases.includes(args[0]) ?? false),
       commandName = args[0];
     if (!command) {
-      if (tags.has(args.join(' '))) {
-        console.log('no command, resorting to tag');
-        let result = tags.get(args.join(' '));
+      if (tags.has(commandName) || tags.has(args.join(' '))) {
+        let result = tags.get(args.join(' ')) || tags.get(commandName);
         if (Array.isArray(result))
           result = result[Math.floor(Math.random() * result.length)];
         result = i18n.interpolate(result, { args0: args[0] });
