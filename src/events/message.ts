@@ -18,7 +18,12 @@ import { Client, ClientUser, Guild, GuildMember, Message } from 'discord.js';
 import { commands } from '..';
 import { PREFIXES } from '../constants';
 import { Command } from '../types';
-import { CommandParameters, getAccessLevel, getCurrentLevel } from '../util';
+import {
+  CommandParameters,
+  getAccessLevel,
+  getCurrentLevel,
+  i18n,
+} from '../util';
 import { tags } from '../util/tags';
 
 export const execute = async (
@@ -49,6 +54,7 @@ export const execute = async (
         let result = tags.get(args.join(' '));
         if (Array.isArray(result))
           result = result[Math.floor(Math.random() * result.length)];
+        result = i18n.interpolate(result, { args0: args[0] });
         message.channel.send(result);
         return true;
       } else return false;
