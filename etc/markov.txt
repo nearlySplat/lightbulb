@@ -1,3 +1,0 @@
-this is a file for sentences to be used in markovs (programmatically generated sentences)
-all lines will be included, even empty ones
-some characters may be stripped by Discord.
