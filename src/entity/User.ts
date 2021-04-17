@@ -15,42 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Snowflake } from 'discord.js';
-import {
-  Entity,
-  BaseEntity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ObjectType,
-} from 'typeorm';
-import { hasConnection } from '..';
-
-@Entity()
-export class User extends BaseEntity {
-  constructor() {
-    super();
-    this.created_at = new Date();
-    this.updated_at = this.created_at;
-  }
-  @PrimaryGeneratedColumn('increment')
+export class User {
   id!: number;
 
-  @CreateDateColumn()
   created_at!: Date;
 
-  @UpdateDateColumn()
   updated_at: Date;
 
-  @Column('text')
   subjectPronoun = 'they';
-  @Column('text')
   objectPronoun = 'them';
-  @Column('text')
   possessiveDeterminer = 'their';
-  @Column('text')
   possessivePronoun = 'theirs';
-  @Column('text')
   singularOrPluralPronoun = 'plural';
 
   get pronouns() {
@@ -63,16 +38,10 @@ export class User extends BaseEntity {
     };
   }
 
-  @Column()
   userid!: Snowflake;
 
-  @Column()
   isDeveloper: boolean;
-
-  static get findOneSafe(): typeof hasConnection extends boolean
-    ? typeof User.findOne
-    : () => Promise<null> {
-    if (hasConnection) return User.findOne;
-    else return async (): Promise<null> => null;
+  static async findOne(): Promise<null> {
+    return null;
   }
 }

@@ -15,22 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Snowflake } from 'discord.js';
-import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 
-@Entity()
-export class StarboardEntry extends BaseEntity {
-  @PrimaryColumn()
+export class StarboardEntry {
   id: Snowflake;
 
-  @Column()
   correspondingMessage: Snowflake;
 
-  @Column()
   starboardChannel: Snowflake;
 
-  @Column()
   stars: number = 0;
 
-  @Column()
   originalChannel: Snowflake;
+
+  static async findOne(): Promise<null> {
+    return null;
+  }
 }

@@ -55,23 +55,6 @@ export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
-export let connectionName = 'default';
-export let hasConnection = false;
-createConnection({
-  type: 'postgres',
-  database: 'splat',
-  username: 'splat',
-  password: 'mabuis1',
-  port: 5432,
-  entities: [U, StarboardEntry],
-  logging: true,
-})
-  .then(c => {
-    console.log('Connected to database', c.name);
-    connectionName = c.name;
-    hasConnection = true;
-  })
-  .catch(e => ((hasConnection = false), console.error(e)));
 const moduleConfig: {
   [k in Snowflake]: {
     enabledModules: string[];
