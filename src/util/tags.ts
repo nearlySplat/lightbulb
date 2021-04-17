@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import * as rawTags from './tags.json';
+import * as rawTags from '../../etc/tags.json';
 export const tags = new Map<string, string>(
   Object.entries(rawTags).map(v => (console.log(v), v)) as [string, string][]
 );
