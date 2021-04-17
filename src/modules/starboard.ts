@@ -23,13 +23,13 @@ import {
   TextChannel,
   User,
 } from 'discord.js';
-import { LightbulbModule } from '..';
+import { LightbulbModule, loggr } from '..';
 import { StarboardEntry } from '../entity/StarboardEntry';
 
 export const reactionStarAdd: LightbulbModule = {
   name: 'reactionStarAdd',
   eventName: 'actualMessageReactionAdd',
-  guildablePath: 'params[0].message?.guild?.id',
+  guildablePath: 'params[0].message.guild?.id',
   restricted: true,
   emitter: 'on',
   async execute(client, reaction: MessageReaction, user: User) {
@@ -41,9 +41,8 @@ export const reactionStarAdd: LightbulbModule = {
       reaction.message = await reaction.message.fetch();
     console.log('recieved event');
     const entry = await getEntry(reaction);
-    if (entry.stars === reaction.count) return;
-    entry.stars = reaction.count;
     if (!entry.starboardChannel) return;
+    entry.stars = reaction.count;
     const channel = (await client.channels.fetch(
       entry.starboardChannel
     )) as TextChannel;
@@ -143,6 +142,7 @@ export const reactionStarRemove: LightbulbModule = {
 async function getEntry(reaction: MessageReaction) {
   let entry = await StarboardEntry.findOne(reaction.message.id);
   if (!entry) {
+    loggr.debug('Had to create new entry.');
     entry = new StarboardEntry();
     entry.id = reaction.message.id;
     entry.starboardChannel =

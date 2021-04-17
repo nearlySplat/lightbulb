@@ -10,3 +10,5 @@ src/migration/*
 
 pnpm-lock.yaml
 src/util/tags.json
+etc/markov.txt
+etc/

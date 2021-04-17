@@ -1,27 +1,7 @@
 {
-  "compilerOptions": {
-    "alwaysStrict": true,
-    "checkJs": true,
-    "allowUnusedLabels": false,
-    "allowUnreachableCode": false,
-    "resolveJsonModule": true,
-    "outDir": "dist/",
-    "target": "ESNext",
-    "skipLibCheck": true,
-    "strict": true,
-    "moduleResolution": "node",
-    "module": "CommonJS",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "strictNullChecks": false,
-    "useDefineForClassFields": true,
-    "esModuleInterop": true,
-    "newLine": "lf",
-    "pretty": true,
-    "diagnostics": true,
-    "extendedDiagnostics": true
-  },
+  "compilerOptions": { "rootDir": "./src", "outDir": "./dist" },
   "include": ["src/**/*"],
   "compileOnSave": false,
-  "exclude": ["dist/**"]
+  "exclude": ["dist/**"],
+  "extends": "@splatterxl/tsconfig"
 }

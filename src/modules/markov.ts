@@ -175,34 +175,41 @@ export const splatMarkov = {
       );
     function makeSentence() {
       for (let i = 0; i < num; i++) {
-        const sarr = markov
+        const matched_sentences = markov
           .map(v => v.match(regexp()))
           .filter(v => v)
           .flat();
-        const obj: Record<string, number> = sarr.length ? {} : { '.': 1 };
+        const occurences: Record<string, number> = {};
         if (
-          (sarr.length === 0 ||
-            !sarr.every(v => v.toLowerCase() !== word.toLowerCase())) &&
+          (matched_sentences.length === 0 ||
+            !matched_sentences.every(
+              v => v.toLowerCase() !== word.toLowerCase()
+            )) &&
           text.split(/\s+/).length <= 5
         ) {
-          // text += [...text].reverse()[0] === "." ? "" : ".";
           word = getWord();
         } else {
-          for (const a of sarr)
-            obj[a as string] = obj[a as string] ? obj[a as string] + 1 : 1;
-          if (sarr.length) {
-            let _seq = Object.entries(obj)
+          for (const iterator of matched_sentences)
+            occurences[iterator as string] = occurences[iterator as string]
+              ? occurences[iterator as string] + 1
+              : 1;
+          if (matched_sentences.length) {
+            let tmpPrediction = Object.entries(occurences)
               .sort(([, a], [, b]) => b - a)
               .map(v => v[0]);
-            let newSeq = _seq.filter(([, v], _, a) => v === a[0][1]);
-            newSeq = newSeq.length < 3 ? _seq.slice(0, 3) : newSeq;
-            _seq = shuffle(newSeq);
-            let seq: string = _seq[
-              Math.floor(Math.random() * _seq.length)
+            let prediction = tmpPrediction.filter(
+              ([, v], _, a) => v === a[0][1]
+            );
+            prediction =
+              prediction.length < 3 ? tmpPrediction.slice(0, 3) : prediction;
+            tmpPrediction = shuffle(prediction);
+            let actualPrediction: string = tmpPrediction[
+              Math.floor(Math.random() * tmpPrediction.length)
             ].split(/\s+/) as any;
-            seq = seq[1] ?? seq[0];
+            actualPrediction = actualPrediction[1] ?? actualPrediction[0];
+            const alreadyPredicted = text.split(/\s+/).reverse();
             function check(n: number) {
-              return seq == text.split(/\s+/).reverse()[n];
+              return actualPrediction == alreadyPredicted[n];
             }
             function recCheck(n: number) {
               let i = 0,
@@ -213,33 +220,34 @@ export const splatMarkov = {
               }
               return c;
             }
-            if (seq === word || recCheck(5)) {
-              if (text.split(/\s+/).length < 5) word = getWord();
+            if (actualPrediction === word || recCheck(5)) {
+              if (alreadyPredicted.length < 5) word = getWord();
+              else break;
             } else {
-              const t = seq;
+              const t = actualPrediction;
               text += t ? ' ' + t : '';
-              word = seq;
+              word = actualPrediction;
             }
           }
         }
       }
+      console.log('Generated sentence: ', text);
     }
     makeSentence();
     const argR = new RegExp('\\b' + args[0] + '\\b');
     if (args[0] && !argR.test(text)) {
-      for (let i = 0; i < 30 && !argR.test(text); i++) {
+      for (let i = 0; i < 1000 && !argR.test(text); i++) {
         text = getWord();
         word = text;
         makeSentence();
       }
-      if (!argR.test(text))
-        return message.channel
-          .send("I couldn't make a sentence for that word...")
-          .then(() => true);
+      if (!argR.test(text)) text = 'NONE_FOUND_ENONEFOUND';
     }
     message.channel
       .send(
-        `Well, splat once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
+        text !== 'NONE_FOUND_ENONEFOUND'
+          ? `Well, splat once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
+          : "I couldn't make a sentence for that word..."
       )
       .then(t =>
         t.edit({

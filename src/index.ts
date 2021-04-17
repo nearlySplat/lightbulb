@@ -123,16 +123,22 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
     client[value.emitter](value.eventName, (...params) => {
       const id = get(
         params[0],
-        value.guildablePath.replace(/^params\[0]\./, '')
+        value.guildablePath
+          .replace(/^params\[0]\??\./, '')
+          .replace(/\?\./g, '.')
       ) as string;
-      // @ts-ignore
+      loggr.debug(
+        moduleConfig[id]?.enabledModules.includes(`${filename}.${name}`) ||
+          moduleConfig[id]?.enabledModules.includes(`${filename}.*`),
+        id
+      );
       if (
         value.restricted &&
-        !(
-          id in moduleConfig &&
-          (moduleConfig[id].enabledModules.includes(`${filename}.${name}`) ||
-            moduleConfig[id]?.enabledModules.includes(`${filename}.*`))
-        )
+        (!(id in moduleConfig) ||
+          !(
+            moduleConfig[id]?.enabledModules.includes(`${filename}.${name}`) ||
+            moduleConfig[id]?.enabledModules.includes(`${filename}.*`)
+          ))
       )
         return;
       value.execute(client, ...params);
@@ -150,7 +156,7 @@ client.on('raw', packet => {
   // Grab the channel to check the message from
   const channel = client.channels.cache.get(packet.d.channel_id) as TextChannel;
   // Since we have confirmed the message is not cached, let's fetch it
-  channel!.messages.fetch(packet.d.message_id).then(message => {
+  channel!.messages.fetch(packet.d.message_id, true, true).then(message => {
     // Emojis can have identifiers of name:id format, so we have to account for that case as well
     const emoji = packet.d.emoji.id
       ? `${packet.d.emoji.name}:${packet.d.emoji.id}`
@@ -223,7 +229,6 @@ client.on('raw', packet => {
         client.users.cache.get(packet.d.user_id) as User
       );
     }
-    console.log(reaction);
   });
 });
 
