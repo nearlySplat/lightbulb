@@ -16,7 +16,6 @@
  */
 export class Markov {
   public static SENTENCE_BOUNDARIES = /\b[!?.\n]+\b/gi;
-<<<<<<< HEAD
   public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{]/g;
   public static WORD = new RegExp(
     `(${Markov.WORD_JOINERS})?\\b\\w+\\b((${Markov.WORD_JOINERS}\\b\\w*\\b)*)`,
@@ -33,18 +32,6 @@ export class Markov {
   );
   public static TUPLE_WORD_MATCH = (existing: RegExp) =>
     new RegExp(`${existing.source}\\s+${Markov.WORD.source}`, 'gi');
-=======
-  public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+\-\/\\=#]/g;
-  public static WORD = /(\b\w+\b([-:;,@\$%^&*!?.€£¥₩+\-\/\\=#)\][}{]\b\w*\b)*)/gi;
-  public static WORD_MATCH = (word: string) =>
-    new RegExp(`\\b${word}\\b(${this.WORD_JOINERS.source}\\b\\w*\\b)?`, 'gi');
-  public static SENTENCE = new RegExp(
-    `${this.WORD.source}+${this.SENTENCE_BOUNDARIES.source}`,
-    'gi'
-  );
-  public static TUPLE_WORD_MATCH = (existing: RegExp) =>
-    new RegExp(`${existing.source}\\s+${this.WORD.source}`, 'gi');
->>>>>>> 170c22b (refactor: markov refactor)
   constructor(arr?: string | string[]) {
     if (arr) this.seed(arr);
   }
@@ -75,11 +62,7 @@ export class Markov {
     this.endingWords = this._splittedSentences.map(value => value.reverse()[0]);
     return this;
   }
-<<<<<<< HEAD
   public generate(length = 0, options: MarkovGenerateOptions = {}) {
-=======
-  public generate(length = 0, options: MarkovTypes.GenerateOptions = {}) {
->>>>>>> 170c22b (refactor: markov refactor)
     let text = options.starting
       ? options.starting
       : options.ending
@@ -107,17 +90,9 @@ export class Markov {
         word = matched;
       }
     } while (
-<<<<<<< HEAD
       (length ? text.split(/\s+/).length < length : false) ||
       (options.hasToHave ? !hasToHaveRegExp.test(text) : false) ||
       !finished
-=======
-      length
-        ? text.split(/\s+/).length < length
-        : options.hasToHave
-        ? !hasToHaveRegExp.test(text)
-        : !finished
->>>>>>> 170c22b (refactor: markov refactor)
     );
     return text;
   }
@@ -131,7 +106,6 @@ export class Markov {
       Math.floor(Math.random() * this.startingWords.length)
     ];
   }
-<<<<<<< HEAD
   public analyze() {
     const thisMatchesKeys = this.matches.keys();
     const starts = {
@@ -170,16 +144,4 @@ export interface MarkovGenerateOptions {
   length?: number;
   starting?: string;
   ending?: string;
-=======
-}
-
-namespace MarkovTypes {
-  export interface GenerateOptions {
-    hasToHave?: MarkovTypes.Matchable<typeof Markov.WORD>;
-    length?: number;
-    starting?: MarkovTypes.Matchable<typeof Markov.WORD>;
-    ending?: MarkovTypes.Matchable<typeof Markov.WORD>;
-  }
-  export type Matchable<_T extends RegExp, M = string> = M;
->>>>>>> 170c22b (refactor: markov refactor)
 }
