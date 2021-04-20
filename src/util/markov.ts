@@ -19,13 +19,13 @@ export class Markov {
   public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+\-\/\\=#]/g;
   public static WORD = /(\b\w+\b([-:;,@\$%^&*!?.€£¥₩+\-\/\\=#)\][}{]\b\w*\b)*)/gi;
   public static WORD_MATCH = (word: string) =>
-    new RegExp(`\\b${word}\\b(${this.WORD_JOINERS.source}\\b\\w*\\b)?`, 'gi');
+    new RegExp(`\\b${word}\\b(${Markov.WORD_JOINERS.source}\\b\\w*\\b)?`, 'gi');
   public static SENTENCE = new RegExp(
-    `${this.WORD.source}+${this.SENTENCE_BOUNDARIES.source}`,
+    `${Markov.WORD.source}+${Markov.SENTENCE_BOUNDARIES.source}`,
     'gi'
   );
   public static TUPLE_WORD_MATCH = (existing: RegExp) =>
-    new RegExp(`${existing.source}\\s+${this.WORD.source}`, 'gi');
+    new RegExp(`${existing.source}\\s+${Markov.WORD.source}`, 'gi');
   constructor(arr?: string | string[]) {
     if (arr) this.seed(arr);
   }
