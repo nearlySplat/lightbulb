@@ -12,7 +12,7 @@ setInterval(() => {
 setTimeout(() => process.send?.({ op: 3 }), 10000);
 console.log('[PROCESS_CHILD] Logged messages.');
 /*
- * Copyright (C) 2020 Splaterxl
+ * Copyright (C) 2020 Splatterxl
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
