@@ -84,11 +84,9 @@ export class Markov {
         word = matched;
       }
     } while (
-      length
-        ? text.split(/\s+/).length < length
-        : options.hasToHave
-        ? !hasToHaveRegExp.test(text)
-        : !finished
+      (length ? text.split(/\s+/).length < length : false) ||
+      (options.hasToHave ? !hasToHaveRegExp.test(text) : false) ||
+      !finished
     );
     return text;
   }
@@ -101,6 +99,37 @@ export class Markov {
     return this.startingWords[
       Math.floor(Math.random() * this.startingWords.length)
     ];
+  }
+  public analyze() {
+    const thisMatchesKeys = this.matches.keys();
+    const starts = {
+      all: this.startingWords,
+      unique: new Set(this.startingWords),
+      top: {} as Record<string, number>,
+    };
+    for (const iterator of starts.unique)
+      starts.top[iterator] = starts.all.filter(
+        value => value === iterator
+      ).length;
+    const ends = {
+      all: this.endingWords,
+      unique: new Set(this.endingWords),
+      top: {} as Record<string, number>,
+    };
+    for (const iterator of ends.unique)
+      ends.top[iterator] = ends.all.filter(value => value === iterator).length;
+    const all = {
+      get all() {
+        return [...{ [Symbol.iterator]: () => thisMatchesKeys }];
+      },
+      get unique() {
+        return new Set(this.all);
+      },
+      top: {} as Record<string, number>,
+    };
+    for (const iterator of all.unique)
+      all.top[iterator] = all.all.filter(value => value === iterator).length;
+    return { starts, ends, all };
   }
 }
 
