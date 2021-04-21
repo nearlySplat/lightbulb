@@ -56,7 +56,7 @@ export class Markov {
     this.endingWords = this._splittedSentences.map(value => value.reverse()[0]);
     return this;
   }
-  public generate(length = 0, options: MarkovTypes.GenerateOptions = {}) {
+  public generate(length = 0, options: MarkovGenerateOptions = {}) {
     let text = options.starting
       ? options.starting
       : options.ending
@@ -104,12 +104,9 @@ export class Markov {
   }
 }
 
-namespace MarkovTypes {
-  export interface GenerateOptions {
-    hasToHave?: MarkovTypes.Matchable<typeof Markov.WORD>;
-    length?: number;
-    starting?: MarkovTypes.Matchable<typeof Markov.WORD>;
-    ending?: MarkovTypes.Matchable<typeof Markov.WORD>;
-  }
-  export type Matchable<_T extends RegExp, M = string> = M;
+export interface MarkovGenerateOptions {
+  hasToHave?: string;
+  length?: number;
+  starting?: string;
+  ending?: string;
 }
