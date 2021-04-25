@@ -20,6 +20,10 @@ import { join } from 'path';
 import { startedTimestamp } from '..';
 import { CLIENT_COLOUR, INTENTS } from '../constants';
 import { CommandMetadata, Context } from '../types';
+import fs from 'fs';
+import child_process from 'child_process';
+const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
+const commit = child_process.execSync('git log -n 1').toString();
 export const execute = async ({
   message,
   commands,
@@ -28,7 +32,7 @@ export const execute = async ({
 }: Context): Promise<boolean> => {
   const events = readdirSync(join(__dirname, '..', 'events'));
   const _ = new MessageEmbed()
-    .setAuthor('Debug Information')
+    .setAuthor(`Lightbulb v${pkg.version} Debug Information`)
     .setDescription(
       `
       - I am currently on shard \`${message.guild?.shardID}\` with \`${
@@ -58,6 +62,12 @@ export const execute = async ({
           - Command handler latency is \`${
             Date.now() - commandHandlerStarted
           }ms\`.
+	  - I have ${
+      Object.keys(pkg.dependencies).length
+    } Node.js dependencies installed.
+	  - I am on commit \`${
+      commit.match(/^.*/)?.[0] ?? 'root'
+    }\`: \`\`\`xl\n${commit}\n\`\`\`.
   `.replace(/\n +/g, '\n')
     )
     .setColor(CLIENT_COLOUR)

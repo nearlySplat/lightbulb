@@ -1,4 +1,8 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn license && yarn format
+fish scripts/licenser.fish;
+if ! node scripts/checkSemverCommits.js
+then
+  echo Please check your version and increment according to your changes!
+fi
