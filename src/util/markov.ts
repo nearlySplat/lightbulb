@@ -16,10 +16,16 @@
  */
 export class Markov {
   public static SENTENCE_BOUNDARIES = /\b[!?.\n]+\b/gi;
-  public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+\-\/\\=#]/g;
-  public static WORD = /(\b\w+\b([-:;,@\$%^&*!?.€£¥₩+\-\/\\=#)\][}{]\b\w*\b)*)/gi;
+  public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{]/g;
+  public static WORD = new RegExp(
+    `(${Markov.WORD_JOINERS})?\\b\\w+\\b((${Markov.WORD_JOINERS}\\b\\w*\\b)*)`,
+    'gi'
+  );
   public static WORD_MATCH = (word: string) =>
-    new RegExp(`\\b${word}\\b(${Markov.WORD_JOINERS.source}\\b\\w*\\b)?`, 'gi');
+    new RegExp(
+      `(${Markov.WORD_JOINERS.source})*\\b${word}\\b(${Markov.WORD_JOINERS.source}\\b\\w*\\b)?`,
+      'gi'
+    );
   public static SENTENCE = new RegExp(
     `${Markov.WORD.source}+${Markov.SENTENCE_BOUNDARIES.source}`,
     'gi'
