@@ -14,7 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import rawTags from '../../etc/tags.json';
+import fs from 'fs';
+const rawTags = JSON.parse(
+  fs.readFileSync(__dirname + '/../../etc/tags.json', 'utf-8')
+);
 export const tags = new Map<string, string>(
   Object.entries(rawTags).map(v => (console.log(v), v)) as [string, string][]
 );

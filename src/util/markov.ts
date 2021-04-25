@@ -129,7 +129,7 @@ export class Markov {
         return [...{ [Symbol.iterator]: () => thisMatchesKeys }];
       },
       get unique() {
-        return new Set(this.all);
+        return new Set<string>(this.all);
       },
       top: {} as Record<string, number>,
     };
