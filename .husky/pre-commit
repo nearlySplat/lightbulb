@@ -2,8 +2,3 @@
 . "$(dirname "$0")/_/husky.sh"
 
 fish scripts/licenser.fish;
-if ! node scripts/checkSemverCommits.js
-then
-  echo Please check your version and increment according to your changes!
-  exit 1
-fi
