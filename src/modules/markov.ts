@@ -82,7 +82,7 @@ export const splatMarkov = {
             ).toFixed(2)}%).` +
             `\n\nI have a repotoire of ${
               results.starts.unique.size
-            } words to start a sentence with, the top being ${Object.keys(
+            } words to start a sentence with, the top being ${Object.entries(
               results.starts.top
             )
               .slice(0, 3)
