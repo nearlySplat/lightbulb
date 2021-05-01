@@ -14,6 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+export function escapeRegExp(str: string | RegExp) {
+  if (str instanceof RegExp) str = str.source;
+  str = str as string;
+  str = str.replace(/[\\[\]()\.\-\/*+{}]/gi, '\\$&');
+  return str;
+}
 export class Markov {
   public static SENTENCE_BOUNDARIES = /\b[!?.\n]+\b/gi;
   public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{\x00-\x1F\u2000-\u200f]/g;
@@ -23,7 +30,9 @@ export class Markov {
   );
   public static WORD_MATCH = (word: string) =>
     new RegExp(
-      `(${Markov.WORD_JOINERS.source})*${word}(${Markov.WORD_JOINERS.source}\\b\\w*\\b)?`,
+      `(${Markov.WORD_JOINERS.source})*${escapeRegExp(word)}(${
+        Markov.WORD_JOINERS.source
+      }\\b\\w*\\b)?`,
       'gi'
     );
   public static SENTENCE = new RegExp(
