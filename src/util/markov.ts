@@ -16,14 +16,14 @@
  */
 export class Markov {
   public static SENTENCE_BOUNDARIES = /\b[!?.\n]+\b/gi;
-  public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{]/g;
+  public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{\x00-\x1F\u2000-\u200f]/g;
   public static WORD = new RegExp(
-    `(${Markov.WORD_JOINERS})?\\b\\w+\\b((${Markov.WORD_JOINERS}\\b\\w*\\b)*)`,
+    `(${Markov.WORD_JOINERS.source})?\\w+(((${Markov.WORD_JOINERS.source}+)(\\w+)?)*)`,
     'gi'
   );
   public static WORD_MATCH = (word: string) =>
     new RegExp(
-      `(${Markov.WORD_JOINERS.source})*\\b${word}\\b(${Markov.WORD_JOINERS.source}\\b\\w*\\b)?`,
+      `(${Markov.WORD_JOINERS.source})*${word}(${Markov.WORD_JOINERS.source}\\b\\w*\\b)?`,
       'gi'
     );
   public static SENTENCE = new RegExp(
@@ -75,6 +75,9 @@ export class Markov {
       : null = options.hasToHave ? Markov.WORD_MATCH(options.hasToHave) : null;
     do {
       for (; !finished; ) {
+        const wordJoins = Markov.WORD_JOINERS.exec(word);
+        if (wordJoins)
+          word = word.slice(+word.lastIndexOf(wordJoins[wordJoins.length]));
         let matched: string = this.matches.get(word) as any;
         console.log('current sentence: ', text, ' and next match: ', matched);
         matched = matched?.[Math.floor(Math.random() * matched.length)];
