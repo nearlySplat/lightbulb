@@ -84,9 +84,6 @@ export class Markov {
       : null = options.hasToHave ? Markov.WORD_MATCH(options.hasToHave) : null;
     do {
       for (; !finished; ) {
-        const wordJoins = Markov.WORD_JOINERS.exec(word);
-        if (wordJoins)
-          word = word.slice(+word.lastIndexOf(wordJoins[wordJoins.length]));
         let matched: string = this.matches.get(word) as any;
         console.log('current sentence: ', text, ' and next match: ', matched);
         matched = matched?.[Math.floor(Math.random() * matched.length)];
