@@ -2,5 +2,5 @@
 . $(dirname $0)/_/husky.sh
 
 git checkout no-db
-git merge development --rebase
+git merge development 
 git checkout development
