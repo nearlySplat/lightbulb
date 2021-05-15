@@ -3,12 +3,9 @@ dist/
 node_modules/
 yarn.lock
 *.code-workspace
-src/modules/config.json
-src/modules/markov.txt
 src/migration/* 
 
 
 pnpm-lock.yaml
-src/util/tags.json
-etc/markov.txt
 etc/
+!etc/config.yml.example
