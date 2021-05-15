@@ -15,10 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Intents } from 'discord.js';
+import { parse } from 'yaml';
+import { readFileSync as readFile } from 'fs';
+import { join } from 'path';
+import { YAMLConfig } from './types';
+import { add } from 'lodash';
+
+export const config = parse(
+  readFile(join(__dirname, '..', 'etc', 'config.yml'), 'utf8')
+) as YAMLConfig;
 
 // TODO(nearlySplat): add more constants
-export const PREFIXES = ['💡', 'bulb', 'pls'];
-export const WHITELIST = ['728342296696979526', '606279329844035594'];
+export const PREFIXES = Array.isArray(config.bot.prefix)
+  ? config.bot.prefix
+  : [config.bot.prefix];
+export const WHITELIST = [...(config.whitelist || config.owner.id)];
 export const __prod__ = process.env.NODE_ENV === 'production';
 export const INTENTS = [
   Intents.FLAGS.GUILD_BANS,
@@ -30,13 +41,20 @@ export const INTENTS = [
   Intents.FLAGS.GUILD_PRESENCES,
 ].reduce((prev, current) => prev + current);
 export const CLIENT_COLOUR = 0xfcda7d;
-export enum ERROR_CODES {
-  BAN_UNSUCCESSFUL,
-  DISALLOWED_TARGET,
-  TARGET_IS_OWNER,
-  SELF_IS_MODERATION_TARGET,
-  UNBAN_UNSUCCESSFUL,
-  UNBAN_NOT_BANNED,
-}
-export const ERROR_MESSAGES = Object.keys(ERROR_CODES);
+export const ERROR_MESSAGES = [
+  'BAN_UNSUCCESSFUL',
+  'DISALLOWED_TARGET',
+  'TARGET_IS_OWNER',
+  'SELF_IS_MODERATION_TARGET',
+  'UNBAN_UNSUCCESSFUL',
+  'UNBAN_NOT_BANNED',
+];
+export const generateErrorCode = (m: string) =>
+  m
+    .split('')
+    .map(v => v.charCodeAt(0))
+    .reduce(add);
+export const ERROR_CODES = Object.fromEntries(
+  ERROR_MESSAGES.map(v => [v, generateErrorCode(v)])
+);
 export const PAGINATION_REACTIONS = ['⬅️', '◀️', '⏹', '▶️', '➡️'];

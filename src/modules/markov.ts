@@ -21,9 +21,8 @@ import {
   Message,
   MessageFlags,
   Team,
-  Util,
 } from 'discord.js';
-import { PREFIXES } from '../constants';
+import { config, PREFIXES } from '../constants';
 import fs from 'graceful-fs';
 import path from 'path';
 import { EOL } from 'os';
@@ -46,13 +45,15 @@ export const splatMarkov = {
         ...'+×÷=/_@#$%^&*()-:;!?,.',
       ].some(v => t.startsWith(v));
     if (
-      !message.content.match(/^splat ?pls/) &&
-      message.author.id !== '728342296696979526'
+      message.content !==
+        config.owner.markov.trigger + config.owner.markov.suffix &&
+      message.author.id !== config.owner.id
     )
       return false;
     else if (
-      !message.content.match(/^splat ?pls/) &&
-      message.author.id === '728342296696979526'
+      message.content !==
+        config.owner.markov.trigger + config.owner.markov.suffix &&
+      message.author.id !== config.owner.id
     ) {
       if (INVALID(message.content)) return false;
       markov.push(message.cleanContent);
@@ -72,8 +73,12 @@ export const splatMarkov = {
       return message.channel
         .send(
           (results.all.unique.size >= 50
-            ? "Hmmm... splat has an extensive vocabulary. I'll do my best to analyze it!"
-            : "I've successfully analyzed splat's markov.") +
+            ? 'Hmmm... ' +
+              config.owner.markov.trigger +
+              "has an extensive vocabulary. I'll do my best to analyze it!"
+            : "I've successfully analyzed " +
+              config.owner.markov.trigger +
+              "'s markov.") +
             `\n\nThere are \`${
               instance.sentences.length
             }\` sentences available for me to analyze, \`${longerThan5}\` of which are more than 5 words long (${(
@@ -124,9 +129,11 @@ export const splatMarkov = {
             : !INVALID(t.content)
         );
       markov.push(
-        ...((msgs instanceof Collection ? msgs : [msgs]).map as (
-          fn: (m: Message) => string
-        ) => string[])(v => v.cleanContent)
+        ...(
+          (msgs instanceof Collection ? msgs : [msgs]).map as (
+            fn: (m: Message) => string
+          ) => string[]
+        )(v => v.cleanContent)
       );
       fs.writeFileSync(
         path.join(__dirname, '..', '..', 'etc', 'markov.txt'),
@@ -149,7 +156,7 @@ export const splatMarkov = {
     message.channel
       .send(
         text !== 'NONE_FOUND_ENONEFOUND'
-          ? `Well, splat once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
+          ? `Well, ${config.owner.markov.trigger} once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
           : "I couldn't make a sentence for that word..."
       )
       .then(t =>

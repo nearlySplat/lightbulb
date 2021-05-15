@@ -127,3 +127,27 @@ export type SlashCommandResponse = {
     flags?: 64;
   };
 };
+
+export interface YAMLConfig {
+  owner: Owner;
+  bot: Bot;
+  whitelist: null | string[];
+}
+
+export interface Owner {
+  name: string;
+  markov: MarkovConfig;
+  id: string;
+}
+
+export interface MarkovConfig {
+  trigger: string;
+  suffix: string;
+  name: string;
+  file: string | null;
+}
+
+export interface Bot {
+  prefix: string[] | string;
+  name: string;
+}
