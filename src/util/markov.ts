@@ -18,12 +18,13 @@
 export function escapeRegExp(str: string | RegExp) {
   if (str instanceof RegExp) str = str.source;
   str = str as string;
-  str = str.replace(/[\\[\]()\.\-\/*+{}]/gi, '\\$&');
+  str = str.replace(/[\\[\]()\.\-\/*?+{}]/gi, '\\$&');
   return str;
 }
 export class Markov {
   public static SENTENCE_BOUNDARIES = /\b[!?.\n]+\b/gi;
-  public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{\x00-\x1F\u2000-\u200f]/g;
+  public static WORD_JOINERS =
+    /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{\x00-\x1F\u2000-\u200f]/g;
   public static WORD = new RegExp(
     `(${Markov.WORD_JOINERS.source})?\\w+(((${Markov.WORD_JOINERS.source}+)(\\w+)?)*)`,
     'gi'
