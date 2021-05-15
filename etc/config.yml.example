@@ -1,0 +1,13 @@
+author:
+  name: # how you wish to appear in the bot
+  markov:
+    trigger:
+    suffix: pls
+    name:
+    file: etc/markov
+  id: # your Dickord user ID
+
+bot: 
+  prefix: # this can be a list or a string
+  name: # The name of the bot
+whitelist: # leave blank if only author
