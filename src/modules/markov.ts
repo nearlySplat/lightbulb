@@ -45,15 +45,17 @@ export const splatMarkov = {
         ...'+×÷=/_@#$%^&*()-:;!?,.',
       ].some(v => t.startsWith(v));
     if (
-      message.content !==
-        config.owner.markov.trigger + config.owner.markov.suffix &&
+      !message.content.startsWith(
+        config.owner.markov.trigger + config.owner.markov.suffix
+      ) &&
       message.author.id !== config.owner.id
     )
       return false;
     else if (
-      message.content !==
-        config.owner.markov.trigger + config.owner.markov.suffix &&
-      message.author.id !== config.owner.id
+      !message.content.startsWith(
+        config.owner.markov.trigger + config.owner.markov.suffix
+      ) &&
+      message.author.id === config.owner.id
     ) {
       if (INVALID(message.content)) return false;
       markov.push(message.cleanContent);
@@ -147,6 +149,13 @@ export const splatMarkov = {
       );
       return true;
     }
+    console.log(
+      message.content,
+      config.owner.markov,
+      !message.content.startsWith(
+        config.owner.markov.trigger + config.owner.markov.suffix
+      ) && message.author.id !== config.owner.id
+    );
     message.channel.startTyping();
     console.log('started generating sentence');
     const text = args[0]

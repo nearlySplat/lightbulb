@@ -110,11 +110,6 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
           .replace(/^params\[0]\??\./, '')
           .replace(/\?\./g, '.')
       ) as string;
-      loggr.debug(
-        moduleConfig[id]?.enabledModules.includes(`${filename}.${name}`) ||
-          moduleConfig[id]?.enabledModules.includes(`${filename}.*`),
-        id
-      );
       if (
         value.restricted &&
         (!(id in moduleConfig) ||
@@ -126,7 +121,6 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
         return;
       value.execute(client, ...params);
     });
-    loggr.info(`Loaded module ${name}`);
   }
 }
 
@@ -155,13 +149,13 @@ client.on('raw', packet => {
         client.users.cache.get(packet.d.user_id) as User
       );
     else {
-      reaction = ({
+      reaction = {
         count: 0,
         message,
         client,
         get emoji() {
           return new ReactionEmoji(
-            (this as unknown) as MessageReaction,
+            this as unknown as MessageReaction,
             packet.d.emoji
           );
         },
@@ -185,7 +179,7 @@ client.on('raw', packet => {
         async fetch() {
           return this;
         },
-      } as unknown) as MessageReaction;
+      } as unknown as MessageReaction;
     }
 
     // Check which type of event it is before emitting
