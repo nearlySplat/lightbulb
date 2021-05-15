@@ -21,29 +21,29 @@ import {
   Message,
   MessageFlags,
   Team,
-} from 'discord.js';
-import { config, PREFIXES } from '../constants';
-import fs from 'graceful-fs';
-import path from 'path';
-import { EOL } from 'os';
-import { Markov } from '../util/markov';
+} from "discord.js";
+import { config, PREFIXES } from "../constants";
+import fs from "graceful-fs";
+import path from "path";
+import { EOL } from "os";
+import { Markov } from "../util/markov";
 let markov = fs
-  .readFileSync(path.join(__dirname, '..', '..', 'etc', 'markov.txt'), 'utf-8')
+  .readFileSync(path.join(__dirname, "..", "..", "etc", "markov.txt"), "utf-8")
   .split(EOL);
 const instance = new Markov(markov);
 export const splatMarkov = {
-  emitter: 'on',
-  eventName: 'message',
-  guildablePath: 'params[0].guild.id',
+  emitter: "on",
+  eventName: "message",
+  guildablePath: "params[0].guild.id",
   restricted: false,
   execute: async (client: Client, message: Message): Promise<boolean> => {
     const INVALID = (t: string) =>
       [
         ...PREFIXES,
         client.user.toString(),
-        'eureka',
-        ...'+×÷=/_@#$%^&*()-:;!?,.',
-      ].some(v => t.startsWith(v));
+        "eureka",
+        ..."+×÷=/_@#$%^&*()-:;!?,.",
+      ].some((v) => t.startsWith(v));
     if (
       !message.content.startsWith(
         config.owner.markov.trigger + config.owner.markov.suffix
@@ -60,22 +60,22 @@ export const splatMarkov = {
       if (INVALID(message.content)) return false;
       markov.push(message.cleanContent);
       fs.writeFileSync(
-        path.join(__dirname, '..', '..', 'etc', 'markov.txt'),
+        path.join(__dirname, "..", "..", "etc", "markov.txt"),
         markov.join(EOL)
       );
       instance.seed(markov);
       return true;
     }
-    const args = message.content.replace(/^splat ?pls ?/g, '').split(/\s+/);
-    if (args[0] === 'analyze') {
+    const args = message.content.replace(/^splat ?pls ?/g, "").split(/\s+/);
+    if (args[0] === "analyze") {
       const results = instance.analyze();
       const longerThan5 = instance.sentences.filter(
-        value => value.split('\\s+').length >= 5
+        (value) => value.split("\\s+").length >= 5
       ).length;
       return message.channel
         .send(
           (results.all.unique.size >= 50
-            ? 'Hmmm... ' +
+            ? "Hmmm... " +
               config.owner.markov.trigger +
               "has an extensive vocabulary. I'll do my best to analyze it!"
             : "I've successfully analyzed " +
@@ -94,14 +94,14 @@ export const splatMarkov = {
             )
               .slice(0, 3)
               .map(([K, V]) => `${K} (\`${V}\` times)`)
-              .join(', ')}.`
+              .join(", ")}.`
         )
         .then(() => true);
-    } else if (args[0] === 'count')
+    } else if (args[0] === "count")
       return message.channel
-        .send(instance.sentences.length + ' sentences collected')
+        .send(instance.sentences.length + " sentences collected")
         .then(() => true);
-    else if (args[0] === 'load') {
+    else if (args[0] === "load") {
       if (!message.client.application.owner)
         message.client.application = await message.client.application.fetch();
       if (
@@ -111,7 +111,7 @@ export const splatMarkov = {
         )
       )
         return message.channel
-          .send('You are not authorized to do this.')
+          .send("You are not authorized to do this.")
           .then(() => true);
       const msgs = await message.channel.messages
         .fetch(
@@ -126,7 +126,7 @@ export const splatMarkov = {
         .then((t: Collection<string, Message> | Message) =>
           t instanceof Collection
             ? t.filter(
-                v => v.author.id === message.author.id && !INVALID(v.content)
+                (v) => v.author.id === message.author.id && !INVALID(v.content)
               )
             : !INVALID(t.content)
         );
@@ -135,10 +135,10 @@ export const splatMarkov = {
           (msgs instanceof Collection ? msgs : [msgs]).map as (
             fn: (m: Message) => string
           ) => string[]
-        )(v => v.cleanContent)
+        )((v) => v.cleanContent)
       );
       fs.writeFileSync(
-        path.join(__dirname, '..', '..', 'etc', 'markov.txt'),
+        path.join(__dirname, "..", "..", "etc", "markov.txt"),
         markov.join(EOL)
       );
       instance.seed(markov);
@@ -157,18 +157,18 @@ export const splatMarkov = {
       ) && message.author.id !== config.owner.id
     );
     message.channel.startTyping();
-    console.log('started generating sentence');
+    console.log("started generating sentence");
     const text = args[0]
       ? instance.generate(0, { hasToHave: args[0] })
       : instance.generate();
     console.log(text);
     message.channel
       .send(
-        text !== ''
+        text !== ""
           ? `Well, ${config.owner.markov.trigger} once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
           : "I couldn't make a sentence for that word..."
       )
-      .then(t =>
+      .then((t) =>
         t.edit({
           flags: MessageFlags.FLAGS.SUPPRESS_EMBEDS,
         })

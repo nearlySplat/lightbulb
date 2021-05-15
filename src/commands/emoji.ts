@@ -14,19 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Emoji, GuildEmoji, MessageEmbed, Util } from 'discord.js';
-import { CLIENT_COLOUR } from '../constants';
-import { CommandExecute, CommandMetadata } from '../types';
+import { Emoji, GuildEmoji, MessageEmbed, Util } from "discord.js";
+import { CLIENT_COLOUR } from "../constants";
+import { CommandExecute, CommandMetadata } from "../types";
 
 export const meta: CommandMetadata = {
-  name: 'emoji',
-  description: 'Shows information about an emoji',
-  aliases: ['showemoji', 'ei', 'emojiinfo'],
+  name: "emoji",
+  description: "Shows information about an emoji",
+  aliases: ["showemoji", "ei", "emojiinfo"],
   accessLevel: 0,
-  params: [{ type: 'string', name: 'target' }],
+  params: [{ type: "string", name: "target" }],
 };
 
-export const execute: CommandExecute = ctx => {
+export const execute: CommandExecute = (ctx) => {
   let target: Emoji | GuildEmoji = new Emoji(
     ctx.message.client,
     Util.parseEmoji(ctx.args.data.target)
@@ -44,33 +44,33 @@ export const execute: CommandExecute = ctx => {
     .setAuthor(`Emoji Information for ${target.name}`)
     .addFields(
       {
-        name: 'ID',
+        name: "ID",
         value:
           target.id ||
-          'U+' +
+          "U+" +
             decodeURIComponent(target.identifier)
               .charCodeAt(0)
               .toString(16)
               .toUpperCase(),
         inline: true,
       },
-      { name: 'Name', value: target.name, inline: true },
+      { name: "Name", value: target.name, inline: true },
       {
-        name: 'Image URL',
+        name: "Image URL",
         value: asset,
         inline: true,
       },
       {
-        name: 'Animated',
+        name: "Animated",
         inline: true,
         value: target.animated
-          ? '<:greenTick:796095828094615602>'
-          : '<:redTick:796095862874308678>',
+          ? "<:greenTick:796095828094615602>"
+          : "<:redTick:796095862874308678>",
       }
     )
     .setThumbnail(asset)
     .setDescription(
-      `<${target.animated ? 'a:' : ''}${target.name}_:_${target.id}>`
+      `<${target.animated ? "a:" : ""}${target.name}_:_${target.id}>`
     );
   ctx.message.reply(embed);
   return true;
