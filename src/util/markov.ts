@@ -73,38 +73,52 @@ export class Markov {
     return this;
   }
   public generate(length = 0, options: MarkovGenerateOptions = {}) {
-    let text = options.starting
-      ? options.starting
-      : options.ending
-      ? options.ending
-      : this.getRandomStartingWord();
+    let text =
+      options.starting ||
+      options.ending ||
+      options.hasToHave ||
+      this.getRandomStartingWord();
     let word = text;
     let finished = false;
-    const hasToHaveRegExp: typeof options.hasToHave extends string
-      ? RegExp
-      : null = options.hasToHave ? Markov.WORD_MATCH(options.hasToHave) : null;
+    if (!this.matches.has(word)) return '';
     do {
       for (; !finished; ) {
         let matched: string = this.matches.get(word) as any;
-        console.log('current sentence: ', text, ' and next match: ', matched);
         matched = matched?.[Math.floor(Math.random() * matched.length)];
         if (!matched || !matched.length) {
           finished = true;
-          break;
         }
         if (matched?.toLowerCase() === word.toLowerCase()) {
           finished = true;
-          break;
         }
         text += ' ' + matched;
         word = matched;
       }
-    } while (
-      (length ? text.split(/\s+/).length < length : false) ||
-      (options.hasToHave ? !hasToHaveRegExp.test(text) : false) ||
-      !finished
-    );
-    return text;
+    } while ((length ? text.split(/\s+/).length < length : false) || !finished);
+    if (options.hasToHave)
+      text = this._generateBackwards(options.hasToHave) + ' ' + text;
+    return text.replace(/undefined$/g, '');
+  }
+  private _generateBackwards(word: string) {
+    let text: string[] = [];
+    let finished = false;
+    const arr = [...this.matches];
+    for (; !finished; ) {
+      let matched: string = arr
+        .filter(([, matches]) => matches.includes(word))
+        .flatMap(v => v[0]) as any;
+      if (!matched.length) {
+        finished = true;
+      }
+      matched = matched[Math.floor(Math.random() * matched.length)];
+      if (!matched) finished = true;
+      text.push(matched);
+      word = matched;
+    }
+    return text
+      .filter(v => v)
+      .reverse()
+      .join(' ');
   }
   private _splittedSentences = new Array<string[]>();
   public startingWords = new Array<string>();
