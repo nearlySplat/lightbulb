@@ -164,7 +164,7 @@ export const splatMarkov = {
     console.log(text);
     message.channel
       .send(
-        text !== 'NONE_FOUND_ENONEFOUND'
+        text !== ''
           ? `Well, ${config.owner.markov.trigger} once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
           : "I couldn't make a sentence for that word..."
       )
