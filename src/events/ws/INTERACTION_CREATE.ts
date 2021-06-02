@@ -18,7 +18,6 @@ import { Client, Snowflake, MessageEmbed, User, GuildMember } from 'discord.js';
 import { Interaction, SlashCommand, SlashCommandResponse } from '../../types';
 import { slashCommands, loggr } from '../..';
 import commandFuncs from '../../util/commandfuncs';
-
 export const execute = async (client: Client, interaction: Interaction) => {
   loggr.debug(interaction, interaction.data.options);
   function respond(data: { data: SlashCommandResponse }) {
