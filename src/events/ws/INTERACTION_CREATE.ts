@@ -15,13 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Client, Snowflake, MessageEmbed, User, GuildMember } from 'discord.js';
+import { GatewayInteractionCreateDispatchData } from 'discord-api-types';
 import { Interaction, SlashCommand, SlashCommandResponse } from '../../types';
 import { slashCommands, loggr } from '../..';
-import commandFuncs from '../../util/commandfuncs';
-export const execute = async (client: Client, interaction: Interaction) => {
+
+export const execute = async (
+  client: Client,
+  interaction: GatewayInteractionCreateDispatchData
+) => {};
+
+export const slashCommandExecute = async (
+  client: Client,
+  interaction: Interaction
+) => {
   loggr.debug(interaction, interaction.data.options);
   function respond(data: { data: SlashCommandResponse }) {
-    // @ts-ignore
     return client.api
       .interactions(interaction.id, interaction.token)
       .callback.post(data);
@@ -36,9 +44,11 @@ export const execute = async (client: Client, interaction: Interaction) => {
       )
       .catch(() => null)) as User;
     const guild =
-      client.guilds.cache.get(interaction.guild_id as string) ?? null;
+      client.guilds.cache.get(interaction.guild_id as Snowflake) ?? null;
     const member = guild
-      ? await guild!.members.fetch(author?.id ?? '').catch(() => {})
+      ? await guild!.members
+          .fetch(author?.id ?? ('' as Snowflake))
+          .catch(() => {})
       : null;
     const command = slashCommands.get(interaction.data.name) as SlashCommand;
     if (!guild && command.meta.scope === 'slashMutualGuild')
@@ -83,7 +93,6 @@ export const execute = async (client: Client, interaction: Interaction) => {
         member: member as GuildMember | null,
         author,
         interaction,
-        commandFuncs,
       }),
     });
   }

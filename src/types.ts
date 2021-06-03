@@ -23,7 +23,6 @@ import {
   Message,
   PermissionFlags,
   Snowflake,
-  StringResolvable,
   MessageEmbed,
   User,
 } from 'discord.js';
@@ -103,7 +102,6 @@ export interface SlashCommandContext {
   author: User;
   guild: Guild | null;
   interaction: Interaction;
-  commandFuncs: RecurringAnyFuncOrObj;
 }
 export interface Interaction {
   data: {
@@ -122,7 +120,7 @@ export interface Interaction {
 export type SlashCommandResponse = {
   type: 1 | 4 | 5;
   data: {
-    content?: StringResolvable;
+    content?: string;
     embeds?: (Record<string, any> | MessageEmbed)[];
     flags?: 64;
   };
@@ -150,4 +148,30 @@ export interface MarkovConfig {
 export interface Bot {
   prefix: string[] | string;
   name: string;
+}
+interface RequestOptions {
+  query?: URLSearchParams | Record<string, string | string[]>;
+  versioned?: boolean;
+  auth?: boolean;
+  reason?: string;
+  headers?: {};
+  data?: {};
+}
+
+type HttpMethod = 'get' | 'post' | 'delete' | 'patch' | 'put';
+
+export type RouteBuilder = Record<
+  HttpMethod,
+  <T>(options?: RequestOptions) => Promise<T>
+> &
+  {
+    [k in string]: RouteBuilder;
+  } &
+  ((...args: string[]) => RouteBuilder);
+
+declare module 'discord.js' {
+  // @ts-ignore
+  export interface Client {
+    api: RouteBuilder;
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "lightbulb",
-  "version": "1.24.0",
+  "version": "1.24.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -37,6 +37,10 @@
     "@splatterxl/tsconfig": "^1.0.0",
     "axios": "^0.21.1",
     "cat-loggr": "^1.1.0",
+<<<<<<< HEAD
+=======
+    "discord-api-types": "^0.18.1",
+>>>>>>> dac2f8d (merge)
     "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.2.0",
     "graceful-fs": "^4.2.6",
@@ -58,4 +62,3 @@
     }
   }
 }
->>>>>>> fefd378 (feat: fix markovs)
