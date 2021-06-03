@@ -1,7 +1,7 @@
 {
   "type": "postgres",
   "port": 5432,
-  "username": "splat",
+  "username": "ruairi",
   "password": "mabuis1",
   "database": "splat",
   "synchronize": true,

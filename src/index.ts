@@ -30,6 +30,7 @@ console.log('[PROCESS_CHILD] Logged messages.');
 import CatLoggr from 'cat-loggr/ts';
 import {
   Client,
+  ClientEvents,
   Emoji,
   MessageReaction,
   ReactionEmoji,
@@ -40,6 +41,7 @@ import {
   WSEventType,
 } from 'discord.js';
 import { config } from 'dotenv';
+import { guilds as guildConfig } from './modules/config.json';
 import { get } from 'lodash';
 import { join } from 'path';
 import 'reflect-metadata';
@@ -47,7 +49,6 @@ import { createConnection } from 'typeorm';
 import { INTENTS } from './constants';
 import { StarboardEntry } from './entity/StarboardEntry';
 import { User as U } from './entity/User';
-import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
 export const loggr = new CatLoggr();
@@ -59,12 +60,9 @@ export let connectionName = 'default';
 export let hasConnection = false;
 createConnection({
   type: 'postgres',
-  database: 'splat',
-  username: 'splat',
-  password: 'mabuis1',
-  port: 5432,
   entities: [U, StarboardEntry],
-  logging: true,
+  password: 'mabuis1',
+  database: 'splat',
 })
   .then(c => {
     console.log('Connected to database', c.name);
@@ -82,10 +80,12 @@ const client = new Client({
   allowedMentions: { users: [], roles: [], parse: [], repliedUser: false },
   presence: {
     status: 'idle',
-    activity: {
-      name: 'moderation events',
-      type: 'WATCHING',
-    },
+    activities: [
+      {
+        name: 'moderation events',
+        type: 'WATCHING',
+      },
+    ],
   },
   intents: INTENTS,
   partials: ['USER', 'GUILD_MEMBER', 'CHANNEL', 'MESSAGE', 'REACTION'],
@@ -96,7 +96,10 @@ config({
 loggr.debug('Loading events...');
 // normal events
 for (const [event, { execute }] of loadFiles<EventType>('../events')) {
-  client.on(event, (...params) => execute(client, ...params));
+  client.on(
+    event as keyof ClientEvents,
+    (...params) => execute(client, ...params) as unknown as void
+  );
   loggr.debug(`Loaded event ${event}`);
 }
 type EventType = { execute: (client: Client, ...args: any[]) => boolean };
@@ -132,6 +135,7 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
         (!(id in moduleConfig) ||
           !(
             moduleConfig[id]?.enabledModules.includes(`${filename}.${name}`) ||
+            // @ts-ignore
             moduleConfig[id]?.enabledModules.includes(`${filename}.*`)
           ))
       )

@@ -2,5 +2,5 @@
 . "$(dirname "$0")/_/husky.sh"
 
 node scripts/incrementSemver.js $(cat .git/COMMIT_EDITMSG) >/dev/null
-prettier -w package.json
+pnpx prettier -w package.json
 git add package.json 
