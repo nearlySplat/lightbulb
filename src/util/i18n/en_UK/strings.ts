@@ -16,7 +16,8 @@
  */
 import { Parameter } from '../../Parameters';
 
-export const ABOUT_LONG_DESCRIPTION = `👋 Hi! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
+export const ABOUT_LONG_DESCRIPTION =
+  `👋 Hi! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
 
     **My features**:
     - Logging
@@ -141,3 +142,5 @@ export const MESSAGEINFO_MESSAGE_NOT_FOUND =
   'No such message exists in this channel.';
 export const BAN_CONFIRMATION =
   'Are you sure you want to ban {{objectPronoun}}? (y/N)';
+export const INTERACTION_NO_BUTTON_HANDLER =
+  'This command has not been configured to accept interactions yet.';

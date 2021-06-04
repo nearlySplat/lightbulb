@@ -14,19 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Snowflake } from 'discord.js';
-export class User {
+import { Snowflake } from "discord.js";
+import { BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
+export class User extends BaseEntity {
+  @PrimaryGeneratedColumn()
   id!: number;
-
+  @Column()
   created_at!: Date;
-
+  @Column()
   updated_at: Date;
-
-  subjectPronoun = 'they';
-  objectPronoun = 'them';
-  possessiveDeterminer = 'their';
-  possessivePronoun = 'theirs';
-  singularOrPluralPronoun = 'plural';
+  @Column()
+  subjectPronoun = "they";
+  @Column()
+  objectPronoun = "them";
+  @Column()
+  possessiveDeterminer = "their";
+  @Column()
+  possessivePronoun = "theirs";
+  @Column()
+  singularOrPluralPronoun = "plural";
 
   get pronouns() {
     return {
@@ -38,10 +44,9 @@ export class User {
     };
   }
 
+  @Column()
   userid!: Snowflake;
 
+  @Column()
   isDeveloper: boolean;
-  static async findOne(): Promise<null> {
-    return null;
-  }
 }

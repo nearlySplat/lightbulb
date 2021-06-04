@@ -14,10 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Client, ClientUser, Guild, GuildMember, Message } from 'discord.js';
+import {
+  APIMessage,
+  Client,
+  ClientUser,
+  Collection,
+  Guild,
+  GuildMember,
+  Message,
+  MessageOptions,
+  Snowflake,
+} from 'discord.js';
 import { commands } from '..';
 import { PREFIXES } from '../constants';
-import { Command } from '../types';
+import { Command, SlashCommandResponse } from '../types';
 import {
   CommandParameters,
   getAccessLevel,
@@ -25,7 +35,10 @@ import {
   i18n,
 } from '../util';
 import { tags } from '../util/tags';
-
+export const buttonHandlers = new Collection<
+  Snowflake,
+  (...v: any[]) => SlashCommandResponse
+>();
 export const execute = async (
   client: Client,
   message: Message
@@ -39,14 +52,18 @@ export const execute = async (
     isExclamation = false
   ): Promise<boolean> {
     const timeStarted = Date.now();
-    if (!message.content?.startsWith(prefix)) return false;
+    if (!message.content.startsWith(prefix)) return false;
     let args: string[] = message.content
       .slice(prefix.length)
       .trim()
       .split(/ +/);
     const command: Command | undefined =
-        commands.get(args[0]) ??
-        commands.find(value => value.meta?.aliases.includes(args[0]) ?? false),
+        commands.get(args[0]) ||
+        commands.find(
+          value =>
+            (value && value.meta && value.meta.aliases.includes(args[0])) ||
+            false
+        ),
       commandName = args[0];
     if (!command) {
       if (tags.has(commandName) || tags.has(args.join(' '))) {
@@ -60,7 +77,7 @@ export const execute = async (
     }
     args = args.slice(1);
     if (
-      command.meta?.accessLevel &&
+      command.meta.accessLevel &&
       getCurrentLevel(message.member as GuildMember) <
         getAccessLevel(command.meta.accessLevel as 0 | 1 | 2 | 3)
     )
@@ -75,8 +92,8 @@ export const execute = async (
       );
       return false;
     }
-    if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation)
-      return command.execute({
+    if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation) {
+      const result = await command.execute({
         client,
         message: message as Message & { member: GuildMember; guild: Guild },
         args: paramInstance,
@@ -86,7 +103,28 @@ export const execute = async (
         locale: 'en_UK',
         commandName,
       });
-    else return false;
+      if (typeof result === 'boolean') return result;
+      else {
+        if (typeof result === 'boolean') return;
+        const [options, handler] = result;
+        const am = await APIMessage.create(
+          message.channel,
+          options.content,
+          options as MessageOptions
+        )
+          .resolveData()
+          .resolveFiles();
+        (am.data as Record<string, unknown>).components = options.components;
+        const { data, files } = am;
+        console.log(data);
+        client.api.channels[message.channel.id].messages
+          .post<Message>({
+            data: data as Record<string, unknown>,
+            files,
+          })
+          .then(v => (handler ? buttonHandlers.set(v.id, handler) : void 0));
+      }
+    } else return false;
   }
   for (const prefix of [
     `<@${(client.user as ClientUser).id}>`,

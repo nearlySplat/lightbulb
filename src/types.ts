@@ -15,15 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {
+  APIGuildMember,
+  APIPartialEmoji,
+  APIUser,
+  APIMessage,
+} from 'discord-api-types';
+import {
   Client,
   Collection,
   Guild,
   GuildMember,
   GuildPreview,
   Message,
+  MessageEmbed,
+  MessageOptions,
   PermissionFlags,
   Snowflake,
-  MessageEmbed,
   User,
 } from 'discord.js';
 import { CommandParameters, Parameter } from './util';
@@ -35,8 +42,44 @@ export type Command = {
 
 export type CommandExecute<T extends string = string> = (
   context: Context<T>
-) => boolean | Promise<boolean>;
+) => PromiseLike<boolean | CommandResponse>;
 
+export type CommandResponse = [
+  options: BetterMessageOptions,
+  handler: (options: any) => SlashCommandResponse
+];
+export interface BetterMessageOptions extends MessageOptions {
+  components?: ActionRowComponent[];
+}
+export enum ComponentType {
+  ActionRow = 1,
+  Button,
+}
+
+export enum ComponentStyle {
+  Primary = 1,
+  Secondary,
+  Success,
+  Danger,
+  Link,
+}
+
+export interface BaseComponent {
+  type: ComponentType;
+}
+export interface ActionRowComponent extends BaseComponent {
+  type: ComponentType.ActionRow;
+  components: ButtonComponent[];
+}
+export interface ButtonComponent extends BaseComponent {
+  type: ComponentType.Button;
+  style: ComponentStyle;
+  label: string;
+  custom_id: string;
+  emoji?: APIPartialEmoji;
+  url?: string;
+  disabled?: boolean;
+}
 export interface Context<T extends string = string> {
   client: Client;
   args: CommandParameters<T>;
@@ -111,12 +154,19 @@ export interface Interaction {
   };
   channel_id?: Snowflake;
   guild_id?: Snowflake;
-  member?: Record<string, any> | GuildMember | null;
+  member?: APIGuildMember | GuildMember | null;
   id: Snowflake;
-  user?: Record<string, any> | User | null;
+  user?: APIUser | User | null;
   token: string;
 }
-
+// @ts-ignore
+export interface MessageComponentInteraction extends Interaction {
+  message: APIMessage;
+  data: {
+    component_type: Exclude<ComponentType, ComponentType.ActionRow>;
+    custom_id: string;
+  };
+}
 export type SlashCommandResponse = {
   type: 1 | 4 | 5;
   data: {
@@ -149,13 +199,21 @@ export interface Bot {
   prefix: string[] | string;
   name: string;
 }
+
+export enum InteractionTypes {
+  PING = 1,
+  APPLICATION_COMMAND,
+  MESSAGE_COMPONENT,
+}
+
 interface RequestOptions {
   query?: URLSearchParams | Record<string, string | string[]>;
   versioned?: boolean;
   auth?: boolean;
   reason?: string;
-  headers?: {};
-  data?: {};
+  headers?: Record<string, string>;
+  data?: Record<string, unknown>;
+  files?: unknown[];
 }
 
 type HttpMethod = 'get' | 'post' | 'delete' | 'patch' | 'put';
@@ -173,5 +231,9 @@ declare module 'discord.js' {
   // @ts-ignore
   export interface Client {
     api: RouteBuilder;
+  }
+  export interface APIMessage {
+    // @ts-ignore
+    data: Record<string, unknown>;
   }
 }
