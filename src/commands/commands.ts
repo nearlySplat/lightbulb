@@ -31,8 +31,11 @@ export const execute: CommandExecute = ({
       commands
         .filter(
           v =>
+            v &&
+            v.meta &&
+            v.execute &&
             getCurrentLevel(message.member as GuildMember) >=
-            getAccessLevel(v.meta.accessLevel)
+              getAccessLevel(v.meta.accessLevel)
         )
         .map(({ meta: { name, description } }) => name + ' - ' + description),
       { code: 'md' }
