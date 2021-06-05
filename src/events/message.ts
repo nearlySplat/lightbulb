@@ -15,19 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {
-  APIMessage,
   Client,
   ClientUser,
   Collection,
   Guild,
   GuildMember,
   Message,
-  MessageOptions,
   Snowflake,
 } from 'discord.js';
 import { commands } from '..';
 import { PREFIXES } from '../constants';
-import { Command, SlashCommandResponse } from '../types';
+import { ButtonInteractionHandler, Command } from '../types';
 import {
   CommandParameters,
   getAccessLevel,
@@ -37,7 +35,7 @@ import {
 import { tags } from '../util/tags';
 export const buttonHandlers = new Collection<
   Snowflake,
-  (...v: any[]) => SlashCommandResponse
+  ButtonInteractionHandler
 >();
 export const execute = async (
   client: Client,
@@ -107,22 +105,8 @@ export const execute = async (
       else {
         if (typeof result === 'boolean') return;
         const [options, handler] = result;
-        const am = await APIMessage.create(
-          message.channel,
-          options.content,
-          options as MessageOptions
-        )
-          .resolveData()
-          .resolveFiles();
-        (am.data as Record<string, unknown>).components = options.components;
-        const { data, files } = am;
-        console.log(data);
-        client.api.channels[message.channel.id].messages
-          .post<Message>({
-            data: data as Record<string, unknown>,
-            files,
-          })
-          .then(v => (handler ? buttonHandlers.set(v.id, handler) : void 0));
+        const msg = (await message.channel.send(options)) as Message;
+        buttonHandlers.set(msg.id, handler);
       }
     } else return false;
   }

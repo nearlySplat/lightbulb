@@ -14,12 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {
-  APIGuildMember,
-  APIPartialEmoji,
-  APIUser,
-  APIMessage,
-} from 'discord-api-types';
+import { APIGuildMember, APIMessage, APIUser } from 'discord-api-types';
+import { Channel } from 'discord.js';
 import {
   Client,
   Collection,
@@ -42,44 +38,25 @@ export type Command = {
 
 export type CommandExecute<T extends string = string> = (
   context: Context<T>
-) => PromiseLike<boolean | CommandResponse>;
-
+) => Awaited<boolean | CommandResponse>;
+export type Awaited<T> = T | Promise<T>;
 export type CommandResponse = [
-  options: BetterMessageOptions,
-  handler: (options: any) => SlashCommandResponse
+  options: MessageOptions,
+  handler: ButtonInteractionHandler
 ];
-export interface BetterMessageOptions extends MessageOptions {
-  components?: ActionRowComponent[];
-}
-export enum ComponentType {
-  ActionRow = 1,
-  Button,
+export type ButtonInteractionHandler = (
+  context: ButtonInteractionHandlerContext
+) => Awaited<SlashCommandResponse>;
+
+export interface ButtonInteractionHandlerContext {
+  user: User;
+  channel: Channel;
+  message: Message;
+  client: Client;
+  guild?: Guild;
+  interaction: MessageComponentInteraction;
 }
 
-export enum ComponentStyle {
-  Primary = 1,
-  Secondary,
-  Success,
-  Danger,
-  Link,
-}
-
-export interface BaseComponent {
-  type: ComponentType;
-}
-export interface ActionRowComponent extends BaseComponent {
-  type: ComponentType.ActionRow;
-  components: ButtonComponent[];
-}
-export interface ButtonComponent extends BaseComponent {
-  type: ComponentType.Button;
-  style: ComponentStyle;
-  label: string;
-  custom_id: string;
-  emoji?: APIPartialEmoji;
-  url?: string;
-  disabled?: boolean;
-}
 export interface Context<T extends string = string> {
   client: Client;
   args: CommandParameters<T>;
@@ -163,13 +140,16 @@ export interface Interaction {
 export interface MessageComponentInteraction extends Interaction {
   message: APIMessage;
   data: {
-    component_type: Exclude<ComponentType, ComponentType.ActionRow>;
+    component_type: Exclude<
+      MessageComponentTypes,
+      MessageComponentTypes.ACTION_ROW
+    >;
     custom_id: string;
   };
 }
 export type SlashCommandResponse = {
-  type: 1 | 4 | 5;
-  data: {
+  type: 1 | 4 | 5 | 6 | 7;
+  data?: {
     content?: string;
     embeds?: (Record<string, any> | MessageEmbed)[];
     flags?: 64;

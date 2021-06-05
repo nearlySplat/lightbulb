@@ -32,13 +32,12 @@ import {
   SlashCommandResponse,
 } from '../../types';
 import { buttonHandlers } from '../message';
-import { i18n } from '../../util';
+import { i18n, sleep } from '../../util';
 
 export const execute = async (
   client: Client,
   interaction: GatewayInteractionCreateDispatchData
 ) => {
-  console.log(interaction);
   if (
     (interaction.type as unknown as InteractionTypes) ===
     InteractionTypes.APPLICATION_COMMAND
@@ -145,13 +144,28 @@ export const buttonExecute = async (
       (interaction.user || {}).id || interaction.member.user.id
     );
     const guild = client.guilds.cache.get(interaction.guild_id);
-    respond({ data: handler({ user, channel, message, guild }) });
-  } else {
     respond({
-      data: {
-        type: 4,
-        data: { content: i18n.get('INTERACTION_NO_BUTTON_HANDLER'), flags: 64 },
-      },
+      data: await handler({
+        user,
+        channel,
+        message,
+        guild,
+        client,
+        interaction,
+      }),
     });
+  } else {
+    await sleep(100);
+    try {
+      respond({
+        data: {
+          type: 4,
+          data: {
+            content: i18n.get('INTERACTION_NO_BUTTON_HANDLER'),
+            flags: 64,
+          },
+        },
+      });
+    } catch {}
   }
 };
