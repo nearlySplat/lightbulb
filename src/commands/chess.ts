@@ -14,29 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import ChessImageGenerator from 'chess-image-generator';
 import {
-  Collection,
   MessageActionRow,
+  MessageAttachment,
   MessageButton,
-  MessageButtonStyleResolvable,
-  MessageFlags,
+  MessageEmbed,
   User,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { accessLevels } from '../util';
 namespace Chess {
-  export type Coordinates = `${'a' | 'b' | 'c' | 'd' | 'e'}${
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5}`;
+  export type Letters = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h';
+  export type Numbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+  export type Coordinates = `${Chess.Letters}${Chess.Numbers}`;
   export type Board = Record<Chess.Coordinates, Chess.Square | null>;
   export interface Square {
     piece: Chess.Piece;
     color: Chess.Team;
   }
-  export type PieceType = 'N' | 'P' | 'K' | 'R';
+  export type PieceType = 'N' | 'P' | 'K' | 'R' | 'Q' | 'B';
   export interface Piece {
     team: Chess.Team;
     type: Chess.PieceType;
@@ -49,12 +46,15 @@ namespace Chess {
   }
 }
 const coords: Chess.Coordinates[] = [
-  ...'abcde',
-  ...'abcde',
-  ...'abcde',
-  ...'abcde',
-  ...'abcde',
-].map((v, i) => v + '' + (Math.floor(i / 5) + 1)) as Chess.Coordinates[];
+  ...'abcdefgh',
+  ...'abcdefgh',
+  ...'abcdefgh',
+  ...'abcdefgh',
+  ...'abcdefgh',
+  ...'abcdefgh',
+  ...'abcdefgh',
+  ...'abcdefgh',
+].map((v, i) => v + '' + (Math.floor(i / 8) + 1)) as Chess.Coordinates[];
 const startingPosition: Chess.Board = {
   a1: {
     piece: { type: 'R', team: 'white' },
@@ -68,53 +68,77 @@ const startingPosition: Chess.Board = {
     color: 'white',
   },
   c1: {
-    piece: { type: 'K', team: 'white' },
+    piece: { type: 'B', team: 'white' },
     color: 'black',
   },
   d1: {
-    piece: { type: 'N', team: 'white' },
+    piece: { type: 'Q', team: 'white' },
     color: 'white',
   },
-  e1: { piece: { type: 'R', team: 'white' }, color: 'black' },
+  e1: { piece: { type: 'K', team: 'white' }, color: 'black' },
+  f1: { piece: { type: 'B', team: 'white' }, color: 'white' },
+  g1: { piece: { type: 'N', team: 'white' }, color: 'black' },
+  h1: { piece: { type: 'R', team: 'white' }, color: 'white' },
   ...Object.fromEntries(
-    Array.from({ length: 5 }, (_, i) => [
-      coords[i + 5],
+    Array.from({ length: 8 }, (_, i) => [
+      coords[i + 8],
       { piece: { type: 'P', team: 'white' }, color: i % 2 ? 'black' : 'white' },
     ])
   ),
   ...Object.fromEntries(
-    Array.from({ length: 5 }, (_, i) => [
-      coords[i + 10],
+    Array.from({ length: 8 }, (_, i) => [
+      coords[i + 16],
       { piece: null, color: i % 2 ? 'white' : 'black' },
     ])
   ),
   ...Object.fromEntries(
-    Array.from({ length: 5 }, (_, i) => [
-      coords[i + 15],
-      { piece: { type: 'P', team: 'black' }, color: i % 2 ? 'black' : 'white' },
+    Array.from({ length: 8 }, (_, i) => [
+      coords[i + 24],
+      { piece: null, color: i % 2 ? 'black' : 'white' },
     ])
   ),
-  a5: {
+  ...Object.fromEntries(
+    Array.from({ length: 8 }, (_, i) => [
+      coords[i + 32],
+      { piece: null, color: i % 2 ? 'white' : 'black' },
+    ])
+  ),
+  ...Object.fromEntries(
+    Array.from({ length: 8 }, (_, i) => [
+      coords[i + 40],
+      { piece: null, color: i % 2 ? 'black' : 'white' },
+    ])
+  ),
+  ...Object.fromEntries(
+    Array.from({ length: 8 }, (_, i) => [
+      coords[i + 48],
+      { piece: { type: 'P', team: 'black' }, color: i % 2 ? 'white' : 'black' },
+    ])
+  ),
+  a8: {
     piece: { type: 'R', team: 'black' },
     color: 'black',
   },
-  b5: {
+  b8: {
     piece: {
       type: 'N',
       team: 'black',
     },
     color: 'white',
   },
-  c5: {
-    piece: { type: 'K', team: 'black' },
+  c8: {
+    piece: { type: 'B', team: 'black' },
     color: 'black',
   },
-  d5: {
-    piece: { type: 'N', team: 'black' },
+  d8: {
+    piece: { type: 'Q', team: 'black' },
     color: 'white',
   },
-  e5: { piece: { type: 'R', team: 'black' }, color: 'black' },
-} as Chess.Board;
+  e8: { piece: { type: 'K', team: 'black' }, color: 'black' },
+  f8: { piece: { type: 'B', team: 'black' }, color: 'white' },
+  g8: { piece: { type: 'N', team: 'black' }, color: 'black' },
+  h8: { piece: { type: 'R', team: 'black' }, color: 'white' },
+} as any;
 export const execute: CommandExecute = async () => {
   const players: [p1: User, p2: User] = [null, null] as [User, User];
   const board: Chess.Board = startingPosition;
@@ -134,17 +158,19 @@ export const execute: CommandExecute = async () => {
       } else if (['p1', 'p2'].includes(customID)) {
         console.log('here');
         const pid = getPlayerID(customID as `p${1 | 2}`);
-        if (players[pid] || players.includes(ctx.user))
+        if (players[pid] /*|| players.includes(ctx.user)*/)
           return {
             type: 4,
             data: { content: "You can't do that!", flags: 64 },
           };
         players[pid] = ctx.user;
         if (players.filter(v => v).length === 2) {
-          await ctx.message.edit(
-            `__**${players[0].tag}**__ v. **${players[1].tag}** (underlined user is to move)`,
-            { components: generateBoardFrom(board) }
-          );
+          await ctx.message.edit({
+            components: [
+              new MessageActionRow().addComponents(generatePlayerRow(players)),
+            ],
+            embed: await generateBoardFrom(board),
+          });
         } else
           await ctx.message.edit({
             components: [
@@ -206,7 +232,8 @@ function generatePlayerRow(players: [User | null, User | null]) {
         new MessageButton()
           .setStyle('PRIMARY')
           .setCustomID((players[i] === null ? '' : 'ig_') + 'p' + (i + 1))
-          .setLabel(players[i] ? players[i].tag : 'Player ' + (i + 1)),
+          .setLabel(players[i] ? players[i].tag : 'Player ' + (i + 1))
+          .setDisabled(!!players[i]),
         i === 0 ? vsButton : undefined,
       ].filter(v => v !== undefined)
     );
@@ -217,37 +244,31 @@ function generatePlayerRow(players: [User | null, User | null]) {
 function getPlayerID(customID: `p${1 | 2}`) {
   return +customID.slice(1) - 1;
 }
-const squareStyles: Record<string, MessageButtonStyleResolvable> = {
-  white: 'PRIMARY',
-  black: 'SECONDARY',
-};
-function generateBoardFrom(board: Chess.Board) {
-  const coll = new Collection<string, MessageButton[]>();
-  for (const pos of Object.keys(board)) {
-    if (!coll.has(pos.slice(1))) {
-      coll.set(pos.slice(1), []);
-    }
-  }
-  for (const [pos, square] of Object.entries(board)) {
-    if (!square.piece) {
-      const arr = coll.get(pos.slice(1));
-      arr.push(
-        new MessageButton()
-          .setStyle(squareStyles[square.color])
-          .setCustomID(pos)
-          .setLabel('\u200b')
-      );
-    } else {
-      const arr = coll.get(pos.slice(1));
-      arr.push(
-        new MessageButton()
-          .setStyle(squareStyles[square.color])
-          .setLabel(square.piece.type + pos)
-          .setCustomID(pos)
-      );
-      coll.set(pos.slice(1), arr);
-    }
-  }
-  const toReturn = coll.map(V => new MessageActionRow({ components: V }));
-  return toReturn.reverse();
+async function generateBoardFrom(board: Chess.Board) {
+  const pieces: string[][] = generatePieceArray(board);
+  const generator = new ChessImageGenerator({
+    size: 512,
+    light: '#f9e9a2',
+    dark: '#474747',
+    style: 'alpha',
+  });
+  generator.loadArray(pieces);
+  const buffer = await generator.generateBuffer();
+  return new MessageEmbed()
+    .attachFiles([new MessageAttachment(buffer, 'chess.png')])
+    .setImage('attachment://chess.png');
+}
+
+function generatePieceArray(board: Chess.Board) {
+  const arr: string[][] = Array.from({ length: 8 }, (_, i) =>
+    Array.from({ length: 8 }, (_, ind) => board[coords[ind + 8 * i]]).map(
+      v =>
+        (v.piece &&
+          (v.piece.team === 'white'
+            ? v.piece.type
+            : v.piece.type.toLowerCase())) ||
+        ''
+    )
+  ).reverse();
+  return arr;
 }
