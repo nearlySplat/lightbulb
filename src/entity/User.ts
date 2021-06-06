@@ -14,44 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Snowflake } from 'discord.js';
-import {
-  Entity,
-  BaseEntity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ObjectType,
-} from 'typeorm';
-import { hasConnection } from '..';
-
-@Entity()
+import { Snowflake } from "discord.js";
+import { BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
 export class User extends BaseEntity {
-  constructor() {
-    super();
-    this.created_at = new Date();
-    this.updated_at = this.created_at;
-  }
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn()
   id!: number;
-
-  @CreateDateColumn()
+  @Column()
   created_at!: Date;
-
-  @UpdateDateColumn()
+  @Column()
   updated_at: Date;
-
-  @Column('text')
-  subjectPronoun = 'they';
-  @Column('text')
-  objectPronoun = 'them';
-  @Column('text')
-  possessiveDeterminer = 'their';
-  @Column('text')
-  possessivePronoun = 'theirs';
-  @Column('text')
-  singularOrPluralPronoun = 'plural';
+  @Column()
+  subjectPronoun = "they";
+  @Column()
+  objectPronoun = "them";
+  @Column()
+  possessiveDeterminer = "their";
+  @Column()
+  possessivePronoun = "theirs";
+  @Column()
+  singularOrPluralPronoun = "plural";
 
   get pronouns() {
     return {
@@ -68,11 +49,4 @@ export class User extends BaseEntity {
 
   @Column()
   isDeveloper: boolean;
-
-  static get findOneSafe(): typeof hasConnection extends boolean
-    ? typeof User.findOne
-    : () => Promise<null> {
-    if (hasConnection) return User.findOne;
-    else return async (): Promise<null> => null;
-  }
 }

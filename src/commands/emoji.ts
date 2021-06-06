@@ -68,10 +68,7 @@ export const execute: CommandExecute = ctx => {
           : '<:redTick:796095862874308678>',
       }
     )
-    .setThumbnail(asset)
-    .setDescription(
-      `<${target.animated ? 'a:' : ''}${target.name}_:_${target.id}>`
-    );
+    .setThumbnail(asset);
   ctx.message.reply(embed);
   return true;
 };

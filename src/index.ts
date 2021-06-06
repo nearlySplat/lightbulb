@@ -3,13 +3,13 @@ process.on('message', message => {
   if (message.seq) seq = message.seq;
 });
 setInterval(() => {
-  process.send?.({
+  process.send({
     op: 2,
     seq,
     m: 'PING',
   });
 }, 1000);
-setTimeout(() => process.send?.({ op: 3 }), 10000);
+setTimeout(() => process.send({ op: 3 }), 10000);
 console.log('[PROCESS_CHILD] Logged messages.');
 /*
  * Copyright (C) 2020 Splatterxl

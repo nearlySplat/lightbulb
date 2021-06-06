@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { APIGuildMember, APIMessage, APIUser } from 'discord-api-types';
+import { Channel } from 'discord.js';
 import {
   Client,
   Collection,
@@ -21,10 +23,10 @@ import {
   GuildMember,
   GuildPreview,
   Message,
+  MessageEmbed,
+  MessageOptions,
   PermissionFlags,
   Snowflake,
-  StringResolvable,
-  MessageEmbed,
   User,
 } from 'discord.js';
 import { CommandParameters, Parameter } from './util';
@@ -36,7 +38,24 @@ export type Command = {
 
 export type CommandExecute<T extends string = string> = (
   context: Context<T>
-) => boolean | Promise<boolean>;
+) => Awaited<boolean | CommandResponse>;
+export type Awaited<T> = T | Promise<T>;
+export type CommandResponse = [
+  options: MessageOptions,
+  handler: ButtonInteractionHandler
+];
+export type ButtonInteractionHandler = (
+  context: ButtonInteractionHandlerContext
+) => Awaited<SlashCommandResponse>;
+
+export interface ButtonInteractionHandlerContext {
+  user: User;
+  channel: Channel;
+  message: Message;
+  client: Client;
+  guild?: Guild;
+  interaction: MessageComponentInteraction;
+}
 
 export interface Context<T extends string = string> {
   client: Client;
@@ -103,7 +122,6 @@ export interface SlashCommandContext {
   author: User;
   guild: Guild | null;
   interaction: Interaction;
-  commandFuncs: RecurringAnyFuncOrObj;
 }
 export interface Interaction {
   data: {
@@ -113,16 +131,26 @@ export interface Interaction {
   };
   channel_id?: Snowflake;
   guild_id?: Snowflake;
-  member?: Record<string, any> | GuildMember | null;
+  member?: APIGuildMember | GuildMember | null;
   id: Snowflake;
-  user?: Record<string, any> | User | null;
+  user?: APIUser | User | null;
   token: string;
 }
-
-export type SlashCommandResponse = {
-  type: 1 | 4 | 5;
+// @ts-ignore
+export interface MessageComponentInteraction extends Interaction {
+  message: APIMessage;
   data: {
-    content?: StringResolvable;
+    component_type: Exclude<
+      MessageComponentTypes,
+      MessageComponentTypes.ACTION_ROW
+    >;
+    custom_id: string;
+  };
+}
+export type SlashCommandResponse = {
+  type: 1 | 4 | 5 | 6 | 7;
+  data?: {
+    content?: string;
     embeds?: (Record<string, any> | MessageEmbed)[];
     flags?: 64;
   };
@@ -150,4 +178,42 @@ export interface MarkovConfig {
 export interface Bot {
   prefix: string[] | string;
   name: string;
+}
+
+export enum InteractionTypes {
+  PING = 1,
+  APPLICATION_COMMAND,
+  MESSAGE_COMPONENT,
+}
+
+interface RequestOptions {
+  query?: URLSearchParams | Record<string, string | string[]>;
+  versioned?: boolean;
+  auth?: boolean;
+  reason?: string;
+  headers?: Record<string, string>;
+  data?: Record<string, unknown>;
+  files?: unknown[];
+}
+
+type HttpMethod = 'get' | 'post' | 'delete' | 'patch' | 'put';
+
+export type RouteBuilder = Record<
+  HttpMethod,
+  <T>(options?: RequestOptions) => Promise<T>
+> &
+  {
+    [k in string]: RouteBuilder;
+  } &
+  ((...args: string[]) => RouteBuilder);
+
+declare module 'discord.js' {
+  // @ts-ignore
+  export interface Client {
+    api: RouteBuilder;
+  }
+  export interface APIMessage {
+    // @ts-ignore
+    data: Record<string, unknown>;
+  }
 }

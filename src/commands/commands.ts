@@ -31,10 +31,14 @@ export const execute: CommandExecute = ({
       commands
         .filter(
           v =>
+            v &&
+            v.meta &&
+            v.execute &&
             getCurrentLevel(message.member as GuildMember) >=
-            getAccessLevel(v.meta.accessLevel)
+              getAccessLevel(v.meta.accessLevel)
         )
-        .map(({ meta: { name, description } }) => name + ' - ' + description),
+        .map(({ meta: { name, description } }) => name + ' - ' + description)
+        .join('\n'),
       { code: 'md' }
     );
   else message.channel.send('Use `help` for specific command information');
