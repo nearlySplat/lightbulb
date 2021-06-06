@@ -31,7 +31,6 @@ import CatLoggr from 'cat-loggr/ts';
 import {
   Client,
   ClientEvents,
-  Emoji,
   MessageReaction,
   ReactionEmoji,
   ReactionUserManager,
@@ -41,14 +40,13 @@ import {
   WSEventType,
 } from 'discord.js';
 import { config } from 'dotenv';
-import { guilds as guildConfig } from './modules/config.json';
 import { get } from 'lodash';
 import { join } from 'path';
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import { INTENTS } from './constants';
-import { StarboardEntry } from './entity/StarboardEntry';
 import { User as U } from './entity/User';
+import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
 export const loggr = new CatLoggr();
@@ -60,7 +58,7 @@ export let connectionName = 'default';
 export let hasConnection = false;
 createConnection({
   type: 'postgres',
-  entities: [U, StarboardEntry],
+  entities: [U],
   password: 'mabuis1',
   database: 'splat',
 })

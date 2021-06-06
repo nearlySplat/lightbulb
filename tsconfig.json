@@ -1,5 +1,9 @@
 {
-  "compilerOptions": { "rootDir": "./src", "outDir": "./dist" },
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "target": "esnext"
+  },
   "include": ["src/**/*"],
   "compileOnSave": false,
   "exclude": ["dist/**"],

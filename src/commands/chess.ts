@@ -30,8 +30,7 @@ namespace Chess {
     | 2
     | 3
     | 4
-    | 5
-    | 6}`;
+    | 5}`;
   export type Board = Record<Chess.Coordinates, Chess.Square | null>;
   export interface Square {
     piece: Chess.Piece;
@@ -55,7 +54,7 @@ const coords: Chess.Coordinates[] = [
   ...'abcde',
   ...'abcde',
   ...'abcde',
-].map((v, i) => v + '' + (Math.floor(i / 5) + 1)) as Chess.Coordinates;
+].map((v, i) => v + '' + (Math.floor(i / 5) + 1)) as Chess.Coordinates[];
 const startingPosition: Chess.Board = {
   a1: {
     piece: { type: 'R', team: 'white' },
@@ -115,8 +114,7 @@ const startingPosition: Chess.Board = {
     color: 'white',
   },
   e5: { piece: { type: 'R', team: 'black' }, color: 'black' },
-} as const;
-console.log(startingPosition);
+} as Chess.Board;
 export const execute: CommandExecute = async () => {
   const players: [p1: User, p2: User] = [null, null] as [User, User];
   const board: Chess.Board = startingPosition;
@@ -124,7 +122,7 @@ export const execute: CommandExecute = async () => {
   let selectedPiece: Chess.Coordinates = null as any;
   return [
     {
-      content: 'hello gamers',
+      content: 'Who wants to play some chess?',
       components: [
         new MessageActionRow().addComponents(...generatePlayerRow(players)),
       ],
@@ -180,13 +178,6 @@ export const execute: CommandExecute = async () => {
           );
         }
       }
-      return {
-        type: 4,
-        data: {
-          content: 'Unknown error',
-          flags: 64,
-        },
-      };
     },
   ];
 };
@@ -194,14 +185,15 @@ export const execute: CommandExecute = async () => {
 export const meta: CommandMetadata = {
   name: 'chess',
   description: 'Play chess with your friends!',
-  accessLevel: accessLevels.OWNER,
+  accessLevel: accessLevels.USER,
   aliases: ['minichess'],
 };
 
 const vsButton = new MessageButton()
   .setStyle('SECONDARY')
   .setCustomID('ig_vs')
-  .setLabel('v.');
+  .setLabel('v.')
+  .setDisabled(true);
 function generatePlayerRow(players: [User | null, User | null]) {
   const arr: [MessageButton, MessageButton, MessageButton] = [] as unknown as [
     any,

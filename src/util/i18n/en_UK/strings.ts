@@ -142,5 +142,4 @@ export const MESSAGEINFO_MESSAGE_NOT_FOUND =
   'No such message exists in this channel.';
 export const BAN_CONFIRMATION =
   'Are you sure you want to ban {{objectPronoun}}? (y/N)';
-export const INTERACTION_NO_BUTTON_HANDLER =
-  'This command has not been configured to accept interactions yet.';
+export const INTERACTION_NO_BUTTON_HANDLER = '';

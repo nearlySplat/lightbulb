@@ -144,7 +144,7 @@ export const buttonExecute = async (
       (interaction.user || {}).id || interaction.member.user.id
     );
     const guild = client.guilds.cache.get(interaction.guild_id);
-    respond({
+    await respond({
       data: await handler({
         user,
         channel,
@@ -155,17 +155,5 @@ export const buttonExecute = async (
       }),
     });
   } else {
-    await sleep(100);
-    try {
-      respond({
-        data: {
-          type: 4,
-          data: {
-            content: i18n.get('INTERACTION_NO_BUTTON_HANDLER'),
-            flags: 64,
-          },
-        },
-      });
-    } catch {}
   }
 };
