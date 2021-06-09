@@ -229,6 +229,7 @@ async function generateBoardFrom(
     light: '#f9e9a2',
     dark: '#474747',
     style: 'alpha',
+    flipped: false,
   });
   generator.loadArray(pieces);
   const buffer = await generator.generateBuffer();
