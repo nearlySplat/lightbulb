@@ -16,14 +16,22 @@
  */
 import ChessImageGenerator from 'chess-image-generator';
 import {
+  Message,
   MessageActionRow,
   MessageAttachment,
   MessageButton,
   MessageEmbed,
+  TextChannel,
   User,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { accessLevels } from '../util';
+import {
+  Chess as ChessClient,
+  PieceType as ChessJSPieceType,
+  ChessInstance as ChessClientInstance,
+} from 'chess.js';
+import * as uuid from 'uuid';
 namespace Chess {
   export type Letters = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h';
   export type Numbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -55,95 +63,11 @@ const coords: Chess.Coordinates[] = [
   ...'abcdefgh',
   ...'abcdefgh',
 ].map((v, i) => v + '' + (Math.floor(i / 8) + 1)) as Chess.Coordinates[];
-const startingPosition: Chess.Board = {
-  a1: {
-    piece: { type: 'R', team: 'white' },
-    color: 'black',
-  },
-  b1: {
-    piece: {
-      type: 'N',
-      team: 'white',
-    },
-    color: 'white',
-  },
-  c1: {
-    piece: { type: 'B', team: 'white' },
-    color: 'black',
-  },
-  d1: {
-    piece: { type: 'Q', team: 'white' },
-    color: 'white',
-  },
-  e1: { piece: { type: 'K', team: 'white' }, color: 'black' },
-  f1: { piece: { type: 'B', team: 'white' }, color: 'white' },
-  g1: { piece: { type: 'N', team: 'white' }, color: 'black' },
-  h1: { piece: { type: 'R', team: 'white' }, color: 'white' },
-  ...Object.fromEntries(
-    Array.from({ length: 8 }, (_, i) => [
-      coords[i + 8],
-      { piece: { type: 'P', team: 'white' }, color: i % 2 ? 'black' : 'white' },
-    ])
-  ),
-  ...Object.fromEntries(
-    Array.from({ length: 8 }, (_, i) => [
-      coords[i + 16],
-      { piece: null, color: i % 2 ? 'white' : 'black' },
-    ])
-  ),
-  ...Object.fromEntries(
-    Array.from({ length: 8 }, (_, i) => [
-      coords[i + 24],
-      { piece: null, color: i % 2 ? 'black' : 'white' },
-    ])
-  ),
-  ...Object.fromEntries(
-    Array.from({ length: 8 }, (_, i) => [
-      coords[i + 32],
-      { piece: null, color: i % 2 ? 'white' : 'black' },
-    ])
-  ),
-  ...Object.fromEntries(
-    Array.from({ length: 8 }, (_, i) => [
-      coords[i + 40],
-      { piece: null, color: i % 2 ? 'black' : 'white' },
-    ])
-  ),
-  ...Object.fromEntries(
-    Array.from({ length: 8 }, (_, i) => [
-      coords[i + 48],
-      { piece: { type: 'P', team: 'black' }, color: i % 2 ? 'white' : 'black' },
-    ])
-  ),
-  a8: {
-    piece: { type: 'R', team: 'black' },
-    color: 'black',
-  },
-  b8: {
-    piece: {
-      type: 'N',
-      team: 'black',
-    },
-    color: 'white',
-  },
-  c8: {
-    piece: { type: 'B', team: 'black' },
-    color: 'black',
-  },
-  d8: {
-    piece: { type: 'Q', team: 'black' },
-    color: 'white',
-  },
-  e8: { piece: { type: 'K', team: 'black' }, color: 'black' },
-  f8: { piece: { type: 'B', team: 'black' }, color: 'white' },
-  g8: { piece: { type: 'N', team: 'black' }, color: 'black' },
-  h8: { piece: { type: 'R', team: 'black' }, color: 'white' },
-} as any;
 export const execute: CommandExecute = async () => {
   const players: [p1: User, p2: User] = [null, null] as [User, User];
-  const board: Chess.Board = startingPosition;
+  let board: Chess.Board = {} as any;
   let currentlyMoving: 0 | 1 = 0;
-  let selectedPiece: Chess.Coordinates = null as any;
+  let instance = new ChessClient();
   return [
     {
       content: 'Who wants to play some chess?',
@@ -152,6 +76,9 @@ export const execute: CommandExecute = async () => {
       ],
     },
     async ctx => {
+      board = generateBoard(instance.board());
+      if (instance === null)
+        return { type: 4, data: { content: 'This game is over.', flags: 64 } };
       const customID = ctx.interaction.data.custom_id;
       if (customID.startsWith('ig_')) {
         // ignore the interaction
@@ -165,11 +92,81 @@ export const execute: CommandExecute = async () => {
           };
         players[pid] = ctx.user;
         if (players.filter(v => v).length === 2) {
+          ctx.message.channel.send(
+            `A chess game has started between **${players[0].tag}** (white) and **${players[1].tag}** (black)`
+          );
+          const coll = ctx.message.channel.createMessageCollector(m =>
+            players.includes(m.author)
+          );
+          coll.on('collect', async (msg: Message) => {
+            if (msg.author.id === players[currentlyMoving].id) {
+              if (msg.content === 'show me the legal moves') {
+                msg.channel.send(
+                  `The current legal moves are:\n${instance
+                    .moves({
+                      verbose: false,
+                    })
+                    .map(v => `\`${v}\``)
+                    .join(', ')}`
+                );
+                msg.delete().catch(() => {});
+                return;
+              } else if (msg.content.match('what colou?r am I')) {
+                msg.channel.send(
+                  `You are ${currentlyMoving ? 'black' : 'white'}.`
+                );
+                msg.delete().catch(() => {});
+                return;
+              } else if (msg.content === 'resign') {
+                instance = null;
+                winHandler(
+                  2,
+                  msg.channel.send.bind(msg.channel),
+                  players[Math.abs(currentlyMoving - players.length) - 1],
+                  ctx.message
+                );
+                coll.stop();
+                msg.react('✅');
+                msg.delete().catch(() => {});
+                return;
+              }
+              const move = instance.move(msg.content);
+              console.log(move);
+              if (move === null) msg.react('❌');
+              else {
+                currentlyMoving = (Math.abs(currentlyMoving - players.length) -
+                  1) as 0 | 1;
+                board = generateBoard(instance.board());
+                await ctx.message.removeAttachments();
+                await ctx.message.edit(
+                  await generateBoardFrom(
+                    board,
+                    ctx.message.member.roles.highest.color,
+                    players[currentlyMoving],
+                    players,
+                    instance
+                  )
+                );
+                msg.react('✅');
+                await ctx.message.reply(
+                  `It's ${players[currentlyMoving].tag}'s turn now!`,
+                  { allowedMentions: { users: [players[currentlyMoving].id] } }
+                );
+                msg.delete().catch(() => {});
+              }
+            } else return;
+          });
           await ctx.message.edit({
             components: [
               new MessageActionRow().addComponents(generatePlayerRow(players)),
             ],
-            embed: await generateBoardFrom(board),
+            embed: await generateBoardFrom(
+              board,
+              ctx.message.member.roles.highest.color,
+              players[currentlyMoving],
+              players,
+              instance
+            ),
           });
         } else
           await ctx.message.edit({
@@ -178,31 +175,6 @@ export const execute: CommandExecute = async () => {
             ].filter(v => v),
           });
         return { type: 6, data: {} };
-      } else {
-        if (
-          players.indexOf(ctx.user) !== currentlyMoving ||
-          !players.includes(ctx.user)
-        ) {
-          return {
-            type: 4,
-            data: { content: "You can't do that!", flags: 64 },
-          };
-        }
-        let piece: Chess.Coordinates = customID as any;
-        if (!board[piece].piece) {
-          let tmp = board[piece];
-          board[selectedPiece].piece = null;
-          board[piece].piece = tmp.piece;
-          const toMove = players[currentlyMoving === 0 ? 1 : 0];
-          const pos = players.indexOf(toMove) as 0 | 1;
-          currentlyMoving = pos;
-          await ctx.message.edit(
-            (pos === 0
-              ? `__**${toMove.tag}**__ v. **${players[1].tag}**`
-              : `**${players[0].tag}** v. __**${toMove.tag}**__`) +
-              ' (underlined user is to move)'
-          );
-        }
       }
     },
   ];
@@ -244,7 +216,13 @@ function generatePlayerRow(players: [User | null, User | null]) {
 function getPlayerID(customID: `p${1 | 2}`) {
   return +customID.slice(1) - 1;
 }
-async function generateBoardFrom(board: Chess.Board) {
+async function generateBoardFrom(
+  board: Chess.Board,
+  color: number,
+  toMove: User,
+  players: User[],
+  instance: ChessClientInstance
+) {
   const pieces: string[][] = generatePieceArray(board);
   const generator = new ChessImageGenerator({
     size: 512,
@@ -254,9 +232,18 @@ async function generateBoardFrom(board: Chess.Board) {
   });
   generator.loadArray(pieces);
   const buffer = await generator.generateBuffer();
+  const str = uuid.v5(uuid.v1(), uuid.v1());
+  console.log(str);
   return new MessageEmbed()
-    .attachFiles([new MessageAttachment(buffer, 'chess.png')])
-    .setImage('attachment://chess.png');
+    .attachFiles([new MessageAttachment(buffer, 'chess-' + str + '.png')])
+    .setImage('attachment://chess-' + str + '.png')
+    .setColor(color)
+    .setFooter(
+      `${toMove.tag}'s turn, and they are ${
+        !!players.indexOf(toMove) ? 'black' : 'white'
+      }. Send the move notation of your desired move! (e.g. Nf3)`
+    )
+    .setDescription(instance.history().join(' '));
 }
 
 function generatePieceArray(board: Chess.Board) {
@@ -271,4 +258,38 @@ function generatePieceArray(board: Chess.Board) {
     )
   ).reverse();
   return arr;
+}
+
+function generateBoard(
+  board: ({ type: ChessJSPieceType; color: 'b' | 'w' } | null)[][]
+): Chess.Board {
+  const toReturn = Object.fromEntries(
+    board.flat().map((v, i) => [
+      coords[i],
+      {
+        piece:
+          (v && {
+            type: v.type.toUpperCase(),
+            team: v.color === 'w' ? 'white' : 'black',
+          }) ||
+          v,
+      },
+    ])
+  ) as any;
+  console.log(board, toReturn);
+  return toReturn;
+}
+
+function winHandler(
+  type: 1 | 2,
+  fn: TextChannel['send'],
+  winner: User,
+  msg: Message
+) {
+  fn(`${winner} has just won${type === 2 ? ' by resignation' : ''}!`, {
+    reply: {
+      messageReference: msg,
+    },
+    allowedMentions: { repliedUser: false, users: [winner.id] },
+  });
 }
