@@ -25,13 +25,12 @@ import {
   User,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
-import { accessLevels } from '../util';
+import { accessLevels, reverseIndex } from '../util';
 import {
   Chess as ChessClient,
   PieceType as ChessJSPieceType,
   ChessInstance as ChessClientInstance,
 } from 'chess.js';
-import * as uuid from 'uuid';
 namespace Chess {
   export type Letters = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h';
   export type Numbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -83,7 +82,6 @@ export const execute: CommandExecute = async () => {
       if (customID.startsWith('ig_')) {
         // ignore the interaction
       } else if (['p1', 'p2'].includes(customID)) {
-        console.log('here');
         const pid = getPlayerID(customID as `p${1 | 2}`);
         if (players[pid] /*|| players.includes(ctx.user)*/)
           return {
@@ -122,8 +120,9 @@ export const execute: CommandExecute = async () => {
                 winHandler(
                   2,
                   msg.channel.send.bind(msg.channel),
-                  players[Math.abs(currentlyMoving - players.length) - 1],
-                  ctx.message
+                  ctx.message,
+                  currentlyMoving,
+                  players
                 );
                 coll.stop();
                 msg.react('✅');
@@ -131,7 +130,6 @@ export const execute: CommandExecute = async () => {
                 return;
               }
               const move = instance.move(msg.content);
-              console.log(move);
               if (move === null) msg.react('❌');
               else {
                 currentlyMoving = (Math.abs(currentlyMoving - players.length) -
@@ -148,10 +146,24 @@ export const execute: CommandExecute = async () => {
                   )
                 );
                 msg.react('✅');
-                await ctx.message.reply(
-                  `It's ${players[currentlyMoving].tag}'s turn now!`,
-                  { allowedMentions: { users: [players[currentlyMoving].id] } }
-                );
+                const state = checkStateOfGame(instance);
+                if (isFinite(Math.abs(state)))
+                  await ctx.message.reply(
+                    `It's ${players[currentlyMoving].tag}'s turn now!`,
+                    {
+                      allowedMentions: { users: [players[currentlyMoving].id] },
+                    }
+                  );
+                else {
+                  instance = null as any;
+                  winHandler(
+                    state,
+                    ctx.message.reply.bind(ctx.message),
+                    ctx.message,
+                    currentlyMoving,
+                    players
+                  );
+                }
                 msg.delete().catch(() => {});
               }
             } else return;
@@ -159,6 +171,7 @@ export const execute: CommandExecute = async () => {
           await ctx.message.edit({
             components: [
               new MessageActionRow().addComponents(generatePlayerRow(players)),
+              helpRow,
             ],
             embed: await generateBoardFrom(
               board,
@@ -172,6 +185,7 @@ export const execute: CommandExecute = async () => {
           await ctx.message.edit({
             components: [
               new MessageActionRow().addComponents(generatePlayerRow(players)),
+              helpRow,
             ].filter(v => v),
           });
         return { type: 6, data: {} };
@@ -233,16 +247,14 @@ async function generateBoardFrom(
   });
   generator.loadArray(pieces);
   const buffer = await generator.generateBuffer();
-  const str = uuid.v5(uuid.v1(), uuid.v1());
-  console.log(str);
   return new MessageEmbed()
-    .attachFiles([new MessageAttachment(buffer, 'chess-' + str + '.png')])
-    .setImage('attachment://chess-' + str + '.png')
+    .attachFiles([new MessageAttachment(buffer, 'chess.png')])
+    .setImage('attachment://chess.png')
     .setColor(color)
     .setFooter(
       `${toMove.tag}'s turn, and they are ${
         !!players.indexOf(toMove) ? 'black' : 'white'
-      }. Send the move notation of your desired move! (e.g. Nf3)`
+      }. Send the move notation of your desired move (e.g Nf3), or click the 'Help' button!`
     )
     .setDescription(instance.history().join(' '));
 }
@@ -277,20 +289,78 @@ function generateBoard(
       },
     ])
   ) as any;
-  console.log(board, toReturn);
   return toReturn;
 }
 
 function winHandler(
-  type: 1 | 2,
+  type: ChessGameResult,
   fn: TextChannel['send'],
-  winner: User,
-  msg: Message
+  messageReference: Message,
+  current: 0 | 1,
+  players: User[]
 ) {
-  fn(`${winner} has just won${type === 2 ? ' by resignation' : ''}!`, {
-    reply: {
-      messageReference: msg,
-    },
-    allowedMentions: { repliedUser: false, users: [winner.id] },
-  });
+  switch (type) {
+    case ChessGameResult.DrawByAgreement: {
+      fn(`It was a draw!`, { reply: { messageReference } });
+      break;
+    }
+    case ChessGameResult.InsufficientMaterial: {
+      fn('There was insufficient material to continue the game!', {
+        reply: { messageReference },
+      });
+      break;
+    }
+    case ChessGameResult.FiftyMoveLimit: {
+      fn('The game crossed the fifty (50) move limit, so the game was drawn.', {
+        reply: { messageReference },
+      });
+      break;
+    }
+    case ChessGameResult.Stalemate: {
+      fn('It was a stalemate!', { reply: { messageReference } });
+      break;
+    }
+    case ChessGameResult.Repetition: {
+      fn('This position occurred three or more times, so the game was drawn.', {
+        reply: { messageReference },
+      });
+      break;
+    }
+    case ChessGameResult.CheckMate:
+    case ChessGameResult.Resignation: {
+      fn(`**${players[reverseIndex(current, players)].tag}** has won!`, {
+        reply: { messageReference },
+      });
+      break;
+    }
+  }
+}
+
+const helpButton = new MessageButton()
+  .setEmoji('❔')
+  .setLabel('Help')
+  .setCustomID('help')
+  .setStyle('SUCCESS');
+
+const helpRow = new MessageActionRow({ components: [helpButton] });
+enum ChessGameResult {
+  DrawByAgreement = 0,
+  InsufficientMaterial = 0.125,
+  FiftyMoveLimit = 0.25,
+  Stalemate = 0.5,
+  Repetition = 0.75,
+  CheckMate = 1,
+  Resignation = 2,
+}
+function checkStateOfGame(instance: ChessClientInstance): ChessGameResult {
+  if (!instance.game_over()) return -Infinity;
+  // Draws
+  else if (instance.in_draw()) {
+    if (instance.insufficient_material())
+      return ChessGameResult.InsufficientMaterial;
+    else return ChessGameResult.FiftyMoveLimit;
+  } else if (instance.in_stalemate()) return ChessGameResult.Stalemate;
+  else if (instance.in_threefold_repetition())
+    return ChessGameResult.Repetition;
+  else if (instance.in_checkmate()) return ChessGameResult.CheckMate;
 }

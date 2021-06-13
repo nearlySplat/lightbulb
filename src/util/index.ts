@@ -25,7 +25,7 @@ export * from './sleep';
 export * from './getCases';
 export * from './getAccessLevel';
 export * from './Parameters';
-export const getProgressBar = (len = 3, seperator = 'O', lineChar = '─') => {
+export function getProgressBar(len = 3, seperator = 'O', lineChar = '─') {
   if (typeof len !== 'number')
     throw new TypeError("Parameter 'len' must be of type number.");
   if (typeof seperator !== 'string')
@@ -37,11 +37,11 @@ export const getProgressBar = (len = 3, seperator = 'O', lineChar = '─') => {
     i === num ? seperator : lineChar
   ).join('');
   return progress;
-};
+}
 export * as i18n from './i18n';
 export * from './parseCLIArgs';
-export const getLogChannel = (guild: Guild) =>
-  guild.channels.cache.find(
+export function getLogChannel(guild: Guild) {
+  return guild.channels.cache.find(
     value =>
       ((value.name?.match(/^💡(-log(s|ging)?)?$/g) ||
         (value as TextChannel).topic?.includes('--lightbulb-logs')) &&
@@ -49,9 +49,10 @@ export const getLogChannel = (guild: Guild) =>
         value.permissionsFor(guild.me as GuildMember)?.has('SEND_MESSAGES')) ??
       false
   );
+}
 
-export const getMember = (guild: Guild, target: string) =>
-  ['user.id', 'user.tag', 'displayName', 'user.username']
+export function getMember(guild: Guild, target: string) {
+  return ['user.id', 'user.tag', 'displayName', 'user.username']
     .map(pre =>
       guild.members.cache.find(
         v =>
@@ -60,15 +61,17 @@ export const getMember = (guild: Guild, target: string) =>
       )
     )
     .filter(v => !!v)[0];
+}
 
-export const toProperCase = (str: string) =>
-  str.replace(/\b\w/g, v => v.toUpperCase());
+export function toProperCase(str: string) {
+  return str.replace(/\b\w/g, v => v.toUpperCase());
+}
 
-export const shuffle = <T>(arr: T[]) => {
+export function shuffle<T>(arr: T[]) {
   return range(Math.max(arr.length / 5, 5))
-    .map<T[]>((_, i) => arr.slice(i, i + 5))
+    .map<T[]>((_, i) => arr.slice(i, i + 6))
     .flat();
-};
+}
 
 export const range = (n: number) => Array(n).fill(null);
 
@@ -80,3 +83,7 @@ export const chunk = (n: number, x: string | number) => {
     arr.push(i);
   return arr;
 };
+
+export function reverseIndex(ind: number, arr: unknown[]) {
+  return Math.abs(ind - arr.length) - 1;
+}
