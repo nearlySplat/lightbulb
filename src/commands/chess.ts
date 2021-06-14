@@ -25,12 +25,14 @@ import {
   User,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
-import { accessLevels, reverseIndex } from '../util';
+import { accessLevels, i18n, reverseIndex } from '../util';
 import {
   Chess as ChessClient,
   PieceType as ChessJSPieceType,
   ChessInstance as ChessClientInstance,
 } from 'chess.js';
+import { MessageFlags } from 'discord-api-types';
+import { CLIENT_COLOUR } from '../constants';
 namespace Chess {
   export type Letters = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h';
   export type Numbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -72,6 +74,7 @@ export const execute: CommandExecute = async () => {
       content: 'Who wants to play some chess?',
       components: [
         new MessageActionRow().addComponents(...generatePlayerRow(players)),
+        helpRow,
       ],
     },
     async ctx => {
@@ -81,6 +84,23 @@ export const execute: CommandExecute = async () => {
       const customID = ctx.interaction.data.custom_id;
       if (customID.startsWith('ig_')) {
         // ignore the interaction
+      } else if (customID === 'help') {
+        return {
+          type: 4,
+          data: {
+            embeds: [
+              {
+                description: i18n.get('CHESS_HELP'),
+                color: (
+                  ctx.message.member || {
+                    roles: { highest: { color: CLIENT_COLOUR } },
+                  }
+                ).roles.highest.color,
+              },
+            ],
+            flags: MessageFlags.EPHEMERAL,
+          },
+        };
       } else if (['p1', 'p2'].includes(customID)) {
         const pid = getPlayerID(customID as `p${1 | 2}`);
         if (players[pid] /*|| players.includes(ctx.user)*/)
@@ -147,13 +167,12 @@ export const execute: CommandExecute = async () => {
                 );
                 msg.react('✅');
                 const state = checkStateOfGame(instance);
-                if (isFinite(Math.abs(state)))
-                  await ctx.message.reply(
-                    `It's ${players[currentlyMoving].tag}'s turn now!`,
-                    {
-                      allowedMentions: { users: [players[currentlyMoving].id] },
-                    }
-                  );
+                console.log(state);
+                if (!isFinite(Math.abs(state)))
+                  await ctx.message.reply({
+                    content: `It's ${players[currentlyMoving]}'s turn now!`,
+                    allowedMentions: { users: [players[currentlyMoving].id] },
+                  });
                 else {
                   instance = null as any;
                   winHandler(
@@ -173,13 +192,13 @@ export const execute: CommandExecute = async () => {
               new MessageActionRow().addComponents(generatePlayerRow(players)),
               helpRow,
             ],
-            embed: await generateBoardFrom(
+            ...(await generateBoardFrom(
               board,
               ctx.message.member.roles.highest.color,
               players[currentlyMoving],
               players,
               instance
-            ),
+            )),
           });
         } else
           await ctx.message.edit({
@@ -247,16 +266,18 @@ async function generateBoardFrom(
   });
   generator.loadArray(pieces);
   const buffer = await generator.generateBuffer();
-  return new MessageEmbed()
-    .attachFiles([new MessageAttachment(buffer, 'chess.png')])
-    .setImage('attachment://chess.png')
-    .setColor(color)
-    .setFooter(
-      `${toMove.tag}'s turn, and they are ${
-        !!players.indexOf(toMove) ? 'black' : 'white'
-      }. Send the move notation of your desired move (e.g Nf3), or click the 'Help' button!`
-    )
-    .setDescription(instance.history().join(' '));
+  return {
+    embed: new MessageEmbed()
+      .setImage('attachment://chess.png')
+      .setColor(color)
+      .setFooter(
+        `${toMove.tag}'s turn, and they are ${
+          !!players.indexOf(toMove) ? 'black' : 'white'
+        }. Send the move notation of your desired move (e.g Nf3), or click the 'Help' button!`
+      )
+      .setDescription(instance.history().join(' ')),
+    files: [new MessageAttachment(buffer, 'chess.png')],
+  };
 }
 
 function generatePieceArray(board: Chess.Board) {
@@ -301,34 +322,40 @@ function winHandler(
 ) {
   switch (type) {
     case ChessGameResult.DrawByAgreement: {
-      fn(`It was a draw!`, { reply: { messageReference } });
+      fn({ content: `It was a draw!`, reply: { messageReference } });
       break;
     }
     case ChessGameResult.InsufficientMaterial: {
-      fn('There was insufficient material to continue the game!', {
+      fn({
+        content: 'There was insufficient material to continue the game!',
         reply: { messageReference },
       });
       break;
     }
     case ChessGameResult.FiftyMoveLimit: {
-      fn('The game crossed the fifty (50) move limit, so the game was drawn.', {
+      fn({
+        content:
+          'The game crossed the fifty (50) move limit, so the game was drawn.',
         reply: { messageReference },
       });
       break;
     }
     case ChessGameResult.Stalemate: {
-      fn('It was a stalemate!', { reply: { messageReference } });
+      fn({ content: 'It was a stalemate!', reply: { messageReference } });
       break;
     }
     case ChessGameResult.Repetition: {
-      fn('This position occurred three or more times, so the game was drawn.', {
+      fn({
+        content:
+          'This position occurred three or more times, so the game was drawn.',
         reply: { messageReference },
       });
       break;
     }
     case ChessGameResult.CheckMate:
     case ChessGameResult.Resignation: {
-      fn(`**${players[reverseIndex(current, players)].tag}** has won!`, {
+      fn({
+        content: `**${players[reverseIndex(current, players)].tag}** has won!`,
         reply: { messageReference },
       });
       break;
@@ -337,7 +364,7 @@ function winHandler(
 }
 
 const helpButton = new MessageButton()
-  .setEmoji('❔')
+  .setEmoji('📚')
   .setLabel('Help')
   .setCustomID('help')
   .setStyle('SUCCESS');

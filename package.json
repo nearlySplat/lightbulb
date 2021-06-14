@@ -1,8 +1,8 @@
 {
   "name": "lightbulb",
-  "version": "1.29.0",
+  "version": "1.30.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon dist",
     "watch": "tsc -w",
@@ -20,6 +20,7 @@
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
+    "@splatterxl/tsconfig": "^1.0.0",
     "@types/chess.js": "^0.11.0",
     "@types/eslint": "^7.2.6",
     "@types/graceful-fs": "^4.1.5",
@@ -36,13 +37,12 @@
   "dependencies": {
     "@discordjs/collection": "^0.1.6",
     "@splatterxl/fetchbuilder": "^0.1.1-1",
-    "@splatterxl/tsconfig": "^1.0.0",
     "axios": "^0.21.1",
     "cat-loggr": "^1.1.0",
     "chess-image-generator": "github:andyruwruw/chess-image-generator",
     "chess.js": "^0.12.0",
     "discord-api-types": "^0.18.1",
-    "discord.js": "github:discordjs/discord.js",
+    "discord.js": "^13.0.0-dev.918921e8211fc16e9b12d2502f3168264246ea22",
     "dotenv": "^8.2.0",
     "graceful-fs": "^4.2.6",
     "lodash": "^4.17.21",

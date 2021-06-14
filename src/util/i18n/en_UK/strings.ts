@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { config } from '../../../constants';
 import { Parameter } from '../../Parameters';
 
 export const ABOUT_LONG_DESCRIPTION =
@@ -143,3 +144,26 @@ export const MESSAGEINFO_MESSAGE_NOT_FOUND =
 export const BAN_CONFIRMATION =
   'Are you sure you want to ban {{objectPronoun}}? (y/N)';
 export const INTERACTION_NO_BUTTON_HANDLER = '';
+export const CHESS_HELP = `Hi there! So, you want to take a go at the centuries-old game of chess? Here's how to play it with ${
+  config.bot.name
+}!
+
+**Buttons**
+You may notice we are using buttons for this command. Yes, we are, but because of the 5×5 (${
+  5 * 5
+}) limit on the amount of buttons on each message, you'll be using text to control your pieces.
+
+Since this looks absolutely horrible on mobile, we have taken care to have the bot delete valid commands (related to the current game, of course) when it can. And, if it can't, it'll react with ✅ or ❌ depending on whether the command was valid.
+
+**How to play**
+We are using a chess framework called **[chess.js](https://npmjs.com/package/chess.js)** to manage your games, so all the [rules of chess](https://rcc.fide.com/wp-content/uploads/2019/11/FIDE_Laws-Of_Chess_2018-1.pdf) \\*should\\* be reflected.
+
+**Commands**
+To use any of the commands listed below, just type them in chat! No prefix, no anything.
+
+*Mods, if you're reading this, only players in a current game are responded to.*
+
+- \`show me the legal moves\` — ... shows you the legal moves
+- \`what colour am I\` (with the capital \`I\`) — self explanatory
+- \`resign\` — forfeits your move and awards the other player with a win
+- and finally, any valid move (see the first command) — resolves the pieces to move, moves those pieces, captures pieces if necessary and forwards the move to the next person. *Note: reacts with ❌ if the move is illegal*`;

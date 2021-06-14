@@ -216,4 +216,11 @@ declare module 'discord.js' {
     // @ts-ignore
     data: Record<string, unknown>;
   }
+  // @ts-ignore
+  export type Snowflake = string;
+}
+
+declare module 'discord-api-types' {
+  // @ts-ignore
+  export type Snowflake = string;
 }
