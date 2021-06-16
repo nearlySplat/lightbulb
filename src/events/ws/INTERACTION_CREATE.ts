@@ -39,17 +39,17 @@ export const execute = async (
   interaction: GatewayInteractionCreateDispatchData
 ) => {
   if (
-    (interaction.type as unknown as InteractionTypes) ===
+    ((interaction.type as unknown) as InteractionTypes) ===
     InteractionTypes.APPLICATION_COMMAND
   )
     return slashCommandExecute(client, interaction);
   else if (
-    (interaction.type as unknown as InteractionTypes) ===
+    ((interaction.type as unknown) as InteractionTypes) ===
     InteractionTypes.MESSAGE_COMPONENT
   ) {
     buttonExecute(
       client,
-      interaction as unknown as MessageComponentInteraction
+      (interaction as unknown) as MessageComponentInteraction
     );
   }
 };
@@ -68,8 +68,7 @@ export const slashCommandExecute = async (
     const author = (await client.users
       .fetch(
         ((interaction.member || { user: { id: '' } }).user.id ||
-          (!interaction.guild_id ? interaction.user.id : '0')) as Snowflake,
-        true
+          (!interaction.guild_id ? interaction.user.id : '0')) as Snowflake
       )
       .catch(() => null)) as User;
     const guild =

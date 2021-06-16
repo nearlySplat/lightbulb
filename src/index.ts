@@ -96,7 +96,7 @@ loggr.debug('Loading events...');
 for (const [event, { execute }] of loadFiles<EventType>('../events')) {
   client.on(
     event as keyof ClientEvents,
-    (...params) => execute(client, ...params) as unknown as void
+    (...params) => (execute(client, ...params) as unknown) as void
   );
   loggr.debug(`Loaded event ${event}`);
 }
@@ -168,13 +168,13 @@ client.on('raw', packet => {
         client.users.cache.get(packet.d.user_id) as User
       );
     else {
-      reaction = {
+      reaction = ({
         count: 0,
         message,
         client,
         get emoji() {
           return new ReactionEmoji(
-            this as unknown as MessageReaction,
+            (this as unknown) as MessageReaction,
             packet.d.emoji
           );
         },
@@ -198,7 +198,7 @@ client.on('raw', packet => {
         async fetch() {
           return this;
         },
-      } as unknown as MessageReaction;
+      } as unknown) as MessageReaction;
     }
 
     // Check which type of event it is before emitting

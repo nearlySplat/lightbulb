@@ -64,6 +64,7 @@ const coords: Chess.Coordinates[] = [
   ...'abcdefgh',
   ...'abcdefgh',
 ].map((v, i) => v + '' + (Math.floor(i / 8) + 1)) as Chess.Coordinates[];
+
 export const execute: CommandExecute = async () => {
   const players: [p1: User, p2: User] = [null, null] as [User, User];
   let board: Chess.Board = {} as any;
@@ -98,6 +99,22 @@ export const execute: CommandExecute = async () => {
                 ).roles.highest.color,
               },
             ],
+            flags: MessageFlags.EPHEMERAL,
+          },
+        };
+      } else if (customID === 'history') {
+        return {
+          type: 4,
+          data: {
+            content: `The ${
+              instance.game_over() ? 'PGN' : 'history'
+            } for this game is as follows:\n\`\`\`\n${
+              instance.pgn() ||
+              instance
+                .history()
+                .map((v, i) => (i % 2 === 0 ? `${i}. ${v}` : v))
+                .join(' ')
+            }\n\`\`\``,
             flags: MessageFlags.EPHEMERAL,
           },
         };
@@ -226,11 +243,11 @@ const vsButton = new MessageButton()
   .setLabel('v.')
   .setDisabled(true);
 function generatePlayerRow(players: [User | null, User | null]) {
-  const arr: [MessageButton, MessageButton, MessageButton] = [] as unknown as [
-    any,
-    any,
-    any
-  ];
+  const arr: [
+    MessageButton,
+    MessageButton,
+    MessageButton
+  ] = ([] as unknown) as [any, any, any];
   for (let i = 0; i < players.length; i++) {
     arr.push(
       ...[
@@ -267,15 +284,12 @@ async function generateBoardFrom(
   generator.loadArray(pieces);
   const buffer = await generator.generateBuffer();
   return {
+    content: `${toMove.tag}'s turn, and they are ${
+      !!players.indexOf(toMove) ? 'black' : 'white'
+    }. Send the move notation of your desired move (e.g Nf3), or click the 'Help' button!`,
     embed: new MessageEmbed()
-      .setImage('attachment://chess.png')
-      .setColor(color)
-      .setFooter(
-        `${toMove.tag}'s turn, and they are ${
-          !!players.indexOf(toMove) ? 'black' : 'white'
-        }. Send the move notation of your desired move (e.g Nf3), or click the 'Help' button!`
-      )
-      .setDescription(instance.history().join(' ')),
+      .setDescription(instance.moves().join(' '))
+      .setColor(color),
     files: [new MessageAttachment(buffer, 'chess.png')],
   };
 }
@@ -355,7 +369,11 @@ function winHandler(
     case ChessGameResult.CheckMate:
     case ChessGameResult.Resignation: {
       fn({
-        content: `**${players[reverseIndex(current, players)].tag}** has won!`,
+        content: `**${
+          players[reverseIndex(current, players)].tag
+        }** has won by ${
+          type === ChessGameResult.CheckMate ? 'checkmate' : 'resignation'
+        }!`,
         reply: { messageReference },
       });
       break;
@@ -368,8 +386,20 @@ const helpButton = new MessageButton()
   .setLabel('Help')
   .setCustomID('help')
   .setStyle('SUCCESS');
-
-const helpRow = new MessageActionRow({ components: [helpButton] });
+const historyButton = new MessageButton()
+  .setEmoji('🕰')
+  .setLabel('Move History')
+  .setCustomID('history')
+  .setStyle('DANGER');
+const rulesButton = new MessageButton()
+  .setLabel("FIDE's Laws of Chess")
+  .setURL(
+    'https://rcc.fide.com/wp-content/uploads/2019/11/FIDE_Laws-Of_Chess_2018-1.pdf'
+  )
+  .setStyle('LINK');
+const helpRow = new MessageActionRow({
+  components: [helpButton, historyButton, rulesButton],
+});
 enum ChessGameResult {
   DrawByAgreement = 0,
   InsufficientMaterial = 0.125,
@@ -391,3 +421,11 @@ function checkStateOfGame(instance: ChessClientInstance): ChessGameResult {
     return ChessGameResult.Repetition;
   else if (instance.in_checkmate()) return ChessGameResult.CheckMate;
 }
+
+// owo this file
+// almost
+// has 400 lines
+// this is an amazing moment
+// it will surely go into the history books
+// UwU
+// OwO

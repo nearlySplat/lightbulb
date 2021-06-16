@@ -119,9 +119,7 @@ export const splatMarkov = {
             ? args[1]
             : {
                 limit: 100,
-              }) as ChannelLogsQueryOptions,
-          true,
-          true
+              }) as ChannelLogsQueryOptions
         )
         .then((t: Collection<string, Message> | Message) =>
           t instanceof Collection
@@ -131,11 +129,9 @@ export const splatMarkov = {
             : !INVALID(t.content)
         );
       markov.push(
-        ...(
-          (msgs instanceof Collection ? msgs : [msgs]).map as (
-            fn: (m: Message) => string
-          ) => string[]
-        )(v => v.cleanContent)
+        ...((msgs instanceof Collection ? msgs : [msgs]).map as (
+          fn: (m: Message) => string
+        ) => string[])(v => v.cleanContent)
       );
       fs.writeFileSync(
         path.join(__dirname, '..', '..', 'etc', 'markov.txt'),

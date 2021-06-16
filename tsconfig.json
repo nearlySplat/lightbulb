@@ -3,7 +3,9 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "target": "esnext",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "diagnostics": false,
+    "extendedDiagnostics": false
   },
   "include": ["src/**/*"],
   "compileOnSave": false,

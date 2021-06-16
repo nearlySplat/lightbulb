@@ -15,10 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Builder } from '@splatterxl/fetchbuilder';
-interface Constructor {
-  new (data: any): any;
-}
-export const useGitHubApiRouter = <T>(C?: Constructor) => {
+export const useGitHubApiRouter = <T>() => {
   const builder = new Builder<T>('https://api.github.com').setHeader([
     'accept',
     'application/vnd.github.v3+json',

@@ -17,7 +17,6 @@
 import { Collection } from 'discord.js';
 import { readdirSync } from 'fs';
 import { join } from 'path';
-import { loggr } from '..';
 
 export function loadFiles<T>(folder: string): Collection<string, T> {
   const coll = new Collection<string, T>(),
@@ -28,6 +27,5 @@ export function loadFiles<T>(folder: string): Collection<string, T> {
     const data = require(`${folder}/${file}`);
     coll.set(file, data);
   }
-  loggr.debug(`Loaded ${coll.size} files.`);
   return coll;
 }

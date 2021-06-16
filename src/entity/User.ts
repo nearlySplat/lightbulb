@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Snowflake } from "discord.js";
-import { BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
-export class User extends BaseEntity {
+import { Snowflake } from 'discord.js';
+import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Base } from './Base';
+export class User extends Base {
   @PrimaryGeneratedColumn()
   id!: number;
   @Column()
@@ -24,15 +25,15 @@ export class User extends BaseEntity {
   @Column()
   updated_at: Date;
   @Column()
-  subjectPronoun = "they";
+  subjectPronoun = 'they';
   @Column()
-  objectPronoun = "them";
+  objectPronoun = 'them';
   @Column()
-  possessiveDeterminer = "their";
+  possessiveDeterminer = 'their';
   @Column()
-  possessivePronoun = "theirs";
+  possessivePronoun = 'theirs';
   @Column()
-  singularOrPluralPronoun = "plural";
+  singularOrPluralPronoun = 'plural';
 
   get pronouns() {
     return {

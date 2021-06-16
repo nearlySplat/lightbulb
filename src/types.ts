@@ -160,6 +160,7 @@ export interface YAMLConfig {
   owner: Owner;
   bot: Bot;
   whitelist: null | string[];
+  nodb: boolean;
 }
 
 export interface Owner {
@@ -218,6 +219,7 @@ declare module 'discord.js' {
   }
   // @ts-ignore
   export type Snowflake = string;
+  export type StringResolvable = string;
 }
 
 declare module 'discord-api-types' {
