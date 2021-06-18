@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { MessageOptions } from 'discord.js';
 import {
   Client,
   ClientUser,
@@ -25,7 +26,7 @@ import {
 } from 'discord.js';
 import { commands } from '..';
 import { PREFIXES } from '../constants';
-import { ButtonInteractionHandler, Command } from '../types';
+import { ButtonInteractionHandler, Command, CommandResponse } from '../types';
 import {
   CommandParameters,
   getAccessLevel,
@@ -91,21 +92,30 @@ export const execute = async (
       return false;
     }
     if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation) {
-      const result = await command.execute({
-        client,
-        message: message as Message & { member: GuildMember; guild: Guild },
-        args: paramInstance,
-        commands,
-        commandHandlerStarted: timeStarted,
-        accessLevel: getCurrentLevel(message.member as GuildMember),
-        locale: 'en_UK',
-        commandName,
-      });
+      let result: CommandResponse | boolean;
+      try {
+        result = await command.execute({
+          client,
+          message: message as Message & { member: GuildMember; guild: Guild },
+          args: paramInstance,
+          commands,
+          commandHandlerStarted: timeStarted,
+          accessLevel: getCurrentLevel(message.member as GuildMember),
+          locale: 'en_UK',
+          commandName,
+        });
+      } catch (e) {
+        message.channel.send(
+          `A error occur.\n\n\`\`\`js\n${e.toString()}\n\`\`\``
+        );
+      }
       if (typeof result === 'boolean') return result;
       else {
         if (typeof result === 'boolean') return;
         const [options, handler] = result;
-        const msg = (await message.channel.send(options)) as Message;
+        const msg = (await message.channel.send(
+          options as MessageOptions & { split: false }
+        )) as Message;
         buttonHandlers.set(msg.id, handler);
       }
     } else return false;

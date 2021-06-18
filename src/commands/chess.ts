@@ -70,6 +70,7 @@ export const execute: CommandExecute = async () => {
   let board: Chess.Board = {} as any;
   let currentlyMoving: 0 | 1 = 0;
   let instance = new ChessClient();
+  let isOver = () => instance.game_over();
   return [
     {
       content: 'Who wants to play some chess?',
@@ -80,8 +81,6 @@ export const execute: CommandExecute = async () => {
     },
     async ctx => {
       board = generateBoard(instance.board());
-      if (instance === null)
-        return { type: 4, data: { content: 'This game is over.', flags: 64 } };
       const customID = ctx.interaction.data.custom_id;
       if (customID.startsWith('ig_')) {
         // ignore the interaction
@@ -119,6 +118,11 @@ export const execute: CommandExecute = async () => {
           },
         };
       } else if (['p1', 'p2'].includes(customID)) {
+        if (isOver())
+          return {
+            type: 4,
+            data: { content: 'This game is over.', flags: 64 },
+          };
         const pid = getPlayerID(customID as `p${1 | 2}`);
         if (players[pid] /*|| players.includes(ctx.user)*/)
           return {
@@ -153,7 +157,7 @@ export const execute: CommandExecute = async () => {
                 msg.delete().catch(() => {});
                 return;
               } else if (msg.content === 'resign') {
-                instance = null;
+                isOver = () => true;
                 winHandler(
                   2,
                   msg.channel.send.bind(msg.channel),
@@ -184,14 +188,14 @@ export const execute: CommandExecute = async () => {
                 );
                 msg.react('✅');
                 const state = checkStateOfGame(instance);
-                console.log(state);
                 if (!isFinite(Math.abs(state)))
                   await ctx.message.reply({
                     content: `It's ${players[currentlyMoving]}'s turn now!`,
                     allowedMentions: { users: [players[currentlyMoving].id] },
                   });
                 else {
-                  instance = null as any;
+                  isOver = () => true;
+                  coll.stop();
                   winHandler(
                     state,
                     ctx.message.reply.bind(ctx.message),
@@ -243,11 +247,11 @@ const vsButton = new MessageButton()
   .setLabel('v.')
   .setDisabled(true);
 function generatePlayerRow(players: [User | null, User | null]) {
-  const arr: [
-    MessageButton,
-    MessageButton,
-    MessageButton
-  ] = ([] as unknown) as [any, any, any];
+  const arr: [MessageButton, MessageButton, MessageButton] = [] as unknown as [
+    any,
+    any,
+    any
+  ];
   for (let i = 0; i < players.length; i++) {
     arr.push(
       ...[
