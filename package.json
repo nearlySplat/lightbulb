@@ -1,6 +1,6 @@
 {
   "name": "lightbulb",
-  "version": "1.31.0",
+  "version": "1.32.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -46,6 +46,7 @@
     "dotenv": "^8.2.0",
     "graceful-fs": "^4.2.6",
     "lodash": "^4.17.21",
+    "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.31",
