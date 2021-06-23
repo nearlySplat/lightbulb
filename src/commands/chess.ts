@@ -268,7 +268,7 @@ function generatePlayerRow(players: [User | null, User | null]) {
   return arr;
 }
 
-function getPlayerID(customID: `p${1 | 2}`) {
+function getPlayerID(customID: 'p1' | 'p2') {
   return +customID.slice(1) - 1;
 }
 async function generateBoardFrom(
