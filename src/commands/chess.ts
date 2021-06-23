@@ -54,7 +54,7 @@ namespace Chess {
     team: Chess.Team;
   }
 }
-function _(__: `_`) {}
+function _(__: `_//`) {}
 const coords: Chess.Coordinates[] = [
   ...'abcdefgh',
   ...'abcdefgh',
