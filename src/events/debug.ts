@@ -18,6 +18,6 @@ import { Client } from 'discord.js';
 import { loggr } from '..';
 
 export const execute = (_client: Client, message: string | any): boolean => {
-  // loggr.debug(message);
+  loggr.debug(message);
   return true;
 };

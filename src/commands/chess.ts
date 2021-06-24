@@ -72,6 +72,7 @@ export const execute: CommandExecute = async () => {
   let currentlyMoving: 0 | 1 = 0;
   let instance = new ChessClient();
   let isOver = () => instance.game_over();
+  let nextMoveMsg: Message;
   return [
     {
       content: 'Who wants to play some chess?',
@@ -189,8 +190,9 @@ export const execute: CommandExecute = async () => {
                 );
                 msg.react('✅');
                 const state = checkStateOfGame(instance);
+                if (nextMoveMsg) await nextMoveMsg.delete();
                 if (!isFinite(Math.abs(state)))
-                  await ctx.message.reply({
+                  nextMoveMsg = await ctx.message.reply({
                     content: `It's ${players[currentlyMoving]}'s turn now!`,
                     allowedMentions: { users: [players[currentlyMoving].id] },
                   });
@@ -207,7 +209,9 @@ export const execute: CommandExecute = async () => {
                 }
                 msg.delete().catch(() => {});
               }
-            } else return;
+            }
+
+            return;
           });
           await ctx.message.edit({
             components: [

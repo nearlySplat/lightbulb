@@ -14,35 +14,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {
-  Context,
-  CommandMetadata,
-  WidgetResponse,
-  GuildLookupData,
-} from '../types';
-import { SnowflakeUtil, MessageEmbed, GuildPreview } from 'discord.js';
-import { CLIENT_COLOUR } from '../constants';
 import axios from 'axios';
+import { GuildPreview, MessageEmbed, SnowflakeUtil } from 'discord.js';
+import { CLIENT_COLOUR } from '../constants';
+import {
+  CommandExecute,
+  CommandMetadata,
+  GuildLookupData,
+  WidgetResponse,
+} from '../types';
 
-export const execute = async (ctx: Context): Promise<boolean> => {
+export const execute: CommandExecute = async ctx => {
   const deconstructed = SnowflakeUtil.deconstruct(
-      ctx.args[0] ?? ctx.message.author.id
+      ctx.args[0] || ctx.message.author.id
     ),
-    user = await ctx.client.users.fetch(ctx.args[0]).catch(e => null),
+    user = await ctx.client.users.fetch(ctx.args[0]).catch(() => null),
     invite = await ctx.client
       .fetchInvite(
         ctx.args[0].replace(/(https?:\/\/)?discord\.(gg|com\/invites)\//g, '')
       )
-      .catch(e => null),
+      .catch(() => null),
     guild: GuildLookupData =
-      (await ctx.client.fetchGuildPreview(ctx.args[0]).catch(e => null)) ??
+      (await ctx.client.fetchGuildPreview(ctx.args[0]).catch(() => null)) ||
       ((
-        await axios
+        (await axios
           .get(
             `https://canary.discord.com/api/guilds/${ctx.args[0]}/widget.json`
           )
-          .catch(() => null)
-      )?.data as WidgetResponse);
+          .catch(() => null)) || {}
+      ).data as WidgetResponse);
   const _ = new MessageEmbed()
     .setColor(CLIENT_COLOUR)
     .setAuthor(`Lookup Information for ${ctx.args[0]}`)
@@ -52,7 +52,7 @@ export const execute = async (ctx: Context): Promise<boolean> => {
       }`
     )
     .setTimestamp(parseInt(ctx.args[0]) ? deconstructed.timestamp : Date.now())
-    .setThumbnail(ctx.client.user?.avatarURL() as string);
+    .setThumbnail(ctx.client.user!.avatarURL() as string);
   if (user) {
     _.setAuthor(`Lookup for ${user.tag}`)
       .addField('User Info', `**Tag**: ${user.tag}\n**ID**: ${user.id}`)
@@ -75,12 +75,12 @@ export const execute = async (ctx: Context): Promise<boolean> => {
                 invite.guild.verified
                   ? '<:verified_server:811324798616862771> '
                   : ''
-              }${invite.guild?.name}\n⇒ __Vanity__: \`${
-                invite.guild?.vanityURLCode ?? 'None'
+              }${invite.guild.name}\n⇒ __Vanity__: \`${
+                invite.guild.vanityURLCode || 'None'
               }\`${
-                invite.guild?.approximateMemberCount || invite.memberCount
+                invite.guild.approximateMemberCount || invite.memberCount
                   ? `\n⇒ __Member Count__: ${
-                      invite.guild?.approximateMemberCount ?? invite.memberCount
+                      invite.guild.approximateMemberCount || invite.memberCount
                     }`
                   : ''
               }`
@@ -105,7 +105,7 @@ export const execute = async (ctx: Context): Promise<boolean> => {
           invite.guild ? 'Server' : 'Snowflake'
         } created`
       )
-      .setTimestamp(invite.guild?.createdTimestamp);
+      .setTimestamp(invite.guild ? invite.guild.createdTimestamp : undefined);
   }
   if (guild) {
     let g = guild as GuildPreview & { members?: any[] };
@@ -131,31 +131,34 @@ export const execute = async (ctx: Context): Promise<boolean> => {
   if (parseInt(ctx.args[0]))
     _.addField(
       'Snowflake',
-      Object.entries(deconstructed).map(
-        ([K, V]) =>
-          `**${K.replace(/\b\w/g, v => v.toUpperCase()).replace(
-            /([a-z])([A-Z])/g,
-            '$1 $2'
-          )}**: \`${
-            (V as Date | string | number) instanceof Date
-              ? V.toLocaleString()
-              : V
-          }\``
-      )
+      Object.entries(deconstructed)
+        .map(
+          ([K, V]) =>
+            `**${K.replace(/\b\w/g, v => v.toUpperCase()).replace(
+              /([a-z])([A-Z])/g,
+              '$1 $2'
+            )}**: ${
+              (V as Date | string | number) instanceof Date
+                ? `<t:${Math.floor(V.getTime() / 1000)}>`
+                : `\`${V}\``
+            }`
+        )
+        .join('\n')
     );
 
   if (_.fields.length === 0)
     _.setDescription(
-      'Nothing was found... I currently only support **user IDs** and **server invite links**.'
+      'Nothing was found... I currently only support **Discord Snowflakes** and **server invite links**.'
     ).setImage(
       'https://cdn.dribbble.com/users/623808/screenshots/4012628/1-safe.jpg'
     );
 
-  ctx.message.reply({
-    allowedMentions: { repliedUser: false, parse: [] },
-    embed: _,
-  });
-  return true;
+  return [
+    {
+      embed: _,
+    },
+    null,
+  ];
 };
 
 export const meta: CommandMetadata = {

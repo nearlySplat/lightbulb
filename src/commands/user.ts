@@ -57,41 +57,44 @@ export const execute: CommandExecute<'target'> = async ({
     message.channel.send('no such user could be found');
     return false;
   }
-  const embed = new MessageEmbed()
-    .setColor(message.guild.me!.roles.highest.color)
-    .setFooter(
-      i18n.interpolate(i18n.get('GENERIC_REQUESTED_BY', locale), {
-        requester: `${message.author.tag} (${message.author.id})`,
-      })
-    )
-    .setThumbnail(user.avatarURL() as string)
-    .setAuthor(`${user.tag} (${user.id})`)
-    .addField(
-      'User Information',
-      `**Tag**: ${user.tag}
+  return [
+    {
+      embed: new MessageEmbed()
+        .setColor(message.guild.me!.roles.highest.color)
+        .setFooter(
+          i18n.interpolate(i18n.get('GENERIC_REQUESTED_BY', locale), {
+            requester: `${message.author.tag} (${message.author.id})`,
+          })
+        )
+        .setThumbnail(user.avatarURL() as string)
+        .setAuthor(`${user.tag} (${user.id})`)
+        .addField(
+          'User Information',
+          `**Tag**: ${user.tag}
 	      **ID**: ${user.id}
 	      **Created at**: ${user.createdAt.toLocaleString()} (UNIX time: ${
-        user.createdTimestamp
-      })
+            user.createdTimestamp
+          })
 	      **Account Type**: ${user.system ? 'System' : user.bot ? 'Bot' : 'Normal'}
 	      **Status**: ${getBestPresence(
           user.presence.clientStatus as ClientPresenceStatusData
         )}`.replace(/\n[\t ]*/g, '\n'),
-      true
-    )
-    .addField(
-      'Lightbulb-generated User Information',
-      lightbulbUserData
-        ? `**Developer**: ${!!lightbulbUserData.isDeveloper}
+          true
+        )
+        .addField(
+          'Lightbulb-generated User Information',
+          lightbulbUserData
+            ? `**Developer**: ${!!lightbulbUserData.isDeveloper}
 	      **Pronouns**: ${formatPronouns(lightbulbUserData.pronouns)}`.replace(
-            /\n[\t\n ]*/g,
-            '\n'
-          )
-        : 'None',
-      true
-    );
-  message.channel.send(embed);
-  return true;
+                /\n[\t\n ]*/g,
+                '\n'
+              )
+            : 'None',
+          true
+        ),
+    },
+    null,
+  ];
 };
 
 function getBestPresence(presence: ClientPresenceStatusData): string {

@@ -110,14 +110,16 @@ export const execute = async (
         );
       }
       if (typeof result === 'boolean') return result;
-      else {
-        if (typeof result === 'boolean') return;
-        const [options, handler] = result;
-        const msg = (await message.channel.send(
-          options as MessageOptions & { split: false }
-        )) as Message;
-        buttonHandlers.set(msg.id, handler);
+      const [options, handler] = result;
+      // @ts-ignore
+      if (options.embeds || options.embed) {
+        // @ts-ignore
+        options.embeds = [options.embed];
       }
+      const msg = (await message.channel.send(
+        options as MessageOptions & { split: false }
+      )) as Message;
+      buttonHandlers.set(msg.id, handler);
     } else return false;
   }
   for (const prefix of [
