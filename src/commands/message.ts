@@ -115,23 +115,25 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
              **__Link__**: [Jump!](${target.url})`
     .replace(/\n */g, '\n')
     .replace(/(__)?\*\*(__)?/g, '**');
-  message.channel.send({
-    embed: {
-      author: {
-        name: `${target.author.tag} (${target.author.id})`,
-        iconURL: target.author.avatarURL() || target.author.defaultAvatarURL,
-        url: message.url,
+  return [
+    {
+      embed: {
+        author: {
+          name: `${target.author.tag} (${target.author.id})`,
+          iconURL: target.author.avatarURL() || target.author.defaultAvatarURL,
+          url: message.url,
+        },
+        color: message.guild.me!.roles.highest.color,
+        description: text,
+        footer: {
+          text: i18n.interpolate(i18n.get('GENERIC_REQUESTED_BY', locale), {
+            requester: `${message.author.tag} (${message.author.id})`,
+          }),
+          iconURL: message.author.avatarURL() as string,
+        },
+        timestamp: Date.now(),
       },
-      color: message.guild.me!.roles.highest.color,
-      description: text,
-      footer: {
-        text: i18n.interpolate(i18n.get('GENERIC_REQUESTED_BY', locale), {
-          requester: `${message.author.tag} (${message.author.id})`,
-        }),
-        iconURL: message.author.avatarURL() as string,
-      },
-      timestamp: Date.now(),
     },
-  });
-  return true;
+    null,
+  ];
 };

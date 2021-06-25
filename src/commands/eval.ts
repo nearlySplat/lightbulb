@@ -14,60 +14,88 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { MessageActionRow, MessageButton } from 'discord.js';
+import { transpile } from 'typescript';
 import { inspect } from 'util';
 import { WHITELIST } from '../constants';
-import { CommandMetadata, Context } from '../types';
-import { transpile } from 'typescript';
-export const execute = async ({ message, args }: Context): Promise<boolean> => {
+import { defaultDeleteButton } from '../events/message';
+import { CommandExecute, CommandMetadata } from '../types';
+export const execute: CommandExecute = async ({
+  message,
+  args,
+  deleteButtonHandler,
+}) => {
   if (!WHITELIST.includes(message.author.id)) return true;
   const raw = args.join(' ');
   let output: any;
   try {
-    output = eval(
-      transpile(raw, {
-        experimentalDecorators: true,
-        esModuleInterop: true,
-        checkJs: true,
-        allowUnusedLabels: false,
-        allowUmdGlobalAccess: false,
-        allowSyntheticDefaultImports: false,
-        allowUnreachableCode: false,
-        noImplicitAny: true,
-        noUnusedLocals: true,
-        noUnusedParameters: true,
-      })
-    );
+    output = eval(raw);
   } catch (error) {
-    output =
-      error.stack?.replace(
-        new RegExp(__dirname.replace(/\/commands^/g, ''), 'g'),
-        '/root/eureka'
-      ) ?? error;
+    output = error;
   }
-  let type: string | undefined = output?.name ?? output?.constructor?.name;
-  if (type === 'Promise') {
-    try {
-      output = await output;
-      type = `Promise<${output?.name ?? output?.constructor?.name}>`;
-    } catch (e) {
-      output = e;
-      type = 'Promise { <rejected> }';
-    }
+  let type = '';
+  if (output instanceof Promise) {
+    output = await output;
+    type = 'Promise';
   }
-  output =
+  let strOutput =
     typeof output === 'string'
       ? output
-      : (inspect(output, {
+      : inspect(output, {
           depth: 0,
-        }) as string & { name: string });
-  message.channel.send(
-    output?.slice(0, 1850) + '\nTypeof [' + type + '] => ' + output?.length ??
-      'No output.',
+        });
+  let pages = strOutput.match(/[\s\S]{1,1850}/gi) || ['undefined'];
+  const mobile = !!message.author.presence.clientStatus.mobile;
+  let getPage = (i: number) => ({
+    content:
+      type === 'Promise'
+        ? 'Promise {\n' +
+          strOutput[i]
+            .split('\n')
+            .map((v: string) => '  ' + v)
+            .join('\n') +
+          '\n}'
+        : strOutput.slice(0, 1850),
+    code: mobile ? 'py' : 'js',
+  });
+  let currI = 0;
+  return [
     {
-      code: 'js',
-    }
-  );
-  return true;
+      ...getPage(currI),
+      components: [
+        new MessageActionRow().addComponents(
+          new MessageButton()
+            .setEmoji('cutie_backward:848237448269135924')
+            .setStyle('PRIMARY')
+            .setCustomID('<-'),
+          defaultDeleteButton[0].components[0],
+          new MessageButton()
+            .setEmoji('cutie_forward:848237230363246612')
+            .setStyle('PRIMARY')
+            .setCustomID('->')
+        ),
+      ],
+    },
+    ctx => {
+      const customID = ctx.interaction.data.custom_id;
+      if (customID === 'internal__delete') return deleteButtonHandler(ctx);
+      else {
+        switch (customID) {
+          case '->': {
+            if (currI === pages.length - 1) break;
+            ctx.message.edit(getPage(++currI));
+            break;
+          }
+          case '<-': {
+            if (currI === 0) break;
+            ctx.message.edit(getPage(--currI));
+            break;
+          }
+        }
+      }
+      return { type: 6 };
+    },
+  ];
 };
 
 export const meta: CommandMetadata = {

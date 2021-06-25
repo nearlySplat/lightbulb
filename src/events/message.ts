@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { MessageOptions } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageOptions } from 'discord.js';
 import {
   Client,
   ClientUser,
@@ -38,10 +38,30 @@ export const buttonHandlers = new Collection<
   Snowflake,
   ButtonInteractionHandler
 >();
+export const defaultDeleteButton = [
+  new MessageActionRow({
+    components: [
+      new MessageButton()
+        .setEmoji('cutie_trash:848216792845516861')
+        .setStyle('DANGER')
+        .setCustomID('internal__delete')
+        .setLabel(''),
+    ],
+  }),
+];
 export const execute = async (
   client: Client,
   message: Message
 ): Promise<boolean> => {
+  const deleteButtonHandler: ButtonInteractionHandler = async ctx => {
+    if (ctx.user.id === message.author.id) await ctx.message.delete();
+    else
+      return {
+        type: 4,
+        data: { content: "You can't do that!", flags: 64 },
+      };
+    return { type: 6 };
+  };
   if (!message.guild || !message.member) return false;
   const isKsIn = !!(await message
     .guild!.members.fetch('236726289665490944')
@@ -103,18 +123,21 @@ export const execute = async (
           accessLevel: getCurrentLevel(message.member as GuildMember),
           locale: 'en_UK',
           commandName,
+          deleteButtonHandler,
         });
       } catch (e) {
-        message.channel.send(
-          `A error occur.\n\n\`\`\`js\n${e.toString()}\n\`\`\``
-        );
+        message.channel.send(`\`\`\`js\n${e.toString()}\n\`\`\``);
       }
       if (typeof result === 'boolean') return result;
-      const [options, handler] = result;
+      let [options, handler] = result;
       // @ts-ignore
       if (options.embeds || options.embed) {
         // @ts-ignore
         options.embeds = [options.embed];
+      }
+      if (!options.components) {
+        options.components = defaultDeleteButton;
+        handler = deleteButtonHandler;
       }
       const msg = (await message.channel.send(
         options as MessageOptions & { split: false }

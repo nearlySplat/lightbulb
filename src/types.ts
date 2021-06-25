@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { APIGuildMember, APIMessage, APIUser } from 'discord-api-types';
-import { Channel } from 'discord.js';
 import {
+  Channel,
   Client,
   Collection,
   Guild,
@@ -40,8 +40,11 @@ export type CommandExecute<T extends string = string> = (
   context: Context<T>
 ) => Awaited<boolean | CommandResponse>;
 export type Awaited<T> = T | Promise<T>;
+export interface ExtendedMessageOptions extends MessageOptions {
+  embed?: MessageEmbed;
+}
 export type CommandResponse = [
-  options: MessageOptions,
+  options: ExtendedMessageOptions,
   handler: ButtonInteractionHandler
 ];
 export type ButtonInteractionHandler = (
@@ -66,6 +69,7 @@ export interface Context<T extends string = string> {
   accessLevel: number;
   locale: 'uwu' | 'en_UK';
   commandName: string;
+  deleteButtonHandler: ButtonInteractionHandler;
 }
 
 export interface CommandMetadata {

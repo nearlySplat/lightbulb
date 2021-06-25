@@ -19,6 +19,7 @@ import { User } from '../entity/User';
 import { CommandExecute, CommandMetadata } from '../types';
 import { getMember, i18n } from '../util';
 import { formatPronouns } from './whataremypronouns';
+import moment from 'moment';
 
 export const meta: CommandMetadata = {
   name: 'user',
@@ -72,9 +73,9 @@ export const execute: CommandExecute<'target'> = async ({
           'User Information',
           `**Tag**: ${user.tag}
 	      **ID**: ${user.id}
-	      **Created at**: ${user.createdAt.toLocaleString()} (UNIX time: ${
+	      **Created at**: <t:${Math.floor(user.createdTimestamp / 1000)}> (${moment(
             user.createdTimestamp
-          })
+          ).fromNow()})
 	      **Account Type**: ${user.system ? 'System' : user.bot ? 'Bot' : 'Normal'}
 	      **Status**: ${getBestPresence(
           user.presence.clientStatus as ClientPresenceStatusData
@@ -96,11 +97,24 @@ export const execute: CommandExecute<'target'> = async ({
     null,
   ];
 };
-
+export const statusEmojis = {
+  offline: 'offline2:464520569929334784',
+  online: 'online2:464520569975603200',
+  dnd: 'dnd2:464520569560498197',
+  idle: 'away2:464520569862357002',
+  mobile: 'mobile:858031541375205396',
+};
 function getBestPresence(presence: ClientPresenceStatusData): string {
-  return (
-    ['online', 'dnd', 'idle', 'offline'].find(v =>
-      Object.values(presence ?? {}).includes(v)
-    ) ?? 'Offline'
-  );
+  let status = (['online', 'dnd', 'idle'].find(v =>
+    Object.values(presence).includes(v)
+  ) || 'offline') as keyof typeof statusEmojis;
+  if (
+    Object.entries(presence)
+      .filter(([, v]) => v === status)
+      .map(([v]) => v) === ['mobile']
+  ) {
+    status = (`<:${statusEmojis.mobile}>` +
+      `<:${statusEmojis[status]}//`.replace('\\/\\/', '')) as any;
+  } else status = `<:${statusEmojis[status]}>` as any;
+  return status;
 }

@@ -31,7 +31,8 @@ export const PREFIXES = Array.isArray(config.bot.prefix)
   : [config.bot.prefix];
 export const WHITELIST = [...(config.whitelist || config.owner.id)];
 export const __prod__ = process.env.NODE_ENV === 'production';
-export const INTENTS = [
+export const INTENTS =
+  /*[
   Intents.FLAGS.GUILD_BANS,
   Intents.FLAGS.GUILD_MESSAGES,
   Intents.FLAGS.GUILDS,
@@ -39,7 +40,7 @@ export const INTENTS = [
   Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
   Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
   Intents.FLAGS.GUILD_PRESENCES,
-].reduce((prev, current) => prev + current);
+].reduce((prev, current) => prev + current);*/ Intents.ALL;
 export const CLIENT_COLOUR = 0xfcda7d;
 export const ERROR_MESSAGES = [
   'BAN_UNSUCCESSFUL',

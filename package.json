@@ -1,6 +1,6 @@
 {
   "name": "lightbulb",
-  "version": "1.32.1",
+  "version": "1.33.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -42,10 +42,11 @@
     "chess-image-generator": "github:andyruwruw/chess-image-generator",
     "chess.js": "^0.12.0",
     "discord-api-types": "^0.18.1",
-    "discord.js": "^13.0.0-dev.2d12db000f2a0a22a8919d7a63989a6e762ae335",
+    "discord.js": "^13.0.0-dev.4714a961b87746b0f85214c756614d276666f285",
     "dotenv": "^8.2.0",
     "graceful-fs": "^4.2.6",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",

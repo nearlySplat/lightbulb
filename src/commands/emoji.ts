@@ -39,36 +39,45 @@ export const execute: CommandExecute = ctx => {
     )
       .charCodeAt(0)
       .toString(16)}.png`;
-  const embed = new MessageEmbed()
-    .setColor(CLIENT_COLOUR)
-    .setAuthor(`Emoji Information for ${target.name}`)
-    .addFields(
-      {
-        name: 'ID',
-        value:
-          target.id ||
-          'U+' +
-            decodeURIComponent(target.identifier)
-              .charCodeAt(0)
-              .toString(16)
-              .toUpperCase(),
-        inline: true,
-      },
-      { name: 'Name', value: target.name, inline: true },
-      {
-        name: 'Image URL',
-        value: asset,
-        inline: true,
-      },
-      {
-        name: 'Animated',
-        inline: true,
-        value: target.animated
-          ? '<:greenTick:796095828094615602>'
-          : '<:redTick:796095862874308678>',
-      }
-    )
-    .setThumbnail(asset);
-  ctx.message.reply(embed);
-  return true;
+  return [
+    {
+      embed: new MessageEmbed()
+        .setColor(CLIENT_COLOUR)
+        .setDescription(target.identifier)
+        .setAuthor(`Emoji Information for ${target.name}`)
+        .addFields(
+          {
+            name: 'ID',
+            value:
+              target.id ||
+              'U+' +
+                decodeURIComponent(target.identifier)
+                  .charCodeAt(0)
+                  .toString(16)
+                  .toUpperCase(),
+            inline: true,
+          },
+          { name: 'Name', value: target.name, inline: true },
+          {
+            name: 'Image URL',
+            value: asset,
+            inline: true,
+          },
+          {
+            name: 'Animated',
+            inline: true,
+            value: target.animated
+              ? '<:greenTick:796095828094615602>'
+              : '<:redTick:796095862874308678>',
+          },
+          {
+            name: 'Identifier',
+            inline: true,
+            value: target.identifier,
+          }
+        )
+        .setThumbnail(asset),
+    },
+    null,
+  ];
 };
