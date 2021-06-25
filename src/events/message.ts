@@ -62,6 +62,22 @@ export const execute = async (
       };
     return { type: 6 };
   };
+  async function handleCommandResult(result: CommandResponse) {
+    let [options, handler] = result;
+    // @ts-ignore
+    if (options.embeds || options.embed) {
+      // @ts-ignore
+      options.embeds = [options.embed];
+    }
+    if (!options.components) {
+      options.components = defaultDeleteButton;
+      handler = deleteButtonHandler;
+    }
+    const msg = (await message.channel.send(
+      options as MessageOptions & { split: false }
+    )) as Message;
+    buttonHandlers.set(msg.id, handler);
+  }
   if (!message.guild || !message.member) return false;
   const isKsIn = !!(await message
     .guild!.members.fetch('236726289665490944')
@@ -90,7 +106,7 @@ export const execute = async (
         if (Array.isArray(result))
           result = result[Math.floor(Math.random() * result.length)];
         result = i18n.interpolate(result, { args0: args[0] });
-        message.channel.send(result);
+        handleCommandResult([{ content: result }, null]);
         return true;
       } else return false;
     }
@@ -106,7 +122,7 @@ export const execute = async (
       paramInstance = await CommandParameters.from(command.meta, args);
     } catch (e) {
       CommandParameters.triggerError(
-        message.channel.send.bind(message.channel),
+        r => handleCommandResult([{ content: r }, null]),
         e
       );
       return false;
@@ -126,23 +142,13 @@ export const execute = async (
           deleteButtonHandler,
         });
       } catch (e) {
-        message.channel.send(`\`\`\`js\n${e.toString()}\n\`\`\``);
+        handleCommandResult([
+          { content: `\`\`\`js\n${e.toString()}\n\`\`\`` },
+          null,
+        ]);
       }
       if (typeof result === 'boolean') return result;
-      let [options, handler] = result;
-      // @ts-ignore
-      if (options.embeds || options.embed) {
-        // @ts-ignore
-        options.embeds = [options.embed];
-      }
-      if (!options.components) {
-        options.components = defaultDeleteButton;
-        handler = deleteButtonHandler;
-      }
-      const msg = (await message.channel.send(
-        options as MessageOptions & { split: false }
-      )) as Message;
-      buttonHandlers.set(msg.id, handler);
+      handleCommandResult(result);
     } else return false;
   }
   for (const prefix of [

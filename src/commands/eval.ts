@@ -35,8 +35,8 @@ export const execute: CommandExecute = async ({
   }
   let type = '';
   if (output instanceof Promise) {
-    output = await output;
     type = 'Promise';
+    output = await output;
   }
   let strOutput =
     typeof output === 'string'
