@@ -31,5 +31,4 @@ export const meta: CommandMetadata = {
   ],
 };
 
-export const execute: CommandExecute = ({ message }) =>
-  message.channel.send('no').then(() => true);
+export const execute = () => [{content: "no"}, null]
