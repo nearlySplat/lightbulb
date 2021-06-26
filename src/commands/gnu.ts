@@ -19,7 +19,7 @@ import { CLIENT_COLOUR } from '../constants';
 import { Context, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 export const execute = ({ message, locale, args }: Context): boolean => {
-  message.channel.send(
+  return [{embed: (
     new MessageEmbed()
       .setDescription(
         interpolate(get('STALLMAN_TEXT', locale), {
@@ -36,7 +36,7 @@ export const execute = ({ message, locale, args }: Context): boolean => {
       )
       .setTimestamp()
       .setThumbnail(message.client.user?.avatarURL() as string)
-  );
+  )},null]
   return true;
 };
 
