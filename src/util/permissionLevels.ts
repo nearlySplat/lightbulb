@@ -24,7 +24,6 @@ export const permissionLevels: Record<string, bigint[]> = {
   Administrator: [Permissions.FLAGS.ADMINISTRATOR],
 };
 
-export const permissionLevelsArray: bigint[][] = Object.values(
-  permissionLevels
-);
+export const permissionLevelsArray: bigint[][] =
+  Object.values(permissionLevels);
 export const permissionLevelsVerbose: string[] = Object.keys(permissionLevels);

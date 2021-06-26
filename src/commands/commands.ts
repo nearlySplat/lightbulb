@@ -27,22 +27,25 @@ export const execute: CommandExecute = ({
   args,
 }) => {
   if (!args[0])
-    return [{content:
-      commands
-        .filter(
-          v =>
-            v &&
-            v.meta &&
-            v.execute &&
-            getCurrentLevel(message.member as GuildMember) >=
-              getAccessLevel(v.meta.accessLevel)
-        )
-        .map(({ meta: { name, description } }) => name + ' - ' + description)
-        .join('\n'),
-       code: 'md' },null]
-    
-  else return [{content:'Use `help` for specific command information'},null]
-  
+    return [
+      {
+        content: commands
+          .filter(
+            v =>
+              v &&
+              v.meta &&
+              v.execute &&
+              getCurrentLevel(message.member as GuildMember) >=
+                getAccessLevel(v.meta.accessLevel)
+          )
+          .map(({ meta: { name, description } }) => name + ' - ' + description)
+          .join('\n'),
+        code: 'md',
+      },
+      null,
+    ];
+  else
+    return [{ content: 'Use `help` for specific command information' }, null];
 };
 
 export const meta: CommandMetadata = {

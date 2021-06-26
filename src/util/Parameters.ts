@@ -19,7 +19,8 @@ import { CommandMetadata } from '../types';
 // @ts-ignore
 export class CommandParameters<T extends string>
   extends Array<string>
-  implements PrimitiveArray {
+  implements PrimitiveArray
+{
   [key: number]: string;
   private _data: ParametersData;
   parseData(str: string) {

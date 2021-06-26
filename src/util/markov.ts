@@ -23,7 +23,8 @@ export function escapeRegExp(str: string | RegExp) {
 }
 export class Markov {
   public static SENTENCE_BOUNDARIES = /\b[!?.\n]+\b/gi;
-  public static WORD_JOINERS = /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{\x00-\x1F\u2000-\u200f]/g;
+  public static WORD_JOINERS =
+    /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{\x00-\x1F\u2000-\u200f]/g;
   public static WORD = new RegExp(
     `(${Markov.WORD_JOINERS.source})?\\w+(((${Markov.WORD_JOINERS.source}+)(\\w+)?)*)`,
     'gi'

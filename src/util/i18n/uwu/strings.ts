@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-export const ABOUT_LONG_DESCRIPTION = `👋 Hewwo >~<! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
+export const ABOUT_LONG_DESCRIPTION =
+  `👋 Hewwo >~<! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
 
     **My features**:
     - Logging

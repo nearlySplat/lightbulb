@@ -39,17 +39,17 @@ export const execute = async (
   interaction: GatewayInteractionCreateDispatchData
 ) => {
   if (
-    ((interaction.type as unknown) as InteractionTypes) ===
+    (interaction.type as unknown as InteractionTypes) ===
     InteractionTypes.APPLICATION_COMMAND
   )
     return slashCommandExecute(client, interaction);
   else if (
-    ((interaction.type as unknown) as InteractionTypes) ===
+    (interaction.type as unknown as InteractionTypes) ===
     InteractionTypes.MESSAGE_COMPONENT
   ) {
     buttonExecute(
       client,
-      (interaction as unknown) as MessageComponentInteraction
+      interaction as unknown as MessageComponentInteraction
     );
   }
 };

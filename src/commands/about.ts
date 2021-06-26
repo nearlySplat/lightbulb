@@ -18,9 +18,9 @@ import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { Context, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
-export const execute = ({ message, locale }: Context): boolean => [{
-  embed:
-    new MessageEmbed()
+export const execute = ({ message, locale }: Context): boolean => [
+  {
+    embed: new MessageEmbed()
       .setDescription(get('ABOUT_LONG_DESCRIPTION', locale))
       .setColor(CLIENT_COLOUR)
       .setAuthor(get('ABOUT_HEADER', locale))
@@ -31,8 +31,10 @@ export const execute = ({ message, locale }: Context): boolean => [{
         message.author.avatarURL() as string
       )
       .setTimestamp()
-      .setThumbnail(message.client.user?.avatarURL() as string)
-  }, null]
+      .setThumbnail(message.client.user?.avatarURL() as string),
+  },
+  null,
+];
 
 export const meta: CommandMetadata = {
   name: 'about',

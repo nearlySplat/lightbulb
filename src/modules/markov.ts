@@ -129,9 +129,11 @@ export const splatMarkov = {
             : !INVALID(t.content)
         );
       markov.push(
-        ...((msgs instanceof Collection ? msgs : [msgs]).map as (
-          fn: (m: Message) => string
-        ) => string[])(v => v.cleanContent)
+        ...(
+          (msgs instanceof Collection ? msgs : [msgs]).map as (
+            fn: (m: Message) => string
+          ) => string[]
+        )(v => v.cleanContent)
       );
       fs.writeFileSync(
         path.join(__dirname, '..', '..', 'etc', 'markov.txt'),

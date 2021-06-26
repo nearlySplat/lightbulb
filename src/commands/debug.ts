@@ -24,27 +24,28 @@ import fs from 'fs';
 import child_process from 'child_process';
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
 const commit = child_process.execSync('git log -n 1 -f "%H"').toString();
-  const events = readdirSync(join(__dirname, '..', 'events'));
+const events = readdirSync(join(__dirname, '..', 'events'));
 export const execute = async ({
   message,
   commands,
   client,
   commandHandlerStarted,
 }: Context): Promise<boolean> => {
-
-  return [{embed: new MessageEmbed()
-    .setAuthor(`Lightbulb v${pkg.version} Debug Information`)
-    .setDescription(
-      `
+  return [
+    {
+      embed: new MessageEmbed()
+        .setAuthor(`Lightbulb v${pkg.version} Debug Information`)
+        .setDescription(
+          `
       - I am currently on shard \`${message.guild?.shardID}\` with \`${
-        commands.size
-      }\` commands.
+            commands.size
+          }\` commands.
         - I have requested gateway intents of \`${INTENTS}\` (${new Intents(
-        INTENTS
-      )
-        .toArray()
-        .map(v => `\`${v}\``)
-        .join(', ')}).
+            INTENTS
+          )
+            .toArray()
+            .map(v => `\`${v}\``)
+            .join(', ')}).
         - I am ${
           !(await client.application.fetch()).botPublic ? '**not** ' : ''
         }available to invite to guilds.
@@ -66,18 +67,19 @@ export const execute = async ({
 	  - I have ${
       Object.keys(pkg.dependencies).length
     } Node.js dependencies installed.
-	  - I am on commit [\`${
-     commit
-    }\`](https://github.com/nearlySplat/lightbulb/commit/${commit})
+	  - I am on commit [\`${commit}\`](https://github.com/nearlySplat/lightbulb/commit/${commit})
 ).
   `.replace(/\n +/g, '\n')
-    )
-    .setColor(CLIENT_COLOUR)
-    .setThumbnail(client.user?.avatarURL() as string)
-    .setFooter(
-      `Requested by ${message.author.tag} (${message.author.id})`,
-      message.author.avatarURL() as string)
-   },null]
+        )
+        .setColor(CLIENT_COLOUR)
+        .setThumbnail(client.user?.avatarURL() as string)
+        .setFooter(
+          `Requested by ${message.author.tag} (${message.author.id})`,
+          message.author.avatarURL() as string
+        ),
+    },
+    null,
+  ];
 };
 
 export const meta: CommandMetadata = {

@@ -31,4 +31,4 @@ export const meta: CommandMetadata = {
   ],
 };
 
-export const execute = () => [{content: "no"}, null]
+export const execute = () => [{ content: 'no' }, null];
