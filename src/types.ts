@@ -183,6 +183,7 @@ export interface MarkovConfig {
 export interface Bot {
   prefix: string[] | string;
   name: string;
+  support_server: string;
 }
 
 export enum InteractionTypes {

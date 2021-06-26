@@ -24,8 +24,8 @@ import {
   Message,
   Snowflake,
 } from 'discord.js';
-import { commands } from '..';
-import { PREFIXES } from '../constants';
+import { commands, loggr } from '..';
+import { config, PREFIXES } from '../constants';
 import { ButtonInteractionHandler, Command, CommandResponse } from '../types';
 import {
   CommandParameters,
@@ -49,6 +49,23 @@ export const defaultDeleteButton = [
     ],
   }),
 ];
+let bls: Snowflake[] = [];
+export async function reloadBlacklists(client: Client) {
+  const bans = await client.guilds.cache
+    .get(config.bot.support_server)
+    .bans.fetch();
+  const newArr = bans.map(v => v.user.id);
+  loggr.info(
+    'Successfully reloaded blacklists for guild',
+    config.bot.support_server,
+    'with',
+    newArr.map(v => !bls.includes(v)).length,
+    'new users and',
+    bls.map(v => !newArr.includes(v)).length,
+    'unblacklisted.'
+  );
+  return bls;
+}
 export const execute = async (
   client: Client,
   message: Message
@@ -88,6 +105,12 @@ export const execute = async (
   ): Promise<boolean> {
     const timeStarted = Date.now();
     if (!message.content.startsWith(prefix)) return false;
+    if (bls.includes(message.author.id)) {
+      message.channel.send(
+        'You cannot access this bot since you are blacklisted.'
+      );
+      return false;
+    }
     let args: string[] = message.content
       .slice(prefix.length)
       .trim()

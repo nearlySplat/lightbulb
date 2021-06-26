@@ -14,16 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Permissions } from 'discord.js';
+import { GuildBan, Permissions } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
-import { ERROR_CODES } from '../constants';
+import { ERROR_CODES, ERROR_MESSAGES } from '../constants';
 import { User } from '../entity/User';
+import { reloadBlacklists } from '../events/message';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
   args,
   locale,
 }) => {
+  //
   if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
     return false;
   const target = await message.client.users
@@ -44,7 +46,9 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     user = { subjectPronoun: 'them', singularOrPluralPronoun: 'plural' };
   }
   const { subjectPronoun, singularOrPluralPronoun } = user;
-  const banInfo = await message.guild.fetchBan(target.id).catch(() => null);
+  const banInfo: GuildBan | null = await message.guild.bans
+    .fetch(target.id)
+    .catch(() => null);
   const unban = async () => {
     try {
       await message.guild.members
@@ -55,6 +59,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
           }`
         )
         .then(() => {
+          void reloadBlacklists(message.client);
           message.channel.send(
             interpolate(get('UNBAN_SUCCESSFUL', locale), {
               target: target.tag,
@@ -79,7 +84,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     message.channel.send(
       interpolate(get('GENERIC_ERROR', locale), {
         code: ERROR_CODES.UNBAN_NOT_BANNED.toString(),
-        message: 'Target is not banned from the guild',
+        message: ERROR_MESSAGES[ERROR_CODES.UNBAN_NOT_BANNED],
       })
     );
     return false;
