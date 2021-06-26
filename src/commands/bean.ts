@@ -24,9 +24,9 @@ export const execute: CommandExecute<'user'> = ({ message, args, locale }) => {
   const target =
     getMember(message.guild, args.data.user) ??
     ({ user: { tag: args.data.user } } as GuildMember);
-  message.reply(
+  return [{content:
     interpolate(get('BEAN_SUCCESSFUL', locale), { target: target.user.tag })
-  );
+  }, null]
   return true;
 };
 
