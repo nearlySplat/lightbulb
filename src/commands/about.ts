@@ -16,9 +16,9 @@
  */
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
-import { Context, CommandMetadata } from '../types';
+import { Context, CommandMetadata, CommandExecute } from '../types';
 import { get, interpolate } from '../util/i18n';
-export const execute = ({ message, locale }: Context): boolean => {
+export const execute: CommandExecute = ({ message, locale }) => {
   message.channel.send(
     new MessageEmbed()
       .setDescription(get('ABOUT_LONG_DESCRIPTION', locale))
