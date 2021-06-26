@@ -76,7 +76,7 @@ export const execute = async ({
     .setThumbnail(client.user?.avatarURL() as string)
     .setFooter(
       `Requested by ${message.author.tag} (${message.author.id})`,
-      message.author.avatarURL() as string
+      message.author.avatarURL() as string)
    },null]
 };
 
