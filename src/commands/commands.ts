@@ -27,7 +27,7 @@ export const execute: CommandExecute = ({
   args,
 }) => {
   if (!args[0])
-    message.channel.send(
+    return [{content:
       commands
         .filter(
           v =>
@@ -39,10 +39,10 @@ export const execute: CommandExecute = ({
         )
         .map(({ meta: { name, description } }) => name + ' - ' + description)
         .join('\n'),
-      { code: 'md' }
-    );
-  else message.channel.send('Use `help` for specific command information');
-  return true;
+       code: 'md' },null]
+    
+  else return [{content:'Use `help` for specific command information'},null]
+  
 };
 
 export const meta: CommandMetadata = {
