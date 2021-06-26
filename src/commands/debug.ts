@@ -23,7 +23,7 @@ import { CommandMetadata, Context } from '../types';
 import fs from 'fs';
 import child_process from 'child_process';
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
-const commit = child_process.execSync('git log -n 1').toString();
+const commit = child_process.execSync('git log -n 1 -f "%H"').toString();
 export const execute = async ({
   message,
   commands,
@@ -65,9 +65,10 @@ export const execute = async ({
 	  - I have ${
       Object.keys(pkg.dependencies).length
     } Node.js dependencies installed.
-	  - I am on commit \`${
-      commit.match(/^.*/)?.[0] ?? 'root'
-    }\`: \`\`\`xl\n${commit}\n\`\`\`.
+	  - I am on commit [\`${
+     commit
+    }\`](https://github.com/nearlySplat/lightbulb/tree/${commit})
+).
   `.replace(/\n +/g, '\n')
     )
     .setColor(CLIENT_COLOUR)
