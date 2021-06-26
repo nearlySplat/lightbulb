@@ -1,11 +1,7 @@
 
 name: Compile Code
 on:
-  push:
-    branches:
-      - master
-    tags:
-      - "*"
+  - push
 jobs:
   docs:
     name: Compile
