@@ -17,10 +17,9 @@
 import { CommandExecute, CommandMetadata } from '../types';
 import { get } from '../util/i18n';
 
-export const execute: CommandExecute = ({ message, locale }) => {
-  message.channel.send(get('ACHOO', locale));
-  return true;
-};
+export const execute: CommandExecute = ({ message, locale }) => [{content:
+  get('ACHOO', locale)
+  }, null]
 
 export const meta: CommandMetadata = {
   name: 'achoo',
