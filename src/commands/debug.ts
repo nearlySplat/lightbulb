@@ -24,14 +24,15 @@ import fs from 'fs';
 import child_process from 'child_process';
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
 const commit = child_process.execSync('git log -n 1 -f "%H"').toString();
+  const events = readdirSync(join(__dirname, '..', 'events'));
 export const execute = async ({
   message,
   commands,
   client,
   commandHandlerStarted,
 }: Context): Promise<boolean> => {
-  const events = readdirSync(join(__dirname, '..', 'events'));
-  const _ = new MessageEmbed()
+
+  return [{embed: new MessageEmbed()
     .setAuthor(`Lightbulb v${pkg.version} Debug Information`)
     .setDescription(
       `
@@ -67,7 +68,7 @@ export const execute = async ({
     } Node.js dependencies installed.
 	  - I am on commit [\`${
      commit
-    }\`](https://github.com/nearlySplat/lightbulb/tree/${commit})
+    }\`](https://github.com/nearlySplat/lightbulb/commit/${commit})
 ).
   `.replace(/\n +/g, '\n')
     )
@@ -76,9 +77,7 @@ export const execute = async ({
     .setFooter(
       `Requested by ${message.author.tag} (${message.author.id})`,
       message.author.avatarURL() as string
-    );
-  message.channel.send(_);
-  return true;
+   },null]
 };
 
 export const meta: CommandMetadata = {
