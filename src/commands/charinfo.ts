@@ -59,7 +59,7 @@ export const execute: CommandExecute<'chars'> = async ({
   m.edit(
     arr.join('\n').length >= 2000
       ? 'Too long to display. Try again with fewer characters.'
-      : arr
+      : arr.join("\n")
   );
   return true;
 };
