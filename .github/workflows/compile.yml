@@ -16,7 +16,10 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: npm i && npm i -g typescript
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.0.2
+          run_install: true
 
       - name: Compile code
-        run: tsc -p tsconfig.json
+        run: pnpx tsc -p tsconfig.json
