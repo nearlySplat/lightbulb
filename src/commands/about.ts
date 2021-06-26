@@ -17,14 +17,10 @@
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { Context, CommandMetadata, CommandExecute } from '../types';
-import { get, interpolate } from '../util/i18n'
-export const execute: CommandExecute= ({ message, locale }: Context): boolean => [
+import { get, interpolate } from '../util/i18n';
+export const execute: CommandExecute = ({ message, locale }: Context): boolean => [
   {
     embed: new MessageEmbed()
-
-export const execute: CommandExecute = ({ message, locale }) => {
-  message.channel.send(
-    new MessageEmbed()
 
       .setDescription(get('ABOUT_LONG_DESCRIPTION', locale))
       .setColor(CLIENT_COLOUR)
