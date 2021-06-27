@@ -24,8 +24,8 @@ export const execute = ({
   locale,
 }: Context): boolean | Promise<boolean> => {
   if (isNaN(parseInt(args[0], 16)))
-    return message.reply('Invalid hex color.').then(() => false);
-  message.channel.send(
+    return [{content:'Invalid hex color.'},null];
+  return [{content:
     new MessageEmbed()
       .setDescription(
         interpolate(get('HEX_BODY', locale), {
@@ -52,7 +52,7 @@ export const execute = ({
           .toString(16)
           .toUpperCase()}`
       )
-  );
+  },null]
   return true;
 };
 
