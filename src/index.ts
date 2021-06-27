@@ -49,6 +49,7 @@ import { User as U } from './entity/User';
 import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
+import { Client } from "statcord.js";
 export const loggr = new CatLoggr();
 export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
@@ -88,6 +89,15 @@ const client = new Client({
   intents: INTENTS,
   partials: ['USER', 'GUILD_MEMBER', 'CHANNEL', 'MESSAGE', 'REACTION'],
 });
+
+export const statcord = new Statcord.Client({
+    client,
+    key: process.env.STATCORD,
+    postCpuStatistics: true, /* Whether to post memory statistics or not, defaults to true */
+    postMemStatistics: true, /* Whether to post memory statistics or not, defaults to true */
+    postNetworkStatistics: true, /* Whether to post memory statistics or not, defaults to true */
+});
+
 config({
   path: join(__dirname, '..', '.env'),
 });
