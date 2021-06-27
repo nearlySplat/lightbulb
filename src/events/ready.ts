@@ -15,11 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Client } from 'discord.js';
-import { loggr } from '..';
+import { loggr, statcord } from '..';
 import { reloadBlacklists } from './message';
 
 export const execute = (client: Client): boolean => {
   reloadBlacklists(client);
-  loggr.info(`Logged in as ${client.user!.tag}!`);
+  loggr.info(`Logged in as ${client.user!.tag}!`)
+  statcord.autopost();
   return true;
 };

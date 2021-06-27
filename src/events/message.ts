@@ -24,7 +24,7 @@ import {
   Message,
   Snowflake,
 } from 'discord.js';
-import { commands, loggr } from '..';
+import { commands, loggr, statcord } from '..';
 import { config, PREFIXES } from '../constants';
 import { ButtonInteractionHandler, Command, CommandResponse } from '../types';
 import {
@@ -150,6 +150,7 @@ export const execute = async (
       );
       return false;
     }
+    statcord.postCommand(commandName, message.author.id)
     if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation) {
       let result: CommandResponse | boolean;
       try {
