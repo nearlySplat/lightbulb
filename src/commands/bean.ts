@@ -32,7 +32,6 @@ export const execute: CommandExecute<'user'> = ({ message, args, locale }) => {
     },
     null,
   ];
-  return true;
 };
 
 export const meta: CommandMetadata = {
