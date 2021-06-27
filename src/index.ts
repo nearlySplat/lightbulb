@@ -98,6 +98,13 @@ export const statcord = new Statcord.Client({
     postNetworkStatistics: true, /* Whether to post memory statistics or not, defaults to true */
 });
 
+statcord.on("post", status => {
+    // status = false if the post was successful
+    // status = "Error message" or status = Error if there was an error
+    if (!status) console.info("[Statcord] Successful post");
+    else loggr.error("[Statcord]", status);
+}).on("autopost-start", () => { loggr.info("[Statcord] Started autopost"); });
+
 config({
   path: join(__dirname, '..', '.env'),
 });
