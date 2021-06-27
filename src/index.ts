@@ -49,7 +49,7 @@ import { User as U } from './entity/User';
 import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
-import { Client } from "statcord.js";
+import * as Statcord from "statcord.js";
 export const loggr = new CatLoggr();
 export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
