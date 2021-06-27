@@ -25,11 +25,11 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute<'reason'> = ctx => {
-  ctx.message.channel.send(
+  return[{content:(
     `**Pod Automing**\n${(ctx.args.data.reason || '') + '\n'}${
       ctx.message.author
     } (By **${ctx.message.author.username}**)`.replace(/\n{2,}/g, '\n'),
     { allowedMentions: { users: [ctx.message.author.id] } }
-  );
+  )},null]
   return true;
 };
