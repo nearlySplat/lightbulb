@@ -54,11 +54,11 @@ export const execute = ({
     args.join(' ').replace(/\b\w/g, v => v.toUpperCase()) ||
       'Who Asked (Feat: Nobody)'
   );
-  message.channel.send(
+  return[{content:(
     `**${title}**\n${progress}\n${soundEmoji} ${soundBar}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(
       played
     )} / ${convert(rand)} ⠀                       ᴴᴰ ⚙ ❐`
-  );
+  )},null]
   return true;
 };
 
