@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Context, CommandMetadata } from '../types';
+import { Context, CommandMetadata, CommandExecute } from '../types';
 import { get, interpolate } from '../util/i18n';
-export const execute = ({
+export const execute 
+:CommandExecute= ({
   message,
   locale,
-}: Context): boolean | Promise<boolean> => {
+}) => {
   message.reply(
     interpolate(get('MEMBERCOUNT_TEXT', locale), {
       guild: message.guild.name,
