@@ -1,9 +1,0 @@
-dist/
-.env
-node_modules/
-yarn.lock
-*.code-workspace
-src/migration/
-pnpm-lock.yaml
-etc/
-!etc/config.yml.example
