@@ -19,11 +19,12 @@ import { readdirSync } from 'fs';
 import { join } from 'path';
 import { startedTimestamp } from '..';
 import { CLIENT_COLOUR, INTENTS } from '../constants';
-import { CommandExecute, CommandMetadata, Context } from '../types';
+import { CommandExecute, CommandMetadata } from '../types';
 import fs from 'fs';
 import child_process from 'child_process';
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
 const commit = child_process.execSync('git log -n 1 -f "%H"').toString();
+// eslint-disable-next-line no-undef
 const events = readdirSync(join(__dirname, '..', 'events'));
 export const execute: CommandExecute = async ({
   message,

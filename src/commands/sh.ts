@@ -33,7 +33,7 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
     });
     let exited: string;
     const data: Buffer[] = [];
-    let col = {
+    const col = {
       start: 0,
       end: 50,
     };

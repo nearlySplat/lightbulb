@@ -48,7 +48,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
   await channel.messages.fetch({});
   async function updateMessages(cases: (number | string)[]) {
     let err;
-    for (let value of cases) {
+    for (const value of cases) {
       console.log(value, cases);
       const message1 =
         value == 'l'

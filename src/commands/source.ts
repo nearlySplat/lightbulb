@@ -40,7 +40,7 @@ const files: string[] = [];
     resolve(__dirname, '..', '..', '.gitignore'),
     'utf-8'
   );
-  for await (let file of walk(
+  for await (const file of walk(
     resolve(__dirname, '..', '..'),
     file =>
       !gitignore

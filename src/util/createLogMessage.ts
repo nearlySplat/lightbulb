@@ -31,7 +31,7 @@ type Usr = {
   id: Snowflake;
 };
 export const createLogMessage = (options: LogMessageOptions): string => {
-  let result = `
+  const result = `
     \`[Case ${options.case}]\` ${options.emoji} **${
     options.perpetrator.tag
   }** (${options.perpetrator.id}) \`[${options.action?.toLowerCase()}${

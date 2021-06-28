@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { MessageEmbed } from 'discord.js';
-import { CLIENT_COLOUR } from '../constants';
-import { Context, CommandMetadata, CommandExecute } from '../types';
+import { CommandMetadata, CommandExecute } from '../types';
 import { get, interpolate } from '../util/i18n';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const execute: CommandExecute = ({ message, args, locale }) => {
   if (isNaN(parseInt(args[0], 16)))

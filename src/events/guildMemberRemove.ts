@@ -26,7 +26,7 @@ import { createLogMessage, getCases, getLogChannel, sleep } from '../util';
 export const execute = async (client: Client, { guild, user }: GuildMember) => {
   await sleep(5000);
   if (!guild.me!.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
-  let channel = getLogChannel(guild) as TextChannel,
+  const channel = getLogChannel(guild) as TextChannel,
     auditLogs = await guild.fetchAuditLogs({ type: 'MEMBER_KICK' }),
     auditLogEntry = auditLogs.entries.find(
       value =>

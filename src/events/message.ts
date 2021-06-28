@@ -49,7 +49,7 @@ export const defaultDeleteButton = [
     ],
   }),
 ];
-let bls: Snowflake[] = [];
+const bls: Snowflake[] = [];
 export async function reloadBlacklists(client: Client) {
   const bans = await client.guilds.cache
     .get(config.bot.support_server)

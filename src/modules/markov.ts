@@ -27,7 +27,7 @@ import fs from 'graceful-fs';
 import path from 'path';
 import { EOL } from 'os';
 import { Markov } from '../util/markov';
-let markov = fs
+const markov = fs
   .readFileSync(path.join(__dirname, '..', '..', 'etc', 'markov.txt'), 'utf-8')
   .split(EOL);
 const instance = new Markov(markov);

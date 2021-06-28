@@ -108,7 +108,7 @@ export const execute: CommandExecute = async ctx => {
       .setTimestamp(invite.guild ? invite.guild.createdTimestamp : undefined);
   }
   if (guild) {
-    let g = guild as GuildPreview & { members?: any[] };
+    const g = guild as GuildPreview & { members?: any[] };
     _.setAuthor(`Guild Lookup for ${g.name}`)
       .addField(
         'Guild Info',

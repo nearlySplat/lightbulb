@@ -34,7 +34,7 @@ export const execute: CommandExecute = ({ message, args }) => {
     ((soundBar.indexOf('○') / soundBar.length) * 100).toFixed()
   );
   const howMuchSound = (3 * (soundLocation / 100)).toFixed();
-  let soundEmoji: string = '';
+  let soundEmoji = '';
   switch (howMuchSound) {
     case '0':
       soundEmoji = '🔇';

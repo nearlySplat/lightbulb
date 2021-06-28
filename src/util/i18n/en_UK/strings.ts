@@ -136,7 +136,7 @@ export const UNBAN_SUCCESSFUL = ({
     /^\w/g,
     v => v.toUpperCase()
   )} ${
-    Boolean(singular) ? 'was' : 'were'
+    singular ? 'was' : 'were'
   } previously banned for: \n\`\`\`md\n${bannedFor}\n\`\`\``;
 export const MESSAGEINFO_CHANNEL_NOT_FOUND = 'No such channel could be found.';
 export const MESSAGEINFO_MESSAGE_NOT_FOUND =

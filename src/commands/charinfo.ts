@@ -35,7 +35,7 @@ export const execute: CommandExecute<'chars'> = async ({
   message,
   args,
 }): Promise<bool> => {
-  let arr: string[] = [];
+  const arr: string[] = [];
   const m = await message.channel.send('<a:loading:833416988981723147>');
   for (const str of args.data.chars.split('')) {
     const req = await axios.get<{

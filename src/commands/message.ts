@@ -68,7 +68,7 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
   args,
   locale,
 }) => {
-  let channel = message.guild.channels.cache.get(
+  const channel = message.guild.channels.cache.get(
     args.data.channelid?.replace(/(^<#|>$)/g, '') || message.channel.id
   ) as TextChannel;
   if (!channel || ![NewsChannel, TextChannel].some(v => channel instanceof v)) {

@@ -52,7 +52,7 @@ export class CommandParameters<T extends string>
   }
   checkTypes(obj: Record<string, any> = this.data as Record<string, string>) {
     const _data = this._data.arr;
-    let successes: string[] = [],
+    const successes: string[] = [],
       errs: Record<string, ParameterTypeCheckingError> = {};
     for (let [data, value, index] of Object.entries(obj).map(
       ([, val], index) =>

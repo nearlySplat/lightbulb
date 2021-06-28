@@ -19,7 +19,6 @@ import { accessLevels, getAccessLevel, toProperCase } from '../util';
 import { get } from '../util/i18n';
 
 export const execute: CommandExecute<'commandName'> = ({
-  message,
   locale,
   commands,
   args,
@@ -55,7 +54,7 @@ export const meta: CommandMetadata = {
 
 function constructHelpCommand(cmd: CommandMetadata) {
   const data: [string, string][] = Object.entries(cmd)
-    .map<[string, any]>(([K, V]) => [toProperCase(K), V])
+    .map<[string, string]>(([K, V]) => [toProperCase(K), V])
     .filter(([, V]) => ['string', 'number'].includes(typeof V));
   if (cmd.params)
     data.push([

@@ -100,7 +100,7 @@ export class Markov {
     return text.replace(/undefined$/g, '');
   }
   private _generateBackwards(word: string) {
-    let text: string[] = [];
+    const text: string[] = [];
     let finished = false;
     const arr = [...this.matches];
     for (; !finished; ) {

@@ -70,7 +70,7 @@ export const execute: CommandExecute = async () => {
   const players: [p1: User, p2: User] = [null, null] as [User, User];
   let board: Chess.Board = {} as any;
   let currentlyMoving: 0 | 1 = 0;
-  let instance = new ChessClient();
+  const instance = new ChessClient();
   let isOver = () => instance.game_over();
   let nextMoveMsg: Message;
   return [
@@ -294,7 +294,7 @@ async function generateBoardFrom(
   const buffer = await generator.generateBuffer();
   return {
     content: `${toMove.tag}'s turn, and they are ${
-      !!players.indexOf(toMove) ? 'black' : 'white'
+      players.indexOf(toMove) ? 'black' : 'white'
     }. Send the move notation of your desired move (e.g Nf3), or click the 'Help' button!`,
     embed: new MessageEmbed()
       .setDescription(instance.moves().join(' '))

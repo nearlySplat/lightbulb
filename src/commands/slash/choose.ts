@@ -16,7 +16,7 @@
  */
 import { SlashCommandExecute } from '../../types';
 import { CLIENT_COLOUR } from '../../constants';
-let arr = [],
+const arr = [],
   obj = {
     one: 'first',
     two: 'second',

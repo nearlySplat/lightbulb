@@ -85,7 +85,7 @@ export function shuffle<T>(arr: T[]) {
 export const range = (n: number) => Array(n).fill(null);
 
 export const chunk = (n: number, x: string | number) => {
-  let arr = [];
+  const arr = [];
   for (const i of typeof x === 'string'
     ? x.match(new RegExp(`[\s\S]{1,${n}}`, 'g'))
     : range(x / n))

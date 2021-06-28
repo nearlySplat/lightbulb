@@ -38,15 +38,15 @@ export const execute: CommandExecute = async ({
     type = 'Promise';
     output = await output;
   }
-  let strOutput =
+  const strOutput =
     typeof output === 'string'
       ? output
       : inspect(output, {
           depth: 0,
         });
-  let pages = strOutput.match(/[\s\S]{1,1850}/gi) || ['undefined'];
+  const pages = strOutput.match(/[\s\S]{1,1850}/gi) || ['undefined'];
   const mobile = !!message.author.presence.clientStatus.mobile;
-  let getPage = (i: number) => ({
+  const getPage = (i: number) => ({
     content:
       type === 'Promise'
         ? 'Promise {\n' +
