@@ -107,7 +107,7 @@ export const execute = async (
     if (!message.content.startsWith(prefix)) return false;
     if (bls.includes(message.author.id)) {
       message.channel.send(
-        'You cannot access this bot since you are blacklisted.'
+        "You cannot access this bot's commands since you are blacklisted."
       );
       return false;
     }
@@ -150,7 +150,7 @@ export const execute = async (
       );
       return false;
     }
-    statcord.postCommand(commandName, message.author.id)
+    statcord.postCommand(commandName, message.author.id);
     if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation) {
       let result: CommandResponse | boolean;
       try {
@@ -179,7 +179,18 @@ export const execute = async (
     `<@${(client.user as ClientUser).id}>`,
     `<@!${client.user!.id}>`,
     ...PREFIXES,
-  ].filter(v => v !== 'pls' || !isKsIn))
+  ].filter(v => v !== 'pls' || !isKsIn)) {
     handleCommand(prefix, prefix === '!');
+    if (
+      message.content === 'thanks' &&
+      message.channel.messages.cache
+        .filter(v => v.author.id === message.author.id)
+        .sort((a, b) => b.createdTimestamp - a.createdTimestamp)
+        .array()[1]
+        .content.startsWith(prefix)
+    ) {
+      message.channel.send('ur welcome');
+    }
+  }
   return true;
 };

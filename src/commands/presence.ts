@@ -41,5 +41,6 @@ export const execute: CommandExecute = ctx => {
           : ''
       }`,
     },
+    null,
   ];
 };
