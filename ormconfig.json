@@ -1,0 +1,17 @@
+{
+  "type": "postgres",
+  "port": 5432,
+  "username": "ruairi",
+  "password": "mabuis1",
+  "database": "splat",
+  "synchronize": true,
+  "logging": true,
+  "entities": ["dist/entity/**/*.js"],
+  "migrations": ["dist/migration/**/*.js"],
+  "subscribers": ["dist/subscriber/**/*.js"],
+  "cli": {
+    "entitiesDir": "src/entity",
+    "migrationsDir": "src/migration",
+    "subscribersDir": "src/subscriber"
+  }
+}
