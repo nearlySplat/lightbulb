@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Context, CommandMetadata } from '../types';
+import { Context, CommandMetadata, CommandExecute } from '../types';
 import { GuildMember, TextChannel } from 'discord.js';
 import { getCases, createLogMessage } from '../util';
-export const execute = async ({
-  message,
-}: Context): boolean | Promise<boolean> => {
+export const execute: CommandExecute = async ({ message }) => {
   const channel = message.guild.channels.cache.find(
     value =>
       ((value.name?.match(/^💡(-log(s|ging)?)?$/g) ||
-        (value.topic as string | undefined)?.includes('--lightbulb-logs')) &&
+        ((value as TextChannel).topic as string | undefined)?.includes(
+          '--lightbulb-logs'
+        )) &&
         value.type == 'text' &&
         value
           .permissionsFor(message.guild.me as GuildMember)
@@ -41,7 +41,7 @@ export const execute = async ({
         id: '0'.repeat(17),
         tag: 'Nelly#0000',
       },
-      reason: `Mod Log test by **${message.author.tag}**`,
+      reason: `Mod log test by **${message.author.tag}**`,
       case: 0,
       action: 'Ban',
       emoji: '🔨',

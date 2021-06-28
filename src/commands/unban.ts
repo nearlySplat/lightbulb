@@ -17,7 +17,7 @@
 import { GuildBan, Permissions } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
-import { ERROR_CODES, ERROR_MESSAGES } from '../constants';
+import { config, ERROR_CODES, ERROR_MESSAGES } from '../constants';
 import { User } from '../entity/User';
 import { reloadBlacklists } from '../events/message';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
@@ -25,7 +25,6 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   args,
   locale,
 }) => {
-  //
   if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
     return false;
   const target = await message.client.users
@@ -51,7 +50,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .catch(() => null);
   const unban = async () => {
     try {
-      await message.guild.members
+      return await message.guild.members
         .unban(
           target.id,
           `[ ${message.author.tag} ]: ${
@@ -60,36 +59,47 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
         )
         .then(() => {
           void reloadBlacklists(message.client);
-          message.channel.send(
-            interpolate(get('UNBAN_SUCCESSFUL', locale), {
-              target: target.tag,
-              bannedFor: banInfo!.reason,
-              singular: (singularOrPluralPronoun === 'singular').toString(),
-              subjectPronoun,
-            })
-          );
+          return [
+            {
+              content:
+                interpolate(get('UNBAN_SUCCESSFUL', locale), {
+                  target: target.tag,
+                  bannedFor: banInfo!.reason,
+                  singular: (singularOrPluralPronoun === 'singular').toString(),
+                  subjectPronoun,
+                }) +
+                (message.guild.id === config.bot.support_server
+                  ? '\nAdditionally, as this server is my support server, I have updated the blacklist.'
+                  : ''),
+            },
+            null,
+          ] as const;
         });
     } catch (e) {
-      message.channel.send(
-        interpolate(get('GENERIC_ERROR', locale), {
-          code: ERROR_CODES.BAN_UNSUCCESSFUL.toString(),
-          message: e,
-        })
-      );
+      return [
+        {
+          content: interpolate(get('GENERIC_ERROR', locale), {
+            code: ERROR_CODES.BAN_UNSUCCESSFUL.toString(),
+            message: e,
+          }),
+        },
+        null,
+      ] as const;
     }
   };
   if (banInfo) {
-    unban();
+    return unban();
   } else if (!banInfo) {
-    message.channel.send(
-      interpolate(get('GENERIC_ERROR', locale), {
-        code: ERROR_CODES.UNBAN_NOT_BANNED.toString(),
-        message: ERROR_MESSAGES[ERROR_CODES.UNBAN_NOT_BANNED],
-      })
-    );
-    return false;
+    return [
+      {
+        content: interpolate(get('GENERIC_ERROR', locale), {
+          code: ERROR_CODES.UNBAN_NOT_BANNED.toString(),
+          message: 'User is not banned from this guild.',
+        }),
+      },
+      null,
+    ] as const;
   }
-  return true;
 };
 
 export const meta: CommandMetadata = {

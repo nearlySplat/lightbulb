@@ -19,18 +19,18 @@ import { readdirSync } from 'fs';
 import { join } from 'path';
 import { startedTimestamp } from '..';
 import { CLIENT_COLOUR, INTENTS } from '../constants';
-import { CommandMetadata, Context } from '../types';
+import { CommandExecute, CommandMetadata, Context } from '../types';
 import fs from 'fs';
 import child_process from 'child_process';
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
 const commit = child_process.execSync('git log -n 1 -f "%H"').toString();
 const events = readdirSync(join(__dirname, '..', 'events'));
-export const execute = async ({
+export const execute: CommandExecute = async ({
   message,
   commands,
   client,
   commandHandlerStarted,
-}: Context): Promise<boolean> => {
+}) => {
   return [
     {
       embed: new MessageEmbed()

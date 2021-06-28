@@ -67,8 +67,7 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
         )
         .setColor(ctx.message.guild.me.roles.highest.color)
         .setThumbnail(ctx.client.user?.avatarURL() as string);
-      ctx.message.channel.send(_);
-      return true;
+      return [{ embed: _ }, null];
     case 'bots':
       if (ctx.message.channel.type == 'dm') return false;
       else

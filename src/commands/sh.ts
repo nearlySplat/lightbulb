@@ -27,7 +27,8 @@ export const meta: CommandMetadata = {
 
 export const execute: CommandExecute<'commands'> = ({ args, message }) => {
   return new Promise(async res => {
-    const m = await message.channel.send(`$ ${args.data.commands}`, {
+    const m = await message.channel.send({
+      content: `\`\`\`xl\n$ ${args.data.commands}\`\`\``,
       code: 'xl',
     });
     let exited: string;
@@ -45,9 +46,9 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
         .slice(0, 1850);
     const update = () =>
       m.edit(
-        `$ ${args.data.commands}\n\n${get_lines(data.join(''))}${`\n\n${
-          exited ? exited : ''
-        }${
+        `\`\`\`xl\n$ ${args.data.commands}\n\n${get_lines(
+          data.join('')
+        )}${`\n\n${exited ? exited : ''}${
           exited && col.end >= data.join('').split(/(\r?\n)+/).length
             ? ' | '
             : ''
@@ -57,8 +58,7 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
                 data.join('').split(/(\r?\n)+/).length
               }`
             : ''
-        }`.trim()}`,
-        { code: 'xl' }
+        }`.trim()}\`\`\``
       );
     const update_lines = (t: 'up' | 'down') => {
       if (t === 'up') {
@@ -122,7 +122,10 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
       data.push(Buffer.from(`\n> ${m.cleanContent}\n`));
       update();
     });
-
+    /**
+     * @todo Find a way to use buttons in `sh`
+     * @body Currently, this command uses reactions (which are very ugly) instead of buttons. The issue with this is that the current way I use to handle buttons requires me to return a value, and that would hang the child process.
+     */
     const r_coll = m.createReactionCollector(
       (_, u) => u.id === message.author.id
     );

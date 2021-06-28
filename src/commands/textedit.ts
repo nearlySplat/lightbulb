@@ -1,3 +1,7 @@
+/**
+ * @todo Fix textedit command
+ * @body This command does not work currently.
+ */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -50,7 +54,7 @@ const base64: CommandExecute<ArgType> = ({ message, args }) => {
     .setThumbnail(message.client.user?.avatarURL() as string)
     .setTimestamp();
   message.reply({
-    embed: _,
+    embeds: [_],
   });
   return true;
 };
@@ -73,11 +77,7 @@ const uri: CommandExecute = ({ message, args }) => {
     .setThumbnail(message.client.user?.avatarURL() as string)
     .setTimestamp();
   message.reply({
-    allowedMentions: {
-      repliedUser: false,
-      parse: [],
-    },
-    embed: _,
+    embeds: [_],
   });
   return true;
 };
@@ -106,7 +106,7 @@ const binary: CommandExecute<ArgType> = ({ message, args }) => {
     .setThumbnail(message.client.user?.avatarURL() as string)
     .setTimestamp();
   message.reply({
-    embed: _,
+    embeds: [_],
   });
   return true;
 };

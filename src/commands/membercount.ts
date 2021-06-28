@@ -16,11 +16,7 @@
  */
 import { Context, CommandMetadata, CommandExecute } from '../types';
 import { get, interpolate } from '../util/i18n';
-export const execute 
-:CommandExecute= ({
-  message,
-  locale,
-}) => {
+export const execute: CommandExecute = ({ message, locale }) => {
   message.reply(
     interpolate(get('MEMBERCOUNT_TEXT', locale), {
       guild: message.guild.name,

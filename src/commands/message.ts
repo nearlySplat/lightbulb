@@ -16,6 +16,7 @@
  */
 import {
   Message,
+  MessageEmbed,
   MessageFlags,
   NewsChannel,
   TextChannel,
@@ -117,7 +118,7 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
     .replace(/(__)?\*\*(__)?/g, '**');
   return [
     {
-      embed: {
+      embed: new MessageEmbed({
         author: {
           name: `${target.author.tag} (${target.author.id})`,
           iconURL: target.author.avatarURL() || target.author.defaultAvatarURL,
@@ -132,7 +133,7 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
           iconURL: message.author.avatarURL() as string,
         },
         timestamp: Date.now(),
-      },
+      }),
     },
     null,
   ];

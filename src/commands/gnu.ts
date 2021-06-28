@@ -16,9 +16,9 @@
  */
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
-import { Context, CommandMetadata } from '../types';
+import { Context, CommandMetadata, CommandExecute } from '../types';
 import { get, interpolate } from '../util/i18n';
-export const execute = ({ message, locale, args }: Context): boolean => {
+export const execute: CommandExecute = ({ message, locale, args }) => {
   return [
     {
       embed: new MessageEmbed()
@@ -40,7 +40,6 @@ export const execute = ({ message, locale, args }: Context): boolean => {
     },
     null,
   ];
-  return true;
 };
 
 export const meta: CommandMetadata = {

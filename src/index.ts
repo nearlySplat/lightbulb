@@ -152,80 +152,85 @@ client.on('raw', packet => {
   // Grab the channel to check the message from
   const channel = client.channels.cache.get(packet.d.channel_id) as TextChannel;
   // Since we have confirmed the message is not cached, let's fetch it
-  channel!.messages.fetch(packet.d.message_id, true, true).then(message => {
-    // Emojis can have identifiers of name:id format, so we have to account for that case as well
-    const emoji = packet.d.emoji.id
-      ? `${packet.d.emoji.name}:${packet.d.emoji.id}`
-      : packet.d.emoji.name;
-    // This gives us the reaction we need to emit the event properly, in top of the message object
-    let reaction =
-      packet.t === 'MESSAGE_REACTION_REMOVE' &&
-      message.reactions.resolve(emoji);
-    // Adds the currently reacting user to the reaction's users collection.
-    if (reaction)
-      reaction.users.cache.set(
-        packet.d.user_id,
-        client.users.cache.get(packet.d.user_id) as User
-      );
-    else {
-      reaction = {
-        count: 0,
-        message,
-        client,
-        get emoji() {
-          return new ReactionEmoji(
-            this as unknown as MessageReaction,
-            packet.d.emoji
-          );
-        },
-        _emoji: packet.d.emoji,
-        partial: false,
-        me: false,
-        toJSON() {
-          return { ...this };
-        },
-        async remove(): Promise<null> {
-          return null;
-        },
-        get users() {
-          const h = {
-            get(): {} {
-              return new Proxy({}, h);
-            },
-          };
-          return new Proxy({}, h) as ReactionUserManager;
-        },
-        async fetch() {
-          return this;
-        },
-      } as unknown as MessageReaction;
-    }
+  channel!.messages
+    .fetch(packet.d.message_id, {
+      cache: true,
+      force: true,
+    })
+    .then(message => {
+      // Emojis can have identifiers of name:id format, so we have to account for that case as well
+      const emoji = packet.d.emoji.id
+        ? `${packet.d.emoji.name}:${packet.d.emoji.id}`
+        : packet.d.emoji.name;
+      // This gives us the reaction we need to emit the event properly, in top of the message object
+      let reaction =
+        packet.t === 'MESSAGE_REACTION_REMOVE' &&
+        message.reactions.resolve(emoji);
+      // Adds the currently reacting user to the reaction's users collection.
+      if (reaction)
+        reaction.users.cache.set(
+          packet.d.user_id,
+          client.users.cache.get(packet.d.user_id) as User
+        );
+      else {
+        reaction = {
+          count: 0,
+          message,
+          client,
+          get emoji() {
+            return new ReactionEmoji(
+              this as unknown as MessageReaction,
+              packet.d.emoji
+            );
+          },
+          _emoji: packet.d.emoji,
+          partial: false,
+          me: false,
+          toJSON() {
+            return { ...this };
+          },
+          async remove(): Promise<null> {
+            return null;
+          },
+          get users() {
+            const h = {
+              get(): {} {
+                return new Proxy({}, h);
+              },
+            };
+            return new Proxy({}, h) as ReactionUserManager;
+          },
+          async fetch() {
+            return this;
+          },
+        } as unknown as MessageReaction;
+      }
 
-    // Check which type of event it is before emitting
-    if (packet.t === 'MESSAGE_REACTION_ADD') {
-      client.emit(
-        'messageReactionAdd',
-        reaction,
-        client.users.cache.get(packet.d.user_id) as User
-      );
-      client.emit(
-        'actualMessageReactionAdd',
-        reaction,
-        client.users.cache.get(packet.d.user_id) as User
-      );
-    } else if (packet.t === 'MESSAGE_REACTION_REMOVE') {
-      client.emit(
-        'messageReactionRemove',
-        reaction,
-        client.users.cache.get(packet.d.user_id) as User
-      );
-      client.emit(
-        'actualMessageReactionRemove',
-        reaction,
-        client.users.cache.get(packet.d.user_id) as User
-      );
-    }
-  });
+      // Check which type of event it is before emitting
+      if (packet.t === 'MESSAGE_REACTION_ADD') {
+        client.emit(
+          'messageReactionAdd',
+          reaction,
+          client.users.cache.get(packet.d.user_id) as User
+        );
+        client.emit(
+          'actualMessageReactionAdd',
+          reaction,
+          client.users.cache.get(packet.d.user_id) as User
+        );
+      } else if (packet.t === 'MESSAGE_REACTION_REMOVE') {
+        client.emit(
+          'messageReactionRemove',
+          reaction,
+          client.users.cache.get(packet.d.user_id) as User
+        );
+        client.emit(
+          'actualMessageReactionRemove',
+          reaction,
+          client.users.cache.get(packet.d.user_id) as User
+        );
+      }
+    });
 });
 
 client.login(process.env.TOKEN);

@@ -36,7 +36,8 @@ export const execute: CommandExecute = async ctx => {
   const args = ctx.args.data.args.split('\\s');
   return [
     {
-      embed: new MessageEmbed().setTitle(),
+      embed: new MessageEmbed().setTitle('Translated'),
     },
+    null,
   ];
 };

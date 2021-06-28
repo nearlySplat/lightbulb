@@ -50,9 +50,6 @@ export class CommandParameters<T extends string>
       throw { _name: 'SIZE_NOT_SATISFIED' };
     return obj;
   }
-  get length(): number {
-    return [...this].length;
-  }
   checkTypes(obj: Record<string, any> = this.data as Record<string, string>) {
     const _data = this._data.arr;
     let successes: string[] = [],

@@ -16,7 +16,12 @@
  */
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
-import { Context, CommandMetadata, CommandExecute, CommandResponse } from '../types';
+import {
+  Context,
+  CommandMetadata,
+  CommandExecute,
+  CommandResponse,
+} from '../types';
 import { get, interpolate } from '../util/i18n';
 export const execute: CommandExecute = ({ message, locale }) => [
   {
@@ -35,7 +40,7 @@ export const execute: CommandExecute = ({ message, locale }) => [
       .setThumbnail(message.client.user?.avatarURL() as string),
   },
   null,
-]
+];
 
 export const meta: CommandMetadata = {
   name: 'about',

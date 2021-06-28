@@ -40,13 +40,18 @@ export type CommandExecute<T extends string = string> = (
   context: Context<T>
 ) => Awaited<boolean | CommandResponse>;
 export type Awaited<T> = T | Promise<T>;
+type _ = {
+  readonly [k in keyof MessageOptions]: MessageOptions[k];
+};
 export interface ExtendedMessageOptions extends MessageOptions {
   embed?: MessageEmbed;
 }
-export type CommandResponse = [
-  options: ExtendedMessageOptions,
-  handler: ButtonInteractionHandler
-];
+export type CommandResponse =
+  | [options: ExtendedMessageOptions, handler: ButtonInteractionHandler]
+  | readonly [
+      options: ExtendedMessageOptions,
+      handler: ButtonInteractionHandler
+    ];
 export type ButtonInteractionHandler = (
   context: ButtonInteractionHandlerContext
 ) => Awaited<SlashCommandResponse>;

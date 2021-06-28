@@ -24,16 +24,19 @@ export const execute: CommandExecute<'commandName'> = ({
   commands,
   args,
 }) => {
-  if (!args[0]) return[{content:(get('HELP_ARRIVED', locale))},null]
+  if (!args[0]) return [{ content: get('HELP_ARRIVED', locale) }, null];
   else
-    return [{content:
-      (commands.has(args[0])
-        ? `\`\`\`ini\n${constructHelpCommand(
-            commands.get(args.data!.commandName)!.meta
-          )}\`\`\``
-        : get('HELP_ARRIVED', locale)) ?? 'No data.'
-    },null]
-  return true;
+    return [
+      {
+        content:
+          (commands.has(args[0])
+            ? `\`\`\`ini\n${constructHelpCommand(
+                commands.get(args.data!.commandName)!.meta
+              )}\`\`\``
+            : get('HELP_ARRIVED', locale)) ?? 'No data.',
+      },
+      null,
+    ];
 };
 
 export const meta: CommandMetadata = {

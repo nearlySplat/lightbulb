@@ -48,8 +48,7 @@ export const execute: CommandExecute = async ctx => {
     )
     .setDescription(`Your pronouns are: ${formatPronouns(data.pronouns)}`)
     .setColor(ctx.message.guild.me!.roles.highest.color);
-  ctx.message.channel.send(embed);
-  return true;
+  return [{ embed }, null];
 };
 
 export function formatPronouns(pronouns: User['pronouns']) {

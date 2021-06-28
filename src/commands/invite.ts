@@ -18,24 +18,28 @@ import { CommandExecute, CommandMetadata } from '../types';
 import { Permissions, PermissionFlags } from 'discord.js';
 
 export const execute: CommandExecute = ({ message, args }) => {
-  return[{content:(
-    `<https://discord.com/oauth2/authorize?client_id=${
-      args.data.application?.replace(/(<@!?|>)/g, '') || message.client.user?.id
-    }&scope=bot${
-      args.data.perms
-        ? `&permissions=${args.data.perms
-            .split(' +')
-            .map(v =>
-              v === 'admin'
-                ? Permissions.FLAGS.ADMINISTRATOR
-                : Permissions.FLAGS[v.toUpperCase() as keyof PermissionFlags] ??
-                  BigInt(+v)
-            )
-            .reduce((prev, curr) => prev + curr)}`
-        : ''
-    }>`
-  )},null]
-  return true;
+  return [
+    {
+      content: `<https://discord.com/oauth2/authorize?client_id=${
+        args.data.application?.replace(/(<@!?|>)/g, '') ||
+        message.client.user?.id
+      }&scope=bot${
+        args.data.perms
+          ? `&permissions=${args.data.perms
+              .split(' +')
+              .map(v =>
+                v === 'admin'
+                  ? Permissions.FLAGS.ADMINISTRATOR
+                  : Permissions.FLAGS[
+                      v.toUpperCase() as keyof PermissionFlags
+                    ] ?? BigInt(+v)
+              )
+              .reduce((prev, curr) => prev + curr)}`
+          : ''
+      }>`,
+    },
+    null,
+  ];
 };
 
 export const meta: CommandMetadata = {

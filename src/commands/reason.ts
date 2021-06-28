@@ -38,7 +38,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
   const channel = (message.guild as Guild).channels.cache.find(
     value =>
       ((value.name?.match(/^💡(-log(s|ging)?)?$/g) ||
-        value.topic?.includes('--lightbulb-logs')) &&
+        (value as TextChannel).topic?.includes('--lightbulb-logs')) &&
         value.type == 'text' &&
         value
           .permissionsFor((message.guild as Guild).me as GuildMember)

@@ -24,7 +24,6 @@ export * as i18n from './i18n';
 export * from './loadFiles';
 export * from './noop';
 export * from './Parameters';
-export * from './parseCLIArgs';
 export * from './permissionLevels';
 export * from './sleep';
 

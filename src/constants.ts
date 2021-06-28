@@ -25,7 +25,6 @@ export const config = parse(
   readFile(join(__dirname, '..', 'etc', 'config.yml'), 'utf8')
 ) as YAMLConfig;
 
-// TODO(nearlySplat): add more constants
 export const PREFIXES = Array.isArray(config.bot.prefix)
   ? config.bot.prefix
   : [config.bot.prefix];

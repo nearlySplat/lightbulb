@@ -15,13 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Util } from 'discord.js';
-import { Context, CommandMetadata } from '../types';
+import { Context, CommandMetadata, CommandExecute } from '../types';
 import { getProgressBar } from '../util';
-// import { get, interpolate } from '../util/i18n';
-export const execute = ({
-  message,
-  args,
-}: Context): boolean | Promise<boolean> => {
+export const execute: CommandExecute = ({ message, args }) => {
   const progress = getProgressBar(36, ':radio_button:');
   const num = (progress.indexOf(':radio_button:') / progress.length) * 100;
   const flooredNum = Math.floor(num);
@@ -54,12 +50,14 @@ export const execute = ({
     args.join(' ').replace(/\b\w/g, v => v.toUpperCase()) ||
       'Who Asked (Feat: Nobody)'
   );
-  return[{content:(
-    `**${title}**\n${progress}\n${soundEmoji} ${soundBar}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(
-      played
-    )} / ${convert(rand)} ⠀                       ᴴᴰ ⚙ ❐`
-  )},null]
-  return true;
+  return [
+    {
+      content: `**${title}**\n${progress}\n${soundEmoji} ${soundBar}                             ◄◄⠀▐▐ ⠀►►⠀⠀ ⠀ ${convert(
+        played
+      )} / ${convert(rand)} ⠀                       ᴴᴰ ⚙ ❐`,
+    },
+    null,
+  ];
 };
 
 export const meta: CommandMetadata = {

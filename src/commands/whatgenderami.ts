@@ -25,32 +25,38 @@ export const execute: CommandExecute = ({
   args,
 }) => {
   if (!args.data.user && commandName === 'whatgenderami')
-    return message.channel
-      .send(
-        interpolate(get('WHATGENDERAMI_TEXT', locale), {
+    return [
+      {
+        content: interpolate(get('WHATGENDERAMI_TEXT', locale), {
           gender: get('WHATGENDERAMI', locale),
-        })
-      )
-      .then(() => true);
+        }),
+      },
+      null,
+    ];
   if (!args.data.user)
-    return message.channel
-      .send(get('WHATGENDERAMI_USE_I', locale))
-      .then(() => false);
+    return [
+      {
+        content: get('WHATGENDERAMI_USE_I', locale),
+      },
+      null,
+    ];
   else {
     const user =
       getMember(message.guild, args.data.user)?.user ?? args.join(' ');
     // @ts-ignore
     const target = (user.tag ?? args.data.user)?.replace(
       /^[^#]+/g,
-      v => `**${v}**`
+      (v: string) => `**${v}**`
     );
-    message.channel.send(
-      interpolate(get('WHATGENDERARETHEY', locale), {
-        gender: get('WHATGENDERAMI'),
-        target,
-      })
-    );
-    return true;
+    return [
+      {
+        content: interpolate(get('WHATGENDERARETHEY', locale), {
+          gender: get('WHATGENDERAMI'),
+          target,
+        }),
+      },
+      null,
+    ];
   }
 };
 
