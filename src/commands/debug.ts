@@ -23,7 +23,7 @@ import { CommandExecute, CommandMetadata } from '../types';
 import fs from 'fs';
 import child_process from 'child_process';
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
-const commit = child_process.execSync('git log -n 1 -f "%H"').toString();
+const commit = child_process.execSync('git log -n 1 -f="%H"').toString();
 // eslint-disable-next-line no-undef
 const events = readdirSync(join(__dirname, '..', 'events'));
 export const execute: CommandExecute = async ({
