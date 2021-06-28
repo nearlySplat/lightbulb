@@ -57,6 +57,9 @@ export const startedTimestamp = Date.now();
 export const startedAt = new Date();
 export let connectionName = 'default';
 export let hasConnection = false;
+config({
+  path: join(__dirname, '..', '.env'),
+});
 createConnection({
   type: 'postgres',
   entities: [U],
@@ -105,9 +108,7 @@ statcord.on("post", status => {
     else loggr.error("[Statcord]", status);
 }).on("autopost-start", () => { loggr.info("[Statcord] Started autopost"); });
 
-config({
-  path: join(__dirname, '..', '.env'),
-});
+
 loggr.debug('Loading events...');
 // normal events
 for (const [event, { execute }] of loadFiles<EventType>('../events')) {
