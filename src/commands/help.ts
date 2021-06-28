@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { CommandExecute, CommandMetadata } from '../types';
-import { accessLevels, getAccessLevel, toProperCase } from '../util';
+import { AccessLevels, getAccessLevel, toProperCase } from '../util';
 import { get } from '../util/i18n';
 
 export const execute: CommandExecute<'commandName'> = ({
@@ -70,7 +70,7 @@ function constructHelpCommand(cmd: CommandMetadata) {
     ]);
   data[data.findIndex(([K]) => K === 'AccessLevel') ?? data.length] = [
     'AccessLevel',
-    Object.keys(accessLevels)[getAccessLevel(cmd.accessLevel)],
+    Object.keys(AccessLevels)[getAccessLevel(cmd.accessLevel)],
   ];
   return data.map(([K, V]) => `[${K}]: ${V}`).join('\n');
 }

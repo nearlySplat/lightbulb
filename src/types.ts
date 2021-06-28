@@ -82,13 +82,13 @@ export interface CommandMetadata {
   description: string;
   aliases: string[];
   userPermissions?: (keyof PermissionFlags)[] | bigint[];
-  accessLevel: keyof AccessLevels | 0 | 1 | 2 | 3;
+  accessLevel: keyof IAccessLevels | 0 | 1 | 2 | 3;
   hidden?: boolean;
   scope?: 'guild' | 'dm' | 'slashMutualGuild' | 'any';
   params?: Parameter[];
 }
 
-export interface AccessLevels {
+export interface IAccessLevels {
   USER?: 0;
   MODERATOR?: 1;
   ADMINISTRATOR?: 2;

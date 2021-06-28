@@ -16,8 +16,8 @@
  */
 import { GuildMember, Permissions } from 'discord.js';
 import { WHITELIST as whitelist } from '../constants';
-import { AccessLevels } from '../types';
-export const accessLevels = {
+import { IAccessLevels } from '../types';
+export const AccessLevels = {
   USER: 0,
   MODERATOR: 1,
   ADMINISTRATOR: 2,
@@ -25,10 +25,10 @@ export const accessLevels = {
 } as const;
 
 export const getAccessLevel = (
-  level: keyof AccessLevels | 0 | 1 | 2 | 3
+  level: keyof IAccessLevels | 0 | 1 | 2 | 3
 ): 0 | 1 | 2 | 3 => {
-  if (typeof level === 'string') return accessLevels[level];
-  else return Object.values(accessLevels)[level] ?? 0;
+  if (typeof level === 'string') return AccessLevels[level];
+  else return Object.values(AccessLevels)[level] ?? 0;
 };
 
 export const getCurrentLevel = (member: GuildMember): 0 | 1 | 2 | 3 => {

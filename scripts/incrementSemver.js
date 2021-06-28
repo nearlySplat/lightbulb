@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs');
 
-const current = JSON.parse(fs.readFileSync('./package.json'));
+const current = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
 const msg = process.argv.slice(2).join(' ');
 const old = current.version;
 if (msg.match(/^(feat|fix)(\(.*?\))?!:/gi))

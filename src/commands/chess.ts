@@ -25,7 +25,7 @@ import {
   User,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
-import { accessLevels, i18n, reverseIndex } from '../util';
+import { AccessLevels, i18n, reverseIndex } from '../util';
 import {
   Chess as ChessClient,
   PieceType as ChessJSPieceType,
@@ -242,7 +242,7 @@ export const execute: CommandExecute = async () => {
 export const meta: CommandMetadata = {
   name: 'chess',
   description: 'Play chess with your friends!',
-  accessLevel: accessLevels.USER,
+  accessLevel: AccessLevels.USER,
   aliases: ['minichess'],
 };
 
