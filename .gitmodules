@@ -1,0 +1,3 @@
+[submodule "deps/LibreTranslate"]
+	path = deps/LibreTranslate
+	url = https://github.com/nearlySplat/LibreTranslate
