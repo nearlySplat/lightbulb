@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -33,6 +34,7 @@ import {
 } from 'chess.js';
 import { MessageFlags } from 'discord-api-types';
 import { CLIENT_COLOUR } from '../constants';
+// eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Chess {
   export type Letters = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h';
   export type Numbers = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -54,6 +56,7 @@ namespace Chess {
     team: Chess.Team;
   }
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function _(__: `_//`) {}
 const coords: Chess.Coordinates[] = [
   ...'abcdefgh',
@@ -68,7 +71,7 @@ const coords: Chess.Coordinates[] = [
 
 export const execute: CommandExecute = async () => {
   const players: [p1: User, p2: User] = [null, null] as [User, User];
-  let board: Chess.Board = {} as any;
+  let board: Chess.Board = {} as Chess.Board;
   let currentlyMoving: 0 | 1 = 0;
   const instance = new ChessClient();
   let isOver = () => instance.game_over();
@@ -136,9 +139,9 @@ export const execute: CommandExecute = async () => {
           ctx.message.channel.send(
             `A chess game has started between **${players[0].tag}** (white) and **${players[1].tag}** (black)`
           );
-          const coll = ctx.message.channel.createMessageCollector(m =>
-            players.includes(m.author)
-          );
+          const coll = ctx.message.channel.createMessageCollector({
+            filter: m => players.includes(m.author),
+          });
           coll.on('collect', async (msg: Message) => {
             if (msg.author.id === players[currentlyMoving].id) {
               if (msg.content === 'show me the legal moves') {
@@ -253,9 +256,9 @@ const vsButton = new MessageButton()
   .setDisabled(true);
 function generatePlayerRow(players: [User | null, User | null]) {
   const arr: [MessageButton, MessageButton, MessageButton] = [] as unknown as [
-    any,
-    any,
-    any
+    MessageButton,
+    MessageButton,
+    MessageButton
   ];
   for (let i = 0; i < players.length; i++) {
     arr.push(
@@ -332,7 +335,7 @@ function generateBoard(
           v,
       },
     ])
-  ) as any;
+  ) as unknown as Chess.Board;
   return toReturn;
 }
 

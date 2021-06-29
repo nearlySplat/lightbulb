@@ -16,7 +16,7 @@
  */
 import { Guild } from 'discord.js';
 
-export const getCases = async (guild: Guild) => {
+export const getCases = async (guild: Guild): Promise<number> => {
   const entries = [
     (await guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' })).entries.size,
     (await guild.fetchAuditLogs({ type: 'MEMBER_BAN_REMOVE' })).entries.size,

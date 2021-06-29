@@ -53,7 +53,7 @@ export const PURGE_KEYWORD_EXPLANATIONS = {
   bots: 'Purges messages sent by bots.',
   all: 'No criterion.',
 };
-export const PURGE_HELP_BODY = ({ data }: { data: Parameter[] }) =>
+export const PURGE_HELP_BODY = ({ data }: { data: Parameter[] }): string =>
   `There are many features in this command.
                                 ${data[0]
                                   .options!.map(
@@ -119,19 +119,20 @@ export const WHATGENDERARETHEY = ({
 }: {
   target: string;
   gender: string;
-}) => `${target} is ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
+}): string =>
+  `${target} is ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
 export const WHATGENDERAMI_TEXT = ({
   gender,
 }: {
   target: string;
   gender: string;
-}) => `You are ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
+}): string => `You are ${gender.match(/^[aeiou]/) ? 'an' : 'a'} ${gender}!`;
 export const UNBAN_SUCCESSFUL = ({
   target,
   subjectPronoun,
   singular,
   bannedFor,
-}: Record<string, string>) =>
+}: Record<string, string>): string =>
   `🔧 **${target}** was successfully unbanned. ${subjectPronoun.replace(
     /^\w/g,
     v => v.toUpperCase()

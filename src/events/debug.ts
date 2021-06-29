@@ -14,10 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Client } from 'discord.js';
+import { Client, ClientEvents } from 'discord.js';
 import { loggr } from '..';
 
-export const execute = (_client: Client, message: string | any): boolean => {
+export const execute = (
+  _client: Client,
+  message: ClientEvents['debug']
+): boolean => {
   loggr.debug(message);
   return true;
 };

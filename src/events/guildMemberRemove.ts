@@ -23,7 +23,10 @@ import {
 } from 'discord.js';
 import { createLogMessage, getCases, getLogChannel, sleep } from '../util';
 
-export const execute = async (client: Client, { guild, user }: GuildMember) => {
+export const execute = async (
+  client: Client,
+  { guild, user }: GuildMember
+): Promise<void> => {
   await sleep(5000);
   if (!guild.me!.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
   const channel = getLogChannel(guild) as TextChannel,

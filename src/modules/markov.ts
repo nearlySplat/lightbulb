@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /*
  * Copyright (C) 2020 Splatterxl
  *

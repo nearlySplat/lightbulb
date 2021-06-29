@@ -15,21 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function escapeRegExp(str: string | RegExp) {
+export function escapeRegExp(str: string | RegExp): string {
   if (str instanceof RegExp) str = str.source;
   str = str as string;
-  str = str.replace(/[\\[\]()\.\-\/*?+{}]/gi, '\\$&');
+  str = str.replace(/[\\[\]().\-/*?+{}]/gi, '\\$&');
   return str;
 }
 export class Markov {
   public static SENTENCE_BOUNDARIES = /\b[!?.\n]+\b/gi;
   public static WORD_JOINERS =
-    /[-:;,@\$%^&*!?.€£¥₩+'">\-\/\\=#)\][}{\x00-\x1F\u2000-\u200f]/g;
+    /[-:;,@$%^&*!?.€£¥₩+'">\-/\\=#)\][}{\u2000-\u200f]/g;
   public static WORD = new RegExp(
     `(${Markov.WORD_JOINERS.source})?\\w+(((${Markov.WORD_JOINERS.source}+)(\\w+)?)*)`,
     'gi'
   );
-  public static WORD_MATCH = (word: string) =>
+  public static WORD_MATCH = (word: string): RegExp =>
     new RegExp(
       `(${Markov.WORD_JOINERS.source})*${escapeRegExp(word)}(${
         Markov.WORD_JOINERS.source
@@ -40,15 +40,15 @@ export class Markov {
     `${Markov.WORD.source}+${Markov.SENTENCE_BOUNDARIES.source}`,
     'gi'
   );
-  public static TUPLE_WORD_MATCH = (existing: RegExp) =>
+  public static TUPLE_WORD_MATCH = (existing: RegExp): RegExp =>
     new RegExp(`${existing.source}\\s+${Markov.WORD.source}`, 'gi');
   constructor(arr?: string | string[]) {
     if (arr) this.seed(arr);
   }
-  public static from(arr: string | string[]) {
+  public static from(arr: string | string[]): Markov {
     return new Markov(arr);
   }
-  public seed(arr: string | string[]) {
+  public seed(arr: string | string[]): this {
     if (!Array.isArray(arr)) arr = arr.match(Markov.SENTENCE);
     this.sentences = arr;
     this._splittedSentences = this.sentences.map(value => value.split(/\s+/));
@@ -72,7 +72,7 @@ export class Markov {
     this.endingWords = this._splittedSentences.map(value => value.reverse()[0]);
     return this;
   }
-  public generate(length = 0, options: MarkovGenerateOptions = {}) {
+  public generate(length = 0, options: MarkovGenerateOptions = {}): string {
     let text =
       options.starting ||
       options.ending ||
@@ -83,7 +83,7 @@ export class Markov {
     if (!this.matches.has(word)) return '';
     do {
       for (; !finished; ) {
-        let matched: string = this.matches.get(word) as any;
+        let matched: string = this.matches.get(word) as unknown as string;
         matched = matched?.[Math.floor(Math.random() * matched.length)];
         if (!matched || !matched.length) {
           finished = true;
@@ -106,7 +106,7 @@ export class Markov {
     for (; !finished; ) {
       let matched: string = arr
         .filter(([, matches]) => matches.includes(word))
-        .flatMap(v => v[0]) as any;
+        .flatMap(v => v[0]) as unknown as string;
       if (!matched.length) {
         finished = true;
       }
@@ -125,12 +125,28 @@ export class Markov {
   public endingWords = new Array<string>();
   public sentences = new Array<string>();
   public matches = new Map<string, string[]>();
-  public getRandomStartingWord() {
+  public getRandomStartingWord(): string {
     return this.startingWords[
       Math.floor(Math.random() * this.startingWords.length)
     ];
   }
-  public analyze() {
+  public analyze(): {
+    starts: {
+      all: string[];
+      unique: Set<string>;
+      top: Record<string, number>;
+    };
+    ends: {
+      all: string[];
+      unique: Set<string>;
+      top: Record<string, number>;
+    };
+    all: {
+      readonly all: string[];
+      readonly unique: Set<string>;
+      top: Record<string, number>;
+    };
+  } {
     const thisMatchesKeys = this.matches.keys();
     const starts = {
       all: this.startingWords,

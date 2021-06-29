@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -52,10 +53,14 @@ export const execute: SlashCommandExecute = ctx => {
       flags: 64,
       content:
         ctx.interaction.data.options[0].name === 'encode'
-          ? Buffer.from(ctx.interaction.data.options[0].options[0]).toString(
+          ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            Buffer.from(ctx.interaction.data.options[0].options[0]).toString(
               'base64'
             )
           : Buffer.from(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
               ctx.interaction.data.options[0].options[0],
               'base64'
             ).toString(),

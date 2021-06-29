@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -14,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { MessageActionRow, MessageButton, Permissions } from 'discord.js';
+import { MessageActionRow, MessageButton, Permissions, Snowflake } from 'discord.js';
 import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { config, ERROR_CODES, WHITELIST } from '../constants';
@@ -29,7 +30,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
     return false;
   const target = await message.client.users
-    .fetch(args.data.user.replace(/(<@!?|>)/g, ''))
+    .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
   let user: { objectPronoun: string };
@@ -100,8 +101,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
             });
         } catch (e) {
           ctx.message.edit({
-            content: e,
-            code: 'xl',
+            content: `\`\`\``${e}`,
             components: defaultDeleteButton,
           });
           return { type: 6 };

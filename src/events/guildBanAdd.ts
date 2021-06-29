@@ -17,7 +17,6 @@
 import {
   Client,
   Guild,
-  GuildMember,
   Permissions,
   Snowflake,
   TextChannel,
@@ -25,10 +24,14 @@ import {
 } from 'discord.js';
 import { createLogMessage, getCases, getLogChannel } from '../util';
 
-export const execute = async (client: Client, guild: Guild, user: User) => {
+export const execute = async (
+  client: Client,
+  guild: Guild,
+  user: User
+): Promise<void> => {
   if (!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
-  let channel = getLogChannel(guild) as TextChannel,
-    auditLogs = await guild.fetchAuditLogs({
+  const channel = getLogChannel(guild) as TextChannel;
+  let auditLogs = await guild.fetchAuditLogs({
       type: 'MEMBER_BAN_ADD',
       limit: 1,
     }),

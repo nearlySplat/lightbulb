@@ -14,18 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Collection, GuildMember, MessageEmbed, ClientUser } from 'discord.js';
-import { CLIENT_COLOUR } from '../constants';
+import { GuildMember } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { getAccessLevel, getCurrentLevel } from '../util';
-import { get } from '../util/i18n';
 
-export const execute: CommandExecute = ({
-  message,
-  locale,
-  commands,
-  args,
-}) => {
+export const execute: CommandExecute = ({ message, commands, args }) => {
   if (!args[0])
     return [
       {

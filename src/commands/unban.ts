@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { GuildBan, Permissions } from 'discord.js';
+import { GuildBan, Permissions, Snowflake } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
-import { config, ERROR_CODES, ERROR_MESSAGES } from '../constants';
+import { config, ERROR_CODES } from '../constants';
 import { User } from '../entity/User';
 import { reloadBlacklists } from '../events/message';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
@@ -28,7 +28,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
     return false;
   const target = await message.client.users
-    .fetch(args.data.user.replace(/(<@!?|>)/g, ''))
+    .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
   let user: { subjectPronoun: string; singularOrPluralPronoun: string };

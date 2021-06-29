@@ -25,7 +25,11 @@ import {
 } from 'discord.js';
 import { createLogMessage, getCases } from '../util';
 
-export const execute = async (client: Client, guild: Guild, user: User) => {
+export const execute = async (
+  client: Client,
+  guild: Guild,
+  user: User
+): Promise<void> => {
   if (!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
   const channel = guild.channels.cache.find(
       value =>

@@ -20,10 +20,12 @@ import { join } from 'path';
 
 export function loadFiles<T>(folder: string): Collection<string, T> {
   const coll = new Collection<string, T>(),
+    // eslint-disable-next-line no-undef
     files = readdirSync(join(__dirname, folder))
       .filter(value => value.match(/\.[jt]s$/g))
       .map(value => value.replace(/\.[jt]s$/g, ''));
   for (const file of files) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
     const data = require(`${folder}/${file}`);
     coll.set(file, data);
   }

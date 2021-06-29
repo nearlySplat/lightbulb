@@ -23,7 +23,6 @@ import {
   Snowflake,
   TextChannel,
 } from 'discord.js';
-import { CLIENT_COLOUR } from '../constants';
 import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 export const meta: CommandMetadata = {
@@ -55,12 +54,12 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
       : await ctx.message.channel.messages.fetch({})
   ) as MsgsCollectionType;
   switch (ctx.args.data.criteria) {
-    case 'help':
+    case 'help': {
       const _ = new MessageEmbed()
         .setAuthor(get('PURGE_HELP_HEADER', ctx.locale))
-        // @ts-ignore
         .setDescription(
           interpolate(get('PURGE_HELP_BODY', ctx.locale), {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             data: ctx.args._data.arr,
           })
@@ -68,6 +67,7 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
         .setColor(ctx.message.guild.me.roles.highest.color)
         .setThumbnail(ctx.client.user?.avatarURL() as string);
       return [{ embed: _ }, null];
+    }
     case 'bots':
       if (ctx.message.channel.type == 'dm') return false;
       else
@@ -93,7 +93,7 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
           .slice(0, parseInt(ctx.args.data.amount)) as MsgsCollectionType;
 
       await ctx.message.delete();
-      ctx.message.channel.bulkDelete(msgs);
+      ctx.message.channel.bulkDelete(msgs as Collection<Snowflake, Message>);
       return true;
 
     case 'all':
@@ -112,7 +112,7 @@ type MsgsCollectionType = (Collection<string, Message> | Message[]) & {
   filter(
     fn: (
       value: Message,
-      index: number | string,
+      key: Snowflake,
       array: Collection<Snowflake, Message> | Message[]
     ) => boolean
   ): MsgsCollectionType;

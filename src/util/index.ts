@@ -27,7 +27,11 @@ export * from './Parameters';
 export * from './permissionLevels';
 export * from './sleep';
 
-export function getProgressBar(len = 3, seperator = 'O', lineChar = '─') {
+export function getProgressBar(
+  len = 3,
+  seperator = 'O',
+  lineChar = '─'
+): string {
   if (typeof len !== 'number')
     throw new TypeError("Parameter 'len' must be of type number.");
   if (typeof seperator !== 'string')
@@ -41,7 +45,7 @@ export function getProgressBar(len = 3, seperator = 'O', lineChar = '─') {
   return progress;
 }
 
-export function getLogChannel(guild: Guild) {
+export function getLogChannel(guild: Guild): TextChannel | undefined {
   return guild.channels.cache.find(
     value =>
       ((value as { name: string } & GuildChannel).name.match(
@@ -51,16 +55,20 @@ export function getLogChannel(guild: Guild) {
       value.type == 'text' &&
       (
         value.permissionsFor(guild.me as GuildMember) || {
-          has(_thing: string) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          has(_thing: string): false {
             return false;
           },
         }
       ).has('SEND_MESSAGES') &&
       false
-  );
+  ) as TextChannel;
 }
 
-export function getMember(guild: Guild, target: string) {
+export function getMember(
+  guild: Guild,
+  target: string
+): GuildMember | undefined {
   return ['user.id', 'user.tag', 'displayName', 'user.username']
     .map(pre =>
       guild.members.cache.find(
@@ -72,27 +80,28 @@ export function getMember(guild: Guild, target: string) {
     .filter(v => !!v)[0];
 }
 
-export function toProperCase(str: string) {
+export function toProperCase(str: string): string {
   return str.replace(/\b\w/g, v => v.toUpperCase());
 }
 
-export function shuffle<T>(arr: T[]) {
+export function shuffle<T>(arr: T[]): T[] {
   return range(Math.max(arr.length / 5, 5))
     .map<T[]>((_, i) => arr.slice(i, i + 6))
     .flat();
 }
 
-export const range = (n: number) => Array(n).fill(null);
+export const range = (n: number): null[] => Array(n).fill(null);
 
-export const chunk = (n: number, x: string | number) => {
+export const chunk = (n: number, x: string | number): string[] => {
   const arr = [];
   for (const i of typeof x === 'string'
-    ? x.match(new RegExp(`[\s\S]{1,${n}}`, 'g'))
+    ? // eslint-disable-next-line no-useless-escape
+      x.match(new RegExp(`[\s\S]{1,${n}}`, 'g'))
     : range(x / n))
     arr.push(i);
   return arr;
 };
 
-export function reverseIndex(ind: number, arr: unknown[]) {
+export function reverseIndex<T>(ind: number, arr: T[]): number {
   return Math.abs(ind - arr.length) - 1;
 }

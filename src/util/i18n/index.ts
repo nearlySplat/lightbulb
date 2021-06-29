@@ -15,8 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { readdirSync } from 'fs';
-import { loggr } from '../..';
 
+// eslint-disable-next-line no-undef
 export const localeList = readdirSync(__dirname).filter(
   v => !v.match(/\.[jt]s$/g)
 );
@@ -42,7 +42,7 @@ export const get = (key: string, locale = 'en_UK'): string => {
 };
 
 export const interpolate = (
-  str: string | ((obj: Object) => string),
+  str: string | ((obj: Record<string, string>) => string),
   obj: Record<string, string>
 ): string => {
   if (typeof str === 'function') return str(obj);

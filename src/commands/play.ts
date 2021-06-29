@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Util } from 'discord.js';
-import { Context, CommandMetadata, CommandExecute } from '../types';
+import { CommandMetadata, CommandExecute } from '../types';
 import { getProgressBar } from '../util';
-export const execute: CommandExecute = ({ message, args }) => {
+export const execute: CommandExecute = ({ args }) => {
   const progress = getProgressBar(36, ':radio_button:');
   const num = (progress.indexOf(':radio_button:') / progress.length) * 100;
   const flooredNum = Math.floor(num);

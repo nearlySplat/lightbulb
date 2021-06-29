@@ -31,9 +31,11 @@ export const meta: CommandMetadata = {
     },
   ],
 };
-
-export const execute: CommandExecute = async ctx => {
-  const args = ctx.args.data.args.split('\\s');
+/**
+ * @todo Translate command
+ * @body This would be greatly improved with an API that returns which language the text was translated from/to
+ */
+export const execute: CommandExecute = async () => {
   return [
     {
       embed: new MessageEmbed().setTitle('Translated'),

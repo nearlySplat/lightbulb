@@ -22,7 +22,8 @@ export const execute = ({
   locale,
 }: Context): boolean | Promise<boolean> => {
   void message.reply(get('DIE_SUCCESS', locale));
-  setImmediate(() => process.exit(+args.data.code));
+  // eslint-disable-next-line no-undef
+  setTimeout(() => process.exit(+args.data.code), 0);
   return true;
 };
 

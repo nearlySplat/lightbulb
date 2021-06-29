@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /**
  * @todo Fix textedit command
  * @body This command does not work currently.

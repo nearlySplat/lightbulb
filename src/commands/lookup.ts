@@ -15,7 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import axios from 'axios';
-import { GuildPreview, MessageEmbed, SnowflakeUtil } from 'discord.js';
+import {
+  GuildPreview,
+  MessageEmbed,
+  Snowflake,
+  SnowflakeUtil,
+} from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import {
   CommandExecute,
@@ -26,16 +31,20 @@ import {
 
 export const execute: CommandExecute = async ctx => {
   const deconstructed = SnowflakeUtil.deconstruct(
-      ctx.args[0] || ctx.message.author.id
+      (ctx.args[0] || ctx.message.author.id) as Snowflake
     ),
-    user = await ctx.client.users.fetch(ctx.args[0]).catch(() => null),
+    user = await ctx.client.users
+      .fetch(ctx.args[0] as Snowflake)
+      .catch(() => null),
     invite = await ctx.client
       .fetchInvite(
         ctx.args[0].replace(/(https?:\/\/)?discord\.(gg|com\/invites)\//g, '')
       )
       .catch(() => null),
     guild: GuildLookupData =
-      (await ctx.client.fetchGuildPreview(ctx.args[0]).catch(() => null)) ||
+      (await ctx.client
+        .fetchGuildPreview(ctx.args[0] as Snowflake)
+        .catch(() => null)) ||
       ((
         (await axios
           .get(

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -26,10 +27,10 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute<'commands'> = ({ args, message }) => {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async res => {
     const m = await message.channel.send({
       content: `\`\`\`xl\n$ ${args.data.commands}\`\`\``,
-      code: 'xl',
     });
     let exited: string;
     const data: Buffer[] = [];
@@ -76,7 +77,7 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
     const child = spawn(args.data.commands, {
       shell: true,
     });
-    const handler = (d: any) => {
+    const handler = (d: Buffer) => {
       data.push(Buffer.from(d.toString()));
       update();
     };
@@ -102,9 +103,9 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
       coll.stop();
       res(!!code);
     });
-    const coll = message.channel.createMessageCollector(
-      m => m.author.id === message.author.id
-    );
+    const coll = message.channel.createMessageCollector({
+      filter: m => m.author.id === message.author.id,
+    });
     coll.on('collect', m => {
       if (m.content === '^D') {
         coll.stop();
@@ -126,9 +127,9 @@ export const execute: CommandExecute<'commands'> = ({ args, message }) => {
      * @todo Find a way to use buttons in `sh`
      * @body Currently, this command uses reactions (which are very ugly) instead of buttons. The issue with this is that the current way I use to handle buttons requires me to return a value, and that would hang the child process.
      */
-    const r_coll = m.createReactionCollector(
-      (_, u) => u.id === message.author.id
-    );
+    const r_coll = m.createReactionCollector({
+      filter: (_, u) => u.id === message.author.id,
+    });
     r_coll.on('collect', r => {
       switch (r.emoji.name) {
         case '⏹': {

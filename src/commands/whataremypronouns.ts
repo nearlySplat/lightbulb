@@ -33,7 +33,9 @@ export const execute: CommandExecute = async ctx => {
         userid: ctx.message.author.id,
       },
     }).catch(() => null);
-  } catch {}
+  } catch {
+    //
+  }
   if (!data) {
     ctx.message.channel.send(
       'You do not have any data in our database. `they/them` pronouns will be assumed unless you explicitly set them to anything else.'
@@ -51,7 +53,7 @@ export const execute: CommandExecute = async ctx => {
   return [{ embed }, null];
 };
 
-export function formatPronouns(pronouns: User['pronouns']) {
+export function formatPronouns(pronouns: User['pronouns']): string {
   return `${Object.entries(pronouns)
     .filter(([K]) => K !== 'singularOrPlural')
     .map(([, V]) => V)

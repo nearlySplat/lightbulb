@@ -15,20 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {
-  Client,
   Guild,
   GuildMember,
   Permissions,
-  Snowflake,
   TextChannel,
-  User,
   Message,
+  Snowflake,
 } from 'discord.js';
-import { createLogMessage, getCases } from '../util';
-import { CLIENT_COLOUR } from '../constants';
-import { CommandExecute, CommandMetadata, Context } from '../types';
+import { createLogMessage } from '../util';
+import { CommandMetadata, Context } from '../types';
 
-export const execute = async ({ message, args }: Context): Promise<any> => {
+export const execute = async ({ message, args }: Context): Promise<void> => {
   if (
     !(message.guild as Guild).me?.permissions.has(
       Permissions.FLAGS.VIEW_AUDIT_LOG
@@ -47,7 +44,6 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
   ) as TextChannel;
   await channel.messages.fetch({});
   async function updateMessages(cases: (number | string)[]) {
-    let err;
     for (const value of cases) {
       console.log(value, cases);
       const message1 =
@@ -62,14 +58,13 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
                 v.author.id === message.client.user?.id
             );
       if (!message1) {
-        err = true;
         break;
       }
       const matchedUser = message1.content
         .match(/ed]` \*\*[^#]+#\d{4}\*\* \(\d+\)/g)?.[0]
         ?.match(/\d{4}\d+/g)?.[0];
       const user = await message.client.users
-        ?.fetch(`${matchedUser}`)
+        ?.fetch(`${matchedUser}` as Snowflake)
         .catch(() => null);
       if (!user) throw message.react('😔');
       if (channel) {
@@ -116,7 +111,7 @@ export const execute = async ({ message, args }: Context): Promise<any> => {
     ).map(v => v + nums[1] - 1);
     await message.channel.send(`How many cases will this affect?`);
     await message.channel
-      .awaitMessages(m => m.author.id == message.author.id, { max: 1 })
+      .awaitMessages({ filter: m => m.author.id == message.author.id, max: 1 })
       .then(v =>
         parseInt((v.first() as Message).content) === cases.length
           ? updateMessages(cases)

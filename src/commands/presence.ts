@@ -32,10 +32,12 @@ export const execute: CommandExecute = ctx => {
   return [
     {
       content: `**__${target.tag}'s Presence__**\n\n${
-        status.desktop ? `**Desktop**: <${statusEmojis[status.desktop]}>\n` : ''
-      }${status.web ? `**Web**: <${statusEmojis[status.web]}>\n` : ''}${
+        status.desktop
+          ? `**Desktop**: <:${statusEmojis[status.desktop]}>\n`
+          : ''
+      }${status.web ? `**Web**: <:${statusEmojis[status.web]}>\n` : ''}${
         status.mobile
-          ? `**Mobile** <${statusEmojis.mobile}>: <${
+          ? `**Mobile** <:${statusEmojis.mobile}>: <:${
               statusEmojis[status.desktop]
             }>\n`
           : ''

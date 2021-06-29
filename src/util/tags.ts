@@ -16,6 +16,7 @@
  */
 import fs from 'fs';
 const rawTags = JSON.parse(
+  // eslint-disable-next-line no-undef
   fs.readFileSync(__dirname + '/../../etc/tags.json', 'utf-8')
 );
 export const tags = new Map<string, string>(

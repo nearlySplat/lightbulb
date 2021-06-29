@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { MessageActionRow, MessageButton } from 'discord.js';
-import { transpile } from 'typescript';
 import { inspect } from 'util';
 import { WHITELIST } from '../constants';
 import { defaultDeleteButton } from '../events/message';
@@ -27,7 +26,7 @@ export const execute: CommandExecute = async ({
 }) => {
   if (!WHITELIST.includes(message.author.id)) return true;
   const raw = args.join(' ');
-  let output: any;
+  let output: unknown;
   try {
     output = eval(raw);
   } catch (error) {

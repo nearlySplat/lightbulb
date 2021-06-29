@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { ClientPresenceStatusData, MessageEmbed } from 'discord.js';
+import { ClientPresenceStatusData, MessageEmbed, Snowflake } from 'discord.js';
 import { User } from '../entity/User';
 import { CommandExecute, CommandMetadata } from '../types';
 import { getMember, i18n } from '../util';
@@ -47,7 +47,10 @@ export const execute: CommandExecute<'target'> = async ({
   const user =
       member?.user ??
       (await message.client.users
-        .fetch(args.data.target?.replace(/(^<@!?|>)/g, '') ?? message.author.id)
+        .fetch(
+          (args.data.target?.replace(/(^<@!?|>)/g, '') ??
+            message.author.id) as Snowflake
+        )
         .catch(() => null)),
     lightbulbUserData = await User.findOne({
       where: {
@@ -97,7 +100,7 @@ export const execute: CommandExecute<'target'> = async ({
     null,
   ];
 };
-export const statusEmojis = {
+export const statusEmojis: Record<string, string> = {
   offline: 'offline2:464520569929334784',
   online: 'online2:464520569975603200',
   dnd: 'dnd2:464520569560498197',
@@ -105,16 +108,17 @@ export const statusEmojis = {
   mobile: 'mobile:858031541375205396',
 };
 function getBestPresence(presence: ClientPresenceStatusData): string {
-  let status = (['online', 'dnd', 'idle'].find(v =>
-    Object.values(presence).includes(v)
-  ) || 'offline') as keyof typeof statusEmojis;
+  let status =
+    ['online', 'dnd', 'idle'].find(v => Object.values(presence).includes(v)) ||
+    'offline';
   if (
     Object.entries(presence)
       .filter(([, v]) => v === status)
       .map(([v]) => v) === ['mobile']
   ) {
-    status = (`<:${statusEmojis.mobile}>` +
-      `<:${statusEmojis[status]}//`.replace('\\/\\/', '')) as any;
-  } else status = `<:${statusEmojis[status]}>` as any;
+    status =
+      `<:${statusEmojis.mobile}>` +
+      `<:${statusEmojis[status]}//`.replace('\\/\\/', '');
+  } else status = `<:${statusEmojis[status]}>`;
   return status;
 }

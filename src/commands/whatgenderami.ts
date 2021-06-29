@@ -43,8 +43,7 @@ export const execute: CommandExecute = ({
   else {
     const user =
       getMember(message.guild, args.data.user)?.user ?? args.join(' ');
-    // @ts-ignore
-    const target = (user.tag ?? args.data.user)?.replace(
+    const target = ((user as { tag: string }).tag ?? args.data.user)?.replace(
       /^[^#]+/g,
       (v: string) => `**${v}**`
     );

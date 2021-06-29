@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -49,7 +50,7 @@ export const ERROR_MESSAGES = [
   'UNBAN_UNSUCCESSFUL',
   'UNBAN_NOT_BANNED',
 ];
-export const generateErrorCode = (m: string) =>
+export const generateErrorCode = (m: string): number =>
   m
     .split('')
     .map(v => v.charCodeAt(0))

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -14,7 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { APIGuildMember, APIMessage, APIUser } from 'discord-api-types';
+import {
+  APIGuildMember,
+  APIMessage,
+  APIUser,
+  APIApplicationCommandOption,
+  APIEmbed,
+} from 'discord-api-types';
 import {
   Channel,
   Client,
@@ -40,9 +47,6 @@ export type CommandExecute<T extends string = string> = (
   context: Context<T>
 ) => Awaited<boolean | CommandResponse>;
 export type Awaited<T> = T | Promise<T>;
-type _ = {
-  readonly [k in keyof MessageOptions]: MessageOptions[k];
-};
 export interface ExtendedMessageOptions extends MessageOptions {
   embed?: MessageEmbed;
 }
@@ -107,7 +111,7 @@ export interface WidgetSuccessfulResponse {
   id?: Snowflake;
   name?: string;
   instant_invite?: string;
-  members?: any[];
+  members?: APIGuildMember[];
   presence_count?: number;
 }
 
@@ -120,9 +124,6 @@ export interface SlashCommand {
 export type SlashCommandExecute = (
   context: SlashCommandContext
 ) => SlashCommandResponse;
-export type RecurringAnyFuncOrObj = Record<string, any> &
-  (<T>(...args: any[]) => T) &
-  { [key in string]: RecurringAnyFuncOrObj };
 
 export interface SlashCommandContext {
   client: Client;
@@ -136,7 +137,7 @@ export interface Interaction {
   data: {
     name: string;
     id: Snowflake;
-    options?: any[];
+    options?: APIApplicationCommandOption[];
   };
   channel_id?: Snowflake;
   guild_id?: Snowflake;
@@ -145,12 +146,15 @@ export interface Interaction {
   user?: APIUser | User | null;
   token: string;
 }
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export interface MessageComponentInteraction extends Interaction {
   message: APIMessage;
   data: {
     component_type: Exclude<
+      // eslint-disable-next-line no-undef
       MessageComponentTypes,
+      // eslint-disable-next-line no-undef
       MessageComponentTypes.ACTION_ROW
     >;
     custom_id: string;
@@ -160,7 +164,7 @@ export type SlashCommandResponse = {
   type: 1 | 4 | 5 | 6 | 7;
   data?: {
     content?: string;
-    embeds?: (Record<string, any> | MessageEmbed)[];
+    embeds?: (APIEmbed | MessageEmbed)[];
     flags?: 64;
   };
 };
@@ -175,7 +179,7 @@ export interface YAMLConfig {
 export interface Owner {
   name: string;
   markov: MarkovConfig;
-  id: string;
+  id: Snowflake;
 }
 
 export interface MarkovConfig {
@@ -188,7 +192,7 @@ export interface MarkovConfig {
 export interface Bot {
   prefix: string[] | string;
   name: string;
-  support_server: string;
+  support_server: Snowflake;
 }
 
 export enum InteractionTypes {
@@ -217,22 +221,3 @@ export type RouteBuilder = Record<
     [k in string]: RouteBuilder;
   } &
   ((...args: string[]) => RouteBuilder);
-
-declare module 'discord.js' {
-  // @ts-ignore
-  export interface Client {
-    api: RouteBuilder;
-  }
-  export interface APIMessage {
-    // @ts-ignore
-    data: Record<string, unknown>;
-  }
-  // @ts-ignore
-  export type Snowflake = string;
-  export type StringResolvable = string;
-}
-
-declare module 'discord-api-types' {
-  // @ts-ignore
-  export type Snowflake = string;
-}

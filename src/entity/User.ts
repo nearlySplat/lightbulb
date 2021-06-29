@@ -35,7 +35,13 @@ export class User extends Base {
   @Column()
   singularOrPluralPronoun = 'plural';
 
-  get pronouns() {
+  get pronouns(): {
+    subject: string;
+    object: string;
+    possessiveDeterminer: string;
+    posessivePronoun: string;
+    singularOrPlural: string;
+  } {
     return {
       subject: this.subjectPronoun,
       object: this.objectPronoun,

@@ -32,17 +32,16 @@ import {
   SlashCommandResponse,
 } from '../../types';
 import { buttonHandlers } from '../message';
-import { i18n, sleep } from '../../util';
 
 export const execute = async (
   client: Client,
   interaction: GatewayInteractionCreateDispatchData
-) => {
+): Promise<unknown> => {
   if (
     (interaction.type as unknown as InteractionTypes) ===
     InteractionTypes.APPLICATION_COMMAND
   )
-    return slashCommandExecute(client, interaction);
+    return slashCommandExecute(client, interaction as unknown as Interaction);
   else if (
     (interaction.type as unknown as InteractionTypes) ===
     InteractionTypes.MESSAGE_COMPONENT
@@ -57,7 +56,7 @@ export const execute = async (
 export const slashCommandExecute = async (
   client: Client,
   interaction: Interaction
-) => {
+): Promise<unknown> => {
   function respond(data: { data: SlashCommandResponse }) {
     return client.api
       .interactions(interaction.id, interaction.token)
@@ -74,9 +73,9 @@ export const slashCommandExecute = async (
     const guild =
       client.guilds.cache.get(interaction.guild_id as Snowflake) || null;
     const member = guild
-      ? await guild.members
-          .fetch(author.id || ('' as Snowflake))
-          .catch(() => {})
+      ? await guild.members.fetch(author.id || ('' as Snowflake)).catch(() => {
+          /* */
+        })
       : null;
     const command = slashCommands.get(interaction.data.name) as SlashCommand;
     if (!guild && command.meta.scope === 'slashMutualGuild')
@@ -127,7 +126,7 @@ export const slashCommandExecute = async (
 export const buttonExecute = async (
   client: Client,
   interaction: MessageComponentInteraction
-) => {
+): Promise<void> => {
   function respond(data: { data: SlashCommandResponse }) {
     return client.api
       .interactions(interaction.id, interaction.token)
@@ -154,5 +153,6 @@ export const buttonExecute = async (
       }),
     });
   } else {
+    //
   }
 };

@@ -19,8 +19,8 @@ import {
   MessageEmbed,
   MessageFlags,
   NewsChannel,
+  Snowflake,
   TextChannel,
-  Util,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { i18n } from '../util';
@@ -69,7 +69,8 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
   locale,
 }) => {
   const channel = message.guild.channels.cache.get(
-    args.data.channelid?.replace(/(^<#|>$)/g, '') || message.channel.id
+    (args.data.channelid?.replace(/(^<#|>$)/g, '') ||
+      message.channel.id) as Snowflake
   ) as TextChannel;
   if (!channel || ![NewsChannel, TextChannel].some(v => channel instanceof v)) {
     message.channel.send(i18n.get('MESSAGEINFO_CHANNEL_NOT_FOUND', locale));
@@ -83,7 +84,9 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
           message,
           channel
         )
-      : channel.messages.fetch(args.data.messageid || message.id))) as Message;
+      : channel.messages.fetch(
+          (args.data.messageid || message.id) as Snowflake
+        ))) as Message;
   } catch {
     message.channel.send(i18n.get('MESSAGEINFO_MESSAGE_NOT_FOUND', locale));
     return false;

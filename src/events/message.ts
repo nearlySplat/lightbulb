@@ -50,7 +50,7 @@ export const defaultDeleteButton = [
   }),
 ];
 const bls: Snowflake[] = [];
-export async function reloadBlacklists(client: Client) {
+export async function reloadBlacklists(client: Client): Promise<Snowflake[]> {
   const bans = await client.guilds.cache
     .get(config.bot.support_server)
     .bans.fetch();
@@ -80,10 +80,9 @@ export const execute = async (
     return { type: 6 };
   };
   async function handleCommandResult(result: CommandResponse) {
-    let [options, handler] = result;
-    // @ts-ignore
+    let [, handler] = result;
+    const [options] = result;
     if (options.embeds || options.embed) {
-      // @ts-ignore
       options.embeds = [options.embed];
     }
     if (!options.components) {

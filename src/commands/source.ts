@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -64,9 +65,9 @@ export const meta: CommandMetadata = {
 export const execute: CommandExecute = async ctx => {
   const m = await ctx.message.channel.send('Working on it...');
   const r = await ctx.message.react('a:loading:833416988981723147');
-  let url = 'https://github.com/nearlysplat/lightbulb/blob/development/',
-    original = url,
-    path;
+  let url = 'https://github.com/nearlysplat/lightbulb/blob/development/';
+  const original = url;
+  let path;
   for (let file of files) {
     file = file.replace(resolve(__dirname, '..', '..') + '/', '');
     console.log(file);

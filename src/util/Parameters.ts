@@ -14,16 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { Message } from 'discord.js';
 import { CommandMetadata } from '../types';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export class CommandParameters<T extends string>
   extends Array<string>
   implements PrimitiveArray
 {
+  // eslint-disable-next-line no-undef
   [key: number]: string;
   private _data: ParametersData;
-  parseData(str: string) {
+  parseData(str: string): Record<string, string> {
     const _data = this._data.arr;
     let params = str.match(/(\S+)/g) ?? [str]; //?.map(v => v.trim().replace(/(^"|"$)/g, "")) ?? [str]
     if (_data[_data.length - 1].rest == true)
@@ -38,7 +41,7 @@ export class CommandParameters<T extends string>
     }
     obj = Object.fromEntries(Object.entries(obj).filter(([, V]) => V !== ''));
     this.data = obj;
-    // @ts-ignore
+    // eslint-disable-next-line prefer-const
     for (let [index, value] of Object.values(obj).map((v, i) => [i, v])) {
       index = index as number;
       this[index] = value as string;
@@ -50,7 +53,12 @@ export class CommandParameters<T extends string>
       throw { _name: 'SIZE_NOT_SATISFIED' };
     return obj;
   }
-  checkTypes(obj: Record<string, any> = this.data as Record<string, string>) {
+  checkTypes(
+    obj: Record<string, string> = this.data as Record<string, string>
+  ): {
+    successes: string[];
+    errs: Record<string, ParameterTypeCheckingError>;
+  } {
     const _data = this._data.arr;
     const successes: string[] = [],
       errs: Record<string, ParameterTypeCheckingError> = {};
@@ -70,9 +78,10 @@ export class CommandParameters<T extends string>
         if (!_data[index].options!.includes(value))
           errs[_data[index].name] = `Expected one of options ${_data[
             index
-          ].options!.join(', ')}, but recieved ${value}.` as const;
+          ].options!.join(', ')}, but recieved ${value}.`;
         else successes.push(_data[index].name);
       } else if (value === '') {
+        //
       } else
         switch (data) {
           case 'string':
@@ -125,9 +134,9 @@ export class CommandParameters<T extends string>
     this._data = { arr };
   }
   static triggerError(
-    fn: (s: string) => any | void,
+    fn: (s: string) => Promise<Message | void>,
     s: [string, string] | { _name: 'SIZE_NOT_SATISFIED' }
-  ) {
+  ): Promise<Message | void> {
     return fn(
       CommandParameters._getErrorMsg(
         Array.isArray(s) ? s[0] : s,
@@ -138,9 +147,8 @@ export class CommandParameters<T extends string>
   static _getErrorMsg(
     param: string | { _name: 'SIZE_NOT_SATISFIED' },
     message?: string
-  ) {
-    // @ts-ignore
-    return param._name === 'SIZE_NOT_SATISFIED'
+  ): string {
+    return (param as { _name: string })._name === 'SIZE_NOT_SATISFIED'
       ? 'Not enough parameters passed. Refer to `help <command>` for details.'
       : `Error for parameter \`${param}\`: \`\`\`md\n${
           message || 'Incorrect type'
@@ -169,18 +177,13 @@ export class CommandParameters<T extends string>
       });
     }
     instance.parseData(Array.isArray(args) ? args.join(' ') : args);
-    let checkResult: {
-      errs: Record<string, string>;
-      successes: string[];
-    };
-    console.log(instance.data, instance._data.arr.length);
-    checkResult = instance.checkTypes();
+    const checkResult = instance.checkTypes();
     if (Object.values(checkResult!.errs)[0])
       throw Object.entries(checkResult!.errs)[0];
     else return instance;
   }
   public data!: Record<T, string>;
-  *[Symbol.iterator]() {
+  *[Symbol.iterator](): Generator<string, void, unknown> {
     for (const v of Object.entries(this)
       .filter(([K]) => !isNaN(parseInt(K)))
       .map(([, V]) => V))
@@ -206,7 +209,7 @@ type ParameterType = 'int' | 'float' | 'string' | 'bool';
 
 type ParameterTypeCheckingError =
   | `Expected type ${ParameterType}, recieved ${ParameterType}`
-  | `Expected one of options ${any}, but recieved ${string}.`;
+  | `Expected one of options ${string}, but recieved ${string}.`;
 
 interface PrimitiveArray {
   [k: number]: string;

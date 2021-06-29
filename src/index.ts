@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 let seq = 0;
 process.on('message', message => {
   if (message.seq) seq = message.seq;
@@ -34,7 +35,6 @@ import {
   MessageReaction,
   ReactionEmoji,
   ReactionUserManager,
-  Snowflake,
   TextChannel,
   User,
   WSEventType,
@@ -49,7 +49,7 @@ import { User as U } from './entity/User';
 import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
-import * as Statcord from "statcord.js";
+import * as Statcord from 'statcord.js';
 export const loggr = new CatLoggr();
 export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
@@ -73,9 +73,9 @@ createConnection({
   })
   .catch(e => ((hasConnection = false), console.error(e)));
 const moduleConfig: {
-  [k in Snowflake]: {
+  [k: string]: {
     enabledModules: string[];
-    staffRole?: Snowflake;
+    staffRole?: string;
   };
 } = guildConfig;
 const client = new Client({
@@ -94,20 +94,26 @@ const client = new Client({
 });
 
 export const statcord = new Statcord.Client({
-    client,
-    key: process.env.STATCORD,
-    postCpuStatistics: true, /* Whether to post memory statistics or not, defaults to true */
-    postMemStatistics: true, /* Whether to post memory statistics or not, defaults to true */
-    postNetworkStatistics: true, /* Whether to post memory statistics or not, defaults to true */
+  client,
+  key: process.env.STATCORD,
+  postCpuStatistics:
+    true /* Whether to post memory statistics or not, defaults to true */,
+  postMemStatistics:
+    true /* Whether to post memory statistics or not, defaults to true */,
+  postNetworkStatistics:
+    true /* Whether to post memory statistics or not, defaults to true */,
 });
 
-statcord.on("post", status => {
+statcord
+  .on('post', status => {
     // status = false if the post was successful
     // status = "Error message" or status = Error if there was an error
-    if (!status) console.info("[Statcord] Successful post");
-    else loggr.error("[Statcord]", status);
-}).on("autopost-start", () => { loggr.info("[Statcord] Started autopost"); });
-
+    if (!status) console.info('[Statcord] Successful post');
+    else loggr.error('[Statcord]', status);
+  })
+  .on('autopost-start', () => {
+    loggr.info('[Statcord] Started autopost');
+  });
 
 loggr.debug('Loading events...');
 // normal events
@@ -118,7 +124,7 @@ for (const [event, { execute }] of loadFiles<EventType>('../events')) {
   );
   loggr.debug(`Loaded event ${event}`);
 }
-type EventType = { execute: (client: Client, ...args: any[]) => boolean };
+type EventType = { execute: (client: Client, ...args: unknown[]) => boolean };
 // websocket events
 for (const [event, { execute }] of loadFiles<EventType>('../events/ws')) {
   client.ws.on(event as WSEventType, (...params) => execute(client, ...params));
@@ -128,7 +134,7 @@ for (const [event, { execute }] of loadFiles<EventType>('../events/ws')) {
 export type LightbulbModule = {
   ws?: boolean;
   eventName: string;
-  execute: (client: Client, ...params: any[]) => boolean | Promise<boolean>;
+  execute: (client: Client, ...params: unknown[]) => boolean | Promise<boolean>;
   name: string;
   emitter: 'on' | 'once';
   guildablePath: string;
@@ -151,6 +157,7 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
         (!(id in moduleConfig) ||
           !(
             moduleConfig[id]?.enabledModules.includes(`${filename}.${name}`) ||
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             moduleConfig[id]?.enabledModules.includes(`${filename}.*`)
           ))
@@ -212,6 +219,7 @@ client.on('raw', packet => {
           },
           get users() {
             const h = {
+              // eslint-disable-next-line @typescript-eslint/ban-types
               get(): {} {
                 return new Proxy({}, h);
               },
