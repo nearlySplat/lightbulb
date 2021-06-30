@@ -1,6 +1,5 @@
 # lightbulb
-
-The [TypeScript](https://typescriptlang.org) rewrite of [Eureka!](https://voidbots.net/bot/eureka).
+A small memebot that is focused on utility and a bit of moderation.
 
 ## Self-hosting
 
@@ -26,7 +25,7 @@ Runs `tsc` in watch mode. This will compile your code when you save the file.
 **TL;DR**:
 
 ```bash
-yarn global add typescript && yarn && tsc && node dist
+npm i -g typescript && npm i && tsc && node dist
 ```
 
 ## Running the bot
@@ -35,7 +34,7 @@ You'll need a PostgreSQL database of the name `splat` and username `splat`, pass
 
 ## Contributing
 
-This projects uses the [Conventional Commits standard](https://www.conventionalcommits.org/en/v1.0.0/) for commits. If you want to generate your commit message interactively, use `yarn commit`. Commit messages are linted befote commit using Git Hooks via Husky.
+This projects uses the [Conventional Commits standard](https://www.conventionalcommits.org/en/v1.0.0/) for commits. If you want to generate your commit message interactively, use `npm run commit`. Commit messages are linted befote commit using Git Hooks via Husky.
 
 License headers are applied to every file before commit, if you want your name to be explicitly mentioned contact a maintainer.
 
