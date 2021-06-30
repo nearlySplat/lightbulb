@@ -16,11 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {
+  APIApplicationCommandInteractionDataOptionWithValues,
+  APIApplicationCommandOption,
+  APIEmbed,
   APIGuildMember,
   APIMessage,
   APIUser,
-  APIApplicationCommandOption,
-  APIEmbed,
+  ApplicationCommandInteractionDataOptionSubCommand,
+  ApplicationCommandInteractionDataOptionSubCommandGroup,
 } from 'discord-api-types';
 import {
   Channel,
@@ -67,6 +70,7 @@ export interface ButtonInteractionHandlerContext {
   client: Client;
   guild?: Guild;
   interaction: MessageComponentInteraction;
+  customID: string;
 }
 
 export interface Context<T extends string = string> {
@@ -132,6 +136,14 @@ export interface SlashCommandContext {
   author: User;
   guild: Guild | null;
   interaction: Interaction;
+  subcommand: ApplicationCommandInteractionDataOptionSubCommand | null;
+  getOption(
+    name: string
+  ): Exclude<
+    APIApplicationCommandInteractionDataOptionWithValues,
+    | ApplicationCommandInteractionDataOptionSubCommand
+    | ApplicationCommandInteractionDataOptionSubCommandGroup
+  >;
 }
 export interface Interaction {
   data: {

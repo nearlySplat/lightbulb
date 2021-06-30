@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Context, CommandMetadata, CommandExecute } from '../types';
+import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 export const execute: CommandExecute = ({ message, locale }) => {
   message.reply(

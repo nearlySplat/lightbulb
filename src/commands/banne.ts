@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { GuildMember, TextChannel } from 'discord.js';
-import { CommandMetadata, CommandExecute } from '../types';
+import { TextChannel } from 'discord.js';
+import { CommandExecute, CommandMetadata } from '../types';
 import { createLogMessage, getLogChannel, getMember } from '../util';
 import { get, interpolate } from '../util/i18n';
 export const execute: CommandExecute<'user' | 'reason'> = ({
@@ -23,9 +23,9 @@ export const execute: CommandExecute<'user' | 'reason'> = ({
   args,
   locale,
 }) => {
-  const target =
-    getMember(message.guild, args.data.user) ??
-    ({ user: { tag: args.data.user, id: '0' } } as GuildMember);
+  const target = getMember(message.guild, args.data.user) ?? {
+    user: { tag: args.data.user, id: '0' },
+  };
   message.reply(
     interpolate(get('BANNE_SUCCESSFUL', locale), { target: target.user.tag })
   );

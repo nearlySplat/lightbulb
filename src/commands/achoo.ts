@@ -17,7 +17,7 @@
 import { CommandExecute, CommandMetadata } from '../types';
 import { get } from '../util/i18n';
 
-export const execute: CommandExecute = ({ message, locale }) => [
+export const execute: CommandExecute = ({ locale }) => [
   { content: get('ACHOO', locale) },
   null,
 ];

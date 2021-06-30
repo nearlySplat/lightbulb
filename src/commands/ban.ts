@@ -15,7 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { MessageActionRow, MessageButton, Permissions, Snowflake } from 'discord.js';
+import {
+  MessageActionRow,
+  MessageButton,
+  Permissions,
+  Snowflake,
+} from 'discord.js';
 import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { config, ERROR_CODES, WHITELIST } from '../constants';
@@ -101,7 +106,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
             });
         } catch (e) {
           ctx.message.edit({
-            content: `\`\`\``${e}`,
+            content: `\`\`\`${e}\`\`\``,
             components: defaultDeleteButton,
           });
           return { type: 6 };

@@ -16,12 +16,7 @@
  */
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
-import {
-  Context,
-  CommandMetadata,
-  CommandExecute,
-  CommandResponse,
-} from '../types';
+import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 export const execute: CommandExecute = ({ message, locale }) => [
   {

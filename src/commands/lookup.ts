@@ -28,7 +28,7 @@ import {
   GuildLookupData,
   WidgetResponse,
 } from '../types';
-
+import { APIGuildMember } from 'discord-api-types';
 export const execute: CommandExecute = async ctx => {
   const deconstructed = SnowflakeUtil.deconstruct(
       (ctx.args[0] || ctx.message.author.id) as Snowflake
@@ -117,7 +117,7 @@ export const execute: CommandExecute = async ctx => {
       .setTimestamp(invite.guild ? invite.guild.createdTimestamp : undefined);
   }
   if (guild) {
-    const g = guild as GuildPreview & { members?: any[] };
+    const g = guild as GuildPreview & { members?: APIGuildMember[] };
     _.setAuthor(`Guild Lookup for ${g.name}`)
       .addField(
         'Guild Info',
@@ -175,4 +175,12 @@ export const meta: CommandMetadata = {
   description: 'Looks up an ID in Discord.',
   accessLevel: 0,
   aliases: [],
+  params: [
+    {
+      name: 'thing',
+      type: 'string',
+      rest: true,
+      optional: false,
+    },
+  ],
 };

@@ -58,6 +58,9 @@ export const execute: SlashCommandExecute = ({
     data: { options },
   },
 }) => {
+  // options declaration is fine here, no errors will occur.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const args = options!.map(v => v.value);
   return {
     type: 4,

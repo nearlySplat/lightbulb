@@ -14,7 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { GatewayInteractionCreateDispatchData } from 'discord-api-types';
+import {
+  GatewayInteractionCreateDispatchData,
+  ApplicationCommandOptionType,
+  ApplicationCommandInteractionDataOptionSubCommand,
+  ApplicationCommandInteractionDataOptionSubCommandGroup,
+  APIApplicationCommandInteractionDataOptionWithValues,
+} from 'discord-api-types';
 import {
   Client,
   GuildMember,
@@ -57,6 +63,26 @@ export const slashCommandExecute = async (
   client: Client,
   interaction: Interaction
 ): Promise<unknown> => {
+  const subcommand: ApplicationCommandInteractionDataOptionSubCommand = [
+    ApplicationCommandOptionType.SUB_COMMAND,
+    ApplicationCommandOptionType.SUB_COMMAND_GROUP,
+  ].includes(interaction.data.options[0].type)
+    ? (interaction.data
+        .options[0] as unknown as ApplicationCommandInteractionDataOptionSubCommand)
+    : null;
+  function getOption(
+    name: string
+  ): Exclude<
+    APIApplicationCommandInteractionDataOptionWithValues,
+    | ApplicationCommandInteractionDataOptionSubCommand
+    | ApplicationCommandInteractionDataOptionSubCommandGroup
+  > {
+    return (
+      subcommand
+        ? subcommand.options.find(v => v.name === name)
+        : interaction.data.options.find(v => v.name === name)
+    ) as APIApplicationCommandInteractionDataOptionWithValues;
+  }
   function respond(data: { data: SlashCommandResponse }) {
     return client.api
       .interactions(interaction.id, interaction.token)
@@ -110,6 +136,7 @@ export const slashCommandExecute = async (
           },
         },
       });
+
     return respond({
       data: slashCommands.get(interaction.data.name).execute({
         client,
@@ -118,6 +145,8 @@ export const slashCommandExecute = async (
         member: member as GuildMember | null,
         author,
         interaction,
+        getOption,
+        subcommand,
       }),
     });
   }
@@ -150,6 +179,7 @@ export const buttonExecute = async (
         guild,
         client,
         interaction,
+        customID: interaction.data.custom_id,
       }),
     });
   } else {
