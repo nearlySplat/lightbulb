@@ -1,3 +1,6 @@
+/**
+ * @todo Find free translate API 
+ */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -14,32 +17,88 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { MessageEmbed } from 'discord.js';
-import { CommandExecute, CommandMetadata } from '../types';
+import { Message, MessageEmbed } from 'discord.js';
+import fetch from 'node-fetch';
+import {
+  CommandExecute,
+  CommandMetadata,
+  ExtendedMessageOptions,
+} from '../types';
 
 export const meta: CommandMetadata = {
   name: 'translate',
-  description: 'translate text from one language to another',
+  description:
+    'Translate text from one language to another. You can reply to a message for it to be translated, too!',
   aliases: [],
   accessLevel: 0,
   params: [
     {
-      name: 'args',
+      name: 'text',
       type: 'string',
       rest: true,
-      optional: false,
+      optional: true,
     },
   ],
 };
-/**
- * @todo Translate command
- * @body This would be greatly improved with an API that returns which language the text was translated from/to
- */
-export const execute: CommandExecute = async () => {
-  return [
-    {
-      embed: new MessageEmbed().setTitle('Translated'),
-    },
-    null,
-  ];
+export async function translate(text: string, tgt = 'en'): Promise<string> {
+  const res = await fetch('https://translate.mentality.rip/translate', {
+    method: 'POST',
+    body: JSON.stringify({
+      q: text,
+      source: 'auto',
+      target: tgt,
+    }),
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return (await res.json()).translatedText;
+}
+export async function translateEmbed(
+  embed: MessageEmbed
+): Promise<MessageEmbed> {
+  return new MessageEmbed()
+    .setAuthor(
+      embed.author?.name ? await translate(embed.author?.name) : null,
+      embed.author?.iconURL,
+      embed.author?.url
+    )
+    .setColor(embed.color)
+    .setDescription(
+      embed.description ? await translate(embed.description) : null
+    )
+    .setFooter(
+      embed.footer?.text ? await translate(embed.footer?.text) : null,
+      embed.footer?.iconURL
+    )
+    .setImage(embed.image?.url)
+    .setThumbnail(embed.thumbnail?.url)
+    .setURL(embed.url)
+    .addFields(
+      await Promise.all(
+        embed.fields.map(async v => ({
+          inline: v.inline,
+          value: await translate(v.value),
+          name: await translate(v.name),
+        }))
+      )
+    )
+    .setTimestamp(embed.timestamp);
+}
+export const execute: CommandExecute<'text'> = async ctx => {
+  const { text } = ctx.args.data;
+  let target: string | Message = text;
+  const result: ExtendedMessageOptions = {};
+  if (!text) {
+    if (!ctx.message.reference) {
+      return [{ content: 'No text to translate' }, null];
+    }
+    target = await ctx.message.channel.messages.fetch(
+      ctx.message.reference.messageID
+    );
+  }
+  if (typeof target === 'string') result.content = await translate(target);
+  else if (target instanceof Message) {
+    result.embed = await translateEmbed(target.embeds[0]);
+    result.content = `>>> ${await translate(target.content)}`;
+  }
+  return [result, null];
 };

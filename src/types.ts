@@ -49,7 +49,7 @@ export type Command = {
 export type CommandExecute<T extends string = string> = (
   context: Context<T>
 ) => Awaited<boolean | CommandResponse>;
-export type Awaited<T> = T | Promise<T>;
+export declare type Awaited<T> = T | Promise<T>;
 export interface ExtendedMessageOptions extends MessageOptions {
   embed?: MessageEmbed;
 }

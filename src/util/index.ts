@@ -16,6 +16,7 @@
  */
 import { Guild, GuildChannel, GuildMember, TextChannel } from 'discord.js';
 import { get as _get } from 'lodash';
+import { Awaited } from '../types.js';
 
 export * from './createLogMessage';
 export * from './getAccessLevel';
@@ -104,4 +105,14 @@ export const chunk = (n: number, x: string | number): string[] => {
 
 export function reverseIndex<T>(ind: number, arr: T[]): number {
   return Math.abs(ind - arr.length) - 1;
+}
+
+export async function exists<T, R, P, _RP extends P[] = P[]>(
+  thing: T,
+  func: (...args: _RP) => Awaited<R>,
+  ...params: _RP
+): Promise<R> {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  if (thing) return await func(...params);
 }
