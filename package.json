@@ -42,7 +42,7 @@
     "chess-image-generator": "github:andyruwruw/chess-image-generator",
     "chess.js": "^0.12.0",
     "discord-api-types": "^0.18.1",
-    "discord.js": "^13.0.0-dev.5ad83a6a65e5944ceb3a41fee2df40ba1f5b03e4",
+    "discord.js": "^13.0.0-dev.64f093f.1625054868",
     "dotenv": "^8.2.0",
     "graceful-fs": "^4.2.6",
     "lodash": "^4.17.21",
