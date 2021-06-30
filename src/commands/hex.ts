@@ -24,7 +24,7 @@ export const execute: CommandExecute = ({ message, args, locale }) => {
     return [{ content: 'Invalid hex color.' }, null] as const;
   return [
     {
-      content: new MessageEmbed()
+      embed: new MessageEmbed()
         .setDescription(
           interpolate(get('HEX_BODY', locale), {
             hex_value: parseInt(args[0], 16).toString(16),
