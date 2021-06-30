@@ -1,8 +1,8 @@
 version: 2
-updates: 
-  - package-ecosystem: "npm" 
-    directory: "/" 
-    schedule: 
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
       interval: "daily"
-    # Add assignees 
+    # Add assignees
     assignees: - "nearlySplat"
