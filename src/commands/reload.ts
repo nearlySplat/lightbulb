@@ -1,5 +1,3 @@
-// eslint-disable no-undef 
-// ^ for require not being defined
 import { CommandMetadata, CommandExecute, Command } from '../types';
 import fs from 'fs/promises';
 import { commands } from '..';
@@ -20,6 +18,7 @@ export const execute: CommandExecute = async ctx => {
     : Object.keys(commands);
   const done: [boolean, string, string][] = [];
   for (const file of files) {
+    // eslint-disable-next-line no-undef
     const path = require.resolve(`./${file}`);
     const stats = await fs.stat(path);
     if (stats.isDirectory()) {
@@ -27,6 +26,7 @@ export const execute: CommandExecute = async ctx => {
       continue;
     }
     const size = formatBytes(stats.size);
+    // eslint-disable-next-line no-undef
     delete require.cache[path];
     let data: Command;
     try {
