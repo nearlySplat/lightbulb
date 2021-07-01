@@ -1,4 +1,5 @@
-// eslint-disable no-undef require not being defined
+// eslint-disable no-undef 
+// ^ for require not being defined
 import { CommandMetadata, CommandExecute, Command } from '../types';
 import fs from 'fs/promises';
 import { commands } from '..';
