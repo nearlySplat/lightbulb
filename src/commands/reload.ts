@@ -18,6 +18,7 @@ export const execute: CommandExecute = async ctx => {
     : Object.keys(commands);
   const done: [boolean, string, string][] = [];
   for (const file of files) {
+    // eslint-disable-next-line no-undef
     const path = require.resolve(`./${file}`);
     const stats = await fs.stat(path);
     if (stats.isDirectory()) {
@@ -25,18 +26,17 @@ export const execute: CommandExecute = async ctx => {
       continue;
     }
     const size = formatBytes(stats.size);
+    // eslint-disable-next-line no-undef
     delete require.cache[path];
     let data: Command;
     try {
       data = await import(path);
-    } finally {
-      if (!data) {
-        done.push([false, file, size]);
-        continue;
-      }
-      commands.set(file, data);
-      done.push([true, file, size]);
+    } catch {
+      done.push([false, file, size]);
+      continue;
     }
+    commands.set(file, data);
+    done.push([true, file, size]);
   }
   return [
     {
@@ -57,7 +57,7 @@ export const execute: CommandExecute = async ctx => {
             value: done
               .filter(([done]) => !done)
               .map(([, name, size]) => `${name} - ${size}`)
-              .join('\n'),
+              .join('\n') || 'None',
           }
         ),
     },
