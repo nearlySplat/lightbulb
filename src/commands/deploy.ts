@@ -34,8 +34,8 @@ export const execute: CommandExecute = async ctx => {
       });
       coll.on('collect', async interaction => {
         coll.stop();
-        await interaction.reply({ content: "Obama has been deployed.", files: ['1.png', '2.jpeg', '3.jpeg', 'final.png'].map(v => path.resolve(__dirname, '..', '..', 'assets', 'img', 'obama', v))});
-        await msg.edit({ components: [], content: "Deployment has been authorized." });
+        if(customID==="a")await interaction.reply({ content: "Obama has been deployed.", files: ['1.png', '2.jpeg', '3.jpeg', 'final.png'].map(v => path.resolve(__dirname, '..', '..', 'assets', 'img', 'obama', v))});
+        await msg.edit({ components: [], content: "Deployment has "+(customID==="d"?"not ":"")been authorized." });
         if (interaction.customID === 'a') r(true);
         else r(false);
       });
@@ -51,6 +51,6 @@ export const execute: CommandExecute = async ctx => {
       { content: 'You are not authorized to execute this action!' },
       null,
     ];
-  if (ctx.message.author.id !== nerrix) deploy();
+  if (ctx.message.author.id === nerrix) deploy();
   else confirm();
 };
