@@ -14,7 +14,7 @@ export const meta: CommandMetadata = {
 
 export const execute: CommandExecute = async ctx => {
   const nerrix = ctx.message.author.id;
-  async function confirm(): Promise<true | void> {
+  async function confirm(): Promise<boolean> {
     const msg = await ctx.message.channel.send({
       content: `<@${nerrix}>, ${ctx.message.author.username} wants to deploy Obama. Authorize?`,
       allowedMentions: { users: [nerrix] },
@@ -31,7 +31,7 @@ export const execute: CommandExecute = async ctx => {
         ),
       ],
     });
-    const accepted = await new Promise(r => {
+    const accepted = await new Promise<boolean>(r => {
       const coll = msg.createMessageComponentInteractionCollector({
         filter: v => v.user.id === nerrix,
       });
