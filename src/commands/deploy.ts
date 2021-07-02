@@ -31,7 +31,7 @@ export const execute: CommandExecute = async ctx => {
       ],
     });
     const accepted = await new Promise(r => {
-      const coll = msg.createMessageComponentCollector({
+      const coll = msg.createMessageComponentInteractionCollector({
         filter: v => v.user.id === nerrix,
       });
       coll.on('collect', async interaction => {
