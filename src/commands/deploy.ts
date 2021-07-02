@@ -1,6 +1,8 @@
 import { CommandExecute, CommandMetadata } from '../types';
 import { sleep } from '../util/';
 import { WHITELIST } from '../constants';
+import { MessageActionRow, MessageButton } from "discord.js";
+const nerrix = "332864061496623104";
 export const meta: CommandMetadata = {
   name: 'deploy',
   description: 'Deploys obama.',
@@ -9,18 +11,20 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = async ctx => {
+const nerrix=ctx.message.author.id
   async function confirm(): Promise<true | void> {
     const msg = await ctx.message.channel.send({
-      content: `<@332864061496623104>, ${ctx.message.author.username} wants to deploy Obama. Authorize?`,
-      //allowedMentions: { users: ['332864061496623104'] },
+      content: `<@${nerrix}>, ${ctx.message.author.username} wants to deploy Obama. Authorize?`,
+      //allowedMentions: { users: [nerrix] },
+      components: [new MessageActionRow().addComponents(new MessageButton().setLabel("Authorize").setCustomID("a").setStyle('SUCCESS'),new MessageButton().setLabel("Decline").setCustomID("d").setStyle("DANGER"))]
     });
   }
-  const authorizedUsers = [...WHITELIST, '332864061496623104'];
+  const authorizedUsers = [...WHITELIST, nerrix];
   if (!authorizedUsers.includes(ctx.message.author.id))
     return [
       { content: 'You are not authorized to execute this action!' },
       null,
     ];
-  if ('332864061496623104' === ctx.message.author.id) deploy();
+  if ( ctx.message.author.id === nerrix) deploy();
   else confirm().then(v => (v ? deploy() : false));
 };
