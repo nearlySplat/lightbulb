@@ -36,8 +36,8 @@ export const execute: CommandExecute = async ctx => {
       });
       coll.on('collect', async interaction => {
         coll.stop();
-        await interaction.defer();
         await msg.delete();
+        await interaction.defer()
         if (interaction.customID === 'a') r(true);
         else r(false);
       });
@@ -45,7 +45,7 @@ export const execute: CommandExecute = async ctx => {
     return accepted;
   }
   function deploy() {
-    msg.reply('deployed');
+    ctx.message.reply('deployed');
   }
   const authorizedUsers = [...WHITELIST, nerrix];
   if (!authorizedUsers.includes(ctx.message.author.id))
