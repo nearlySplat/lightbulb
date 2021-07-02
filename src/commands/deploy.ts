@@ -2,6 +2,7 @@ import { CommandExecute, CommandMetadata } from '../types';
 import { sleep } from '../util/';
 import { WHITELIST } from '../constants';
 import { MessageActionRow, MessageButton } from 'discord.js';
+import { buttonHandlers } from "../events/message";
 const nerrix = '332864061496623104';
 export const meta: CommandMetadata = {
   name: 'deploy',
@@ -15,7 +16,7 @@ export const execute: CommandExecute = async ctx => {
   async function confirm(): Promise<true | void> {
     const msg = await ctx.message.channel.send({
       content: `<@${nerrix}>, ${ctx.message.author.username} wants to deploy Obama. Authorize?`,
-      //allowedMentions: { users: [nerrix] },
+      allowedMentions: { users: [nerrix] },
       components: [
         new MessageActionRow().addComponents(
           new MessageButton()
@@ -29,7 +30,19 @@ export const execute: CommandExecute = async ctx => {
         ),
       ],
     });
+    const accepted = await new Promise(r => {
+    const coll = msg.createMessageComponentCollector({ filter: v => v.user.id === nerrix });
+    coll.on("collect", async interaction => {
+      coll.stop()
+      await interaction.defer();
+      await msg.delete()
+      if (interaction.customID === "a") r(true);
+      else r(false)
+    })
+    }
+    return accepted;
   }
+  function deploy() {msg.reply("deployed")}
   const authorizedUsers = [...WHITELIST, nerrix];
   if (!authorizedUsers.includes(ctx.message.author.id))
     return [
