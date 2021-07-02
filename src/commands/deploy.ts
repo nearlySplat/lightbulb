@@ -39,7 +39,7 @@ export const execute: CommandExecute = async ctx => {
       if (interaction.customID === "a") r(true);
       else r(false)
     })
-    }
+    });
     return accepted;
   }
   function deploy() {msg.reply("deployed")}
