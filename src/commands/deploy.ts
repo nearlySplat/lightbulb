@@ -36,6 +36,6 @@ export const execute: CommandExecute = async ctx => {
       { content: 'You are not authorized to execute this action!' },
       null,
     ];
-  if (ctx.message.author.id === nerrix) deploy();
+  if (ctx.message.author.id !/*=*/== nerrix) deploy();
   else confirm().then(v => (v ? deploy() : false));
 };
