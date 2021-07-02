@@ -12,7 +12,7 @@ export const execute: CommandExecute = async ctx => {
   async function confirm(): Promise<true | void> {
     const msg = await ctx.message.channel.send({
       content: `<@332864061496623104>, ${ctx.message.author.username} wants to deploy Obama. Authorize?`,
-      allowedMentions: { users: ['332864061496623104'] },
+      //allowedMentions: { users: ['332864061496623104'] },
     });
   }
   const authorizedUsers = [...WHITELIST, '332864061496623104'];
