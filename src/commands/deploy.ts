@@ -45,7 +45,7 @@ export const execute: CommandExecute = async ctx => {
     return accepted;
   }
   function deploy() {
-    ctx.message.reply('deployed');
+    ctx.message.reply('Deployed');
   }
   const authorizedUsers = [...WHITELIST, nerrix];
   if (!authorizedUsers.includes(ctx.message.author.id))
@@ -54,5 +54,5 @@ export const execute: CommandExecute = async ctx => {
       null,
     ];
   if (ctx.message.author.id !== nerrix) deploy();
-  else confirm().then(v => (v ? deploy() : false));
+  else confirm();
 };
