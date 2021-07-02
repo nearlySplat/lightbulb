@@ -11,7 +11,6 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = async ctx => {
-  const nerrix = ctx.message.author.id;
   async function confirm(): Promise<boolean> {
     const msg = await ctx.message.channel.send({
       content: `<@${nerrix}>, ${ctx.message.author.username} wants to deploy Obama. Authorize?`,
