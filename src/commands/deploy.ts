@@ -2,7 +2,7 @@ import { CommandExecute, CommandMetadata } from '../types';
 import { sleep } from '../util/';
 import { WHITELIST } from '../constants';
 import { MessageActionRow, MessageButton } from 'discord.js';
-import { buttonHandlers } from "../events/message";
+import { buttonHandlers } from '../events/message';
 const nerrix = '332864061496623104';
 export const meta: CommandMetadata = {
   name: 'deploy',
@@ -31,18 +31,22 @@ export const execute: CommandExecute = async ctx => {
       ],
     });
     const accepted = await new Promise(r => {
-    const coll = msg.createMessageComponentCollector({ filter: v => v.user.id === nerrix });
-    coll.on("collect", async interaction => {
-      coll.stop()
-      await interaction.defer();
-      await msg.delete()
-      if (interaction.customID === "a") r(true);
-      else r(false)
-    })
+      const coll = msg.createMessageComponentCollector({
+        filter: v => v.user.id === nerrix,
+      });
+      coll.on('collect', async interaction => {
+        coll.stop();
+        await interaction.defer();
+        await msg.delete();
+        if (interaction.customID === 'a') r(true);
+        else r(false);
+      });
     });
     return accepted;
   }
-  function deploy() {msg.reply("deployed")}
+  function deploy() {
+    msg.reply('deployed');
+  }
   const authorizedUsers = [...WHITELIST, nerrix];
   if (!authorizedUsers.includes(ctx.message.author.id))
     return [
