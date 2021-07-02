@@ -20,7 +20,7 @@ import { reloadBlacklists } from './message';
 
 export const execute = (client: Client): boolean => {
   reloadBlacklists(client);
-  loggr.info(`Logged in as ${client.user!.tag}!`)
+  loggr.info(`Logged in as ${client.user!.tag}!`);
   statcord.autopost();
   return true;
 };

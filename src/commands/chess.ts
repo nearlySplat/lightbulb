@@ -103,7 +103,7 @@ export const execute: CommandExecute = async () => {
                 ).roles.highest.color,
               },
             ],
-            flags: MessageFlags.EPHEMERAL,
+            flags: MessageFlags.Ephemeral,
           },
         };
       } else if (customID === 'history') {
@@ -119,7 +119,7 @@ export const execute: CommandExecute = async () => {
                 .map((v, i) => (i % 2 === 0 ? `${i}. ${v}` : v))
                 .join(' ')
             }\n\`\`\``,
-            flags: MessageFlags.EPHEMERAL,
+            flags: MessageFlags.Ephemeral,
           },
         };
       } else if (['p1', 'p2'].includes(customID)) {

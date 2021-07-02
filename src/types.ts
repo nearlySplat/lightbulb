@@ -71,6 +71,7 @@ export interface ButtonInteractionHandlerContext {
   guild?: Guild;
   interaction: MessageComponentInteraction;
   customID: string;
+  removeListener(): boolean;
 }
 
 export interface Context<T extends string = string> {
@@ -158,9 +159,11 @@ export interface Interaction {
   user?: APIUser | User | null;
   token: string;
 }
+export type MessageComponentInteraction = IMessageComponentInteraction &
+  Partial<IMessageComponentSelectMenuInteraction>;
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export interface MessageComponentInteraction extends Interaction {
+export interface IMessageComponentInteraction extends Interaction {
   message: APIMessage;
   data: {
     component_type: Exclude<
@@ -169,6 +172,19 @@ export interface MessageComponentInteraction extends Interaction {
       // eslint-disable-next-line no-undef
       MessageComponentTypes.ACTION_ROW
     >;
+    custom_id: string;
+  };
+}
+export interface IMessageComponentSelectMenuInteraction
+  extends IMessageComponentInteraction {
+  data: {
+    component_type: Exclude<
+      // eslint-disable-next-line no-undef
+      MessageComponentTypes,
+      // eslint-disable-next-line no-undef
+      MessageComponentTypes.ACTION_ROW
+    >;
+    values: string[];
     custom_id: string;
   };
 }

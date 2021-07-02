@@ -80,6 +80,7 @@ export const execute = async (
     return { type: 6 };
   };
   async function handleCommandResult(result: CommandResponse) {
+    if (!result[Symbol.iterator]) return false;
     let [, handler] = result;
     const [options] = result;
     if (options.embeds || options.embed) {
@@ -144,7 +145,7 @@ export const execute = async (
       paramInstance = await CommandParameters.from(command.meta, args);
     } catch (e) {
       CommandParameters.triggerError(
-        r => handleCommandResult([{ content: r }, null]),
+        r => (handleCommandResult([{ content: r }, null]), void 0),
         e
       );
       return false;

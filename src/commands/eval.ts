@@ -18,7 +18,7 @@ import { MessageActionRow, MessageButton } from 'discord.js';
 import { inspect } from 'util';
 import { WHITELIST } from '../constants';
 import { defaultDeleteButton } from '../events/message';
-import { CommandExecute, CommandMetadata } from '../types';
+import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 export const execute: CommandExecute = async ({
   message,
   args,
@@ -37,6 +37,13 @@ export const execute: CommandExecute = async ({
     type = 'Promise';
     output = await output;
   }
+  if (
+    Array.isArray(output) &&
+    output.length === 2 &&
+    typeof output[0] === 'object' &&
+    (output[1] instanceof Function || output[1] === null)
+  )
+    return output as CommandResponse;
   const strOutput =
     typeof output === 'string'
       ? output

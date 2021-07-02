@@ -1,4 +1,5 @@
 # lightbulb
+
 A small memebot that is focused on utility and a bit of moderation.
 
 ## Self-hosting

@@ -1,5 +1,5 @@
 /**
- * @todo Find free translate API 
+ * @todo Find free translate API
  */
 /*
  * Copyright (C) 2020 Splatterxl
@@ -97,8 +97,10 @@ export const execute: CommandExecute<'text'> = async ctx => {
   }
   if (typeof target === 'string') result.content = await translate(target);
   else if (target instanceof Message) {
-    if (target.embeds.length) result.embed = await translateEmbed(target.embeds[0]);
-    if (target.content) result.content = `>>> ${await translate(target.content)}`;
+    if (target.embeds.length)
+      result.embed = await translateEmbed(target.embeds[0]);
+    if (target.content)
+      result.content = `>>> ${await translate(target.content)}`;
   }
   return [result, null];
 };

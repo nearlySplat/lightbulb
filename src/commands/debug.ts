@@ -68,8 +68,7 @@ export const execute: CommandExecute = async ({
 	  - I have ${
       Object.keys(pkg.dependencies).length
     } Node.js dependencies installed.
-	  - I am on commit [\`${commit}\`](https://github.com/nearlySplat/lightbulb/commit/${commit})
-).
+    - I am on commit [\`${commit}\`](https://github.com/nearlySplat/lightbulb/commit/${commit})
   `.replace(/\n +/g, '\n')
         )
         .setColor(CLIENT_COLOUR)

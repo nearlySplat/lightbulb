@@ -64,8 +64,8 @@ export const slashCommandExecute = async (
   interaction: Interaction
 ): Promise<unknown> => {
   const subcommand: ApplicationCommandInteractionDataOptionSubCommand = [
-    ApplicationCommandOptionType.SUB_COMMAND,
-    ApplicationCommandOptionType.SUB_COMMAND_GROUP,
+    ApplicationCommandOptionType.SubCommand,
+    ApplicationCommandOptionType.SubCommandGroup,
   ].includes(interaction.data.options[0].type)
     ? (interaction.data
         .options[0] as unknown as ApplicationCommandInteractionDataOptionSubCommand)
@@ -180,6 +180,9 @@ export const buttonExecute = async (
         client,
         interaction,
         customID: interaction.data.custom_id,
+        removeListener() {
+          return buttonHandlers.delete(message.id);
+        },
       }),
     });
   } else {
