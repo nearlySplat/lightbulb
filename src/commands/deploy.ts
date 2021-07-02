@@ -36,7 +36,7 @@ export const execute: CommandExecute = async ctx => {
       });
       coll.on('collect', async interaction => {
         coll.stop();
-        await interaction.respond("Obama has been deployed.");
+        await interaction.reply("Obama has been deployed.");
         await msg.edit({ components: [], content: "Deployment has been authorized." });
         if (interaction.customID === 'a') r(true);
         else r(false);
