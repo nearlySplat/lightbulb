@@ -90,7 +90,7 @@ export const execute = async (
       options.components = defaultDeleteButton;
       handler = deleteButtonHandler;
     }
-    const msg = (await message.channel.send(
+    const msg = (await message.reply(
       options as MessageOptions & { split: false }
     )) as Message;
     buttonHandlers.set(msg.id, handler);
