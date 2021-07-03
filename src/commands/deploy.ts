@@ -2,7 +2,7 @@ import { CommandExecute, CommandMetadata } from '../types';
 import { WHITELIST } from '../constants';
 import { MessageActionRow, MessageButton } from 'discord.js';
 import path from 'path';
-//const nerrix = '332864061496623104';
+const nerrix = '332864061496623104';
 export const meta: CommandMetadata = {
   name: 'deploy',
   description: 'Deploys obama.',
@@ -11,7 +11,6 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = async ctx => {
-  const nerrix = ctx.message.author.id;
   async function confirm(): Promise<boolean> {
     const msg = await ctx.message.channel.send({
       content: `<@${nerrix}>, ${ctx.message.author.username} wants to deploy Obama. Authorize?`,
@@ -66,4 +65,5 @@ export const execute: CommandExecute = async ctx => {
     ];
   if (ctx.message.author.id !== nerrix) deploy();
   else confirm();
+  return true;
 };
