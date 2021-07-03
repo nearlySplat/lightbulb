@@ -55,7 +55,9 @@ export const execute: CommandExecute = async ctx => {
     return accepted;
   }
   function deploy() {
-    ctx.message.reply('Deployed');
+    ctx.message.reply({ content: 'Deployed.',  files: ['1.png', '2.jpeg', '3.jpeg', 'final.png'].map(v =>
+              path.resolve(__dirname, '..', '..', 'assets', 'img', 'obama', v)
+            ),});
   }
   const authorizedUsers = [...WHITELIST, nerrix];
   if (!authorizedUsers.includes(ctx.message.author.id))
@@ -63,7 +65,7 @@ export const execute: CommandExecute = async ctx => {
       { content: 'You are not authorized to execute this action!' },
       null,
     ];
-  if (ctx.message.author.id !== nerrix) deploy();
+  if (ctx.message.author.id === nerrix) deploy();
   else confirm();
   return true;
 };
