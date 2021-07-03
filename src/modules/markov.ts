@@ -161,7 +161,7 @@ export const splatMarkov = {
       ? instance.generate(0, { hasToHave: args[0] })
       : instance.generate();
     console.log(text);
-    message.channel
+    await message.channel
       .send(
         text !== ''
           ? `Well, ${config.owner.markov.trigger} once said...\n> <:splat:826153213321412618> **Splatterxl#8999**\n> ${text}`
