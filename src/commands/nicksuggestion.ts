@@ -16,7 +16,6 @@
  */
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { NICKSUGGEST_WORDS } from '../constants.js';
-import { defaultDeleteButton } from '../events/message.js';
 import { CommandExecute, CommandMetadata } from '../types.js';
 
 export const meta: CommandMetadata = {
@@ -36,10 +35,11 @@ export function generateNick(): [string, string] {
       Math.floor(Math.random() * NICKSUGGEST_WORDS.ed.length)
     ];
   const adj = [ly, ed][Math.floor(Math.random() * 2)];
-  const thing =
+  let thing =
     NICKSUGGEST_WORDS.thing[
       Math.floor(Math.random() * NICKSUGGEST_WORDS.thing.length)
     ];
+  if (ly.includes(adj)) thing = ed;
   return [adj, thing];
 }
 export const execute: CommandExecute = ctx => {
@@ -51,7 +51,6 @@ export const execute: CommandExecute = ctx => {
         .setStyle('PRIMARY')
         .setCustomID('r')
     ),
-    ...defaultDeleteButton,
   ];
   if (ctx.message.member.manageable)
     components[0].components.unshift(
