@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Snowflake } from 'discord.js';
-//import { Column, PrimaryGeneratedColumn } from 'typeorm';
 import { Base } from './Base';
 export class User extends Base {
 

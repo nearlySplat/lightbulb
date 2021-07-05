@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { MessageEmbed } from 'discord.js';
-import { User } from '../entity/User';
+import { User, IUser } from '../models/User';
 import { CommandExecute, CommandMetadata } from '../types';
 
 export const meta: CommandMetadata = {
@@ -26,12 +26,10 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = async ctx => {
-  let data: User;
+  let data: IUser;
   try {
     data = await User.findOne({
-      where: {
-        userid: ctx.message.author.id,
-      },
+      uid: ctx.message.author.id,
     }).catch(() => null);
   } catch {
     //
@@ -53,7 +51,7 @@ export const execute: CommandExecute = async ctx => {
   return [{ embed }, null];
 };
 
-export function formatPronouns(pronouns: User['pronouns']): string {
+export function formatPronouns(pronouns: IUser['pronouns']): string {
   return `${Object.entries(pronouns)
     .filter(([K]) => K !== 'singularOrPlural')
     .map(([, V]) => V)

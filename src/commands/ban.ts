@@ -24,7 +24,7 @@ import {
 import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { config, ERROR_CODES, WHITELIST } from '../constants';
-import { User } from '../entity/User';
+import { User } from '../models/User';
 import { defaultDeleteButton, reloadBlacklists } from '../events/message';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,

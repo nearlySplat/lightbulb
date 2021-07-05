@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { ClientPresenceStatusData, MessageEmbed, Snowflake } from 'discord.js';
-import { User } from '../entity/User';
+import { User } from '../models/User';
 import { CommandExecute, CommandMetadata } from '../types';
 import { getMember, i18n } from '../util';
 import { formatPronouns } from './whataremypronouns';

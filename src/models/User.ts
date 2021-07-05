@@ -28,5 +28,17 @@ const schemaData = {
     singularOrPlural: String,
   },
 };
+export interface IUser {
+  achievements: number[];
+  commands: string[];
+  uid: string;
+  pronouns: {
+    subject: string;
+    object: string;
+    possessiveDeterminer: string;
+    posessivePronoun: string;
+    singularOrPlural: string;
+  };
+}
 const schema = new Schema(schemaData);
-export const User = model<typeof schemaData>('User', schema);
+export const User = model<IUser>('User', schema);
