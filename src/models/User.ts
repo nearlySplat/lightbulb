@@ -27,6 +27,7 @@ const schemaData = {
     posessivePronoun: String,
     singularOrPlural: String,
   },
+  isDeveloper: Boolean,
 };
 export interface IUser {
   achievements: number[];
@@ -39,6 +40,7 @@ export interface IUser {
     posessivePronoun: string;
     singularOrPlural: string;
   };
+  isDeveloper: boolean;
 }
 const schema = new Schema(schemaData);
 export const User = model<IUser>('User', schema);
