@@ -18,7 +18,7 @@ import { GuildBan, Permissions, Snowflake } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { config, ERROR_CODES } from '../constants';
-import { User } from '../models/User';
+import { User, IUser } from '../models/User';
 import { reloadBlacklists } from '../events/message';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
@@ -31,20 +31,22 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
-  let user: { subjectPronoun: string; singularOrPluralPronoun: string };
+  let user: Partial<IUser>;
   try {
     user = (await User.findOne({
       where: {
         userid: target.id,
       },
-    }).catch(() => null)) ?? {
-      subjectPronoun: 'they',
-      singularOrPluralPronoun: 'plural',
+    }).exec()) ?? {
+      pronouns: {
+        subject: 'they',
+        singularOrPlural: 'plural',
+      },
     };
   } catch {
     user = { subjectPronoun: 'them', singularOrPluralPronoun: 'plural' };
   }
-  const { subjectPronoun, singularOrPluralPronoun } = user;
+  const { subject, singularOrPlural } = user.pronouns;
   const banInfo: GuildBan | null = await message.guild.bans
     .fetch(target.id)
     .catch(() => null);
@@ -65,8 +67,8 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
                 interpolate(get('UNBAN_SUCCESSFUL', locale), {
                   target: target.tag,
                   bannedFor: banInfo!.reason,
-                  singular: (singularOrPluralPronoun === 'singular').toString(),
-                  subjectPronoun,
+                  singular: (singularOrPlural === 'singular').toString(),
+                  subject,
                 }) +
                 (message.guild.id === config.bot.support_server
                   ? '\nAdditionally, as this server is my support server, I have updated the blacklist.'

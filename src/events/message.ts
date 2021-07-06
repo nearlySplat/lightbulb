@@ -25,7 +25,8 @@ import {
   Snowflake,
 } from 'discord.js';
 import { commands, loggr, statcord } from '..';
-import { config, PREFIXES } from '../constants';
+import { config, PREFIXES, WHITELIST } from '../constants';
+import { User, Achievement, DefaultPronouns } from '../models/User.js';
 import { ButtonInteractionHandler, Command, CommandResponse } from '../types';
 import {
   CommandParameters,
@@ -90,15 +91,22 @@ export const execute = async (
       options.components = defaultDeleteButton;
       handler = deleteButtonHandler;
     }
+    if (options.code) {
+      options.content = `\`\`\`${options.code === true ? '' : options.code}\n${
+        options.content
+      }\n\`\`\``;
+    }
     const msg = (await message.reply(
       options as MessageOptions & { split: false }
     )) as Message;
     buttonHandlers.set(msg.id, handler);
+    return true;
   }
   if (!message.guild || !message.member) return false;
   const isKsIn = !!(await message
     .guild!.members.fetch('236726289665490944')
     .catch(() => null));
+
   async function handleCommand(
     prefix: string,
     isExclamation = false
@@ -133,6 +141,18 @@ export const execute = async (
         return true;
       } else return false;
     }
+    const info =
+      (await User.findOne({
+        uid: message.author.id,
+      }).exec()) || new User();
+    if (!info.commands.includes(commandName)) info.commands.push(commandName);
+    if (info.commands.length === 1)
+      info.achievements.push(Achievement.FirstCommand);
+    if (!info.pronouns) info.pronouns = DefaultPronouns;
+    if (info.isDeveloper === undefined || info.isDeveloper === null)
+      info.isDeveloper = WHITELIST.includes(message.author.id);
+    info.uid = message.author.id;
+    await info.save();
     args = args.slice(1);
     if (
       command.meta.accessLevel &&
@@ -170,9 +190,11 @@ export const execute = async (
           { content: `\`\`\`js\n${e.toString()}\n\`\`\`` },
           null,
         ]);
+        return false;
       }
       if (typeof result === 'boolean') return result;
       handleCommandResult(result);
+      return true;
     } else return false;
   }
   for (const prefix of [

@@ -26,14 +26,9 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = async ctx => {
-  let data: IUser;
-  try {
-    data = await User.findOne({
-      uid: ctx.message.author.id,
-    }).catch(() => null);
-  } catch {
-    //
-  }
+  const data = await User.findOne({
+    uid: ctx.message.author.id,
+  }).exec();
   if (!data) {
     ctx.message.channel.send(
       'You do not have any data in our database. `they/them` pronouns will be assumed unless you explicitly set them to anything else.'

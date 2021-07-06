@@ -43,7 +43,6 @@ import { config } from 'dotenv';
 import { get } from 'lodash';
 import { connect } from 'mongoose';
 import { join } from 'path';
-import 'reflect-metadata';
 import * as Statcord from 'statcord.js';
 import { INTENTS } from './constants';
 import { guilds as guildConfig } from './modules/config.json';

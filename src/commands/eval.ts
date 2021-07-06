@@ -56,12 +56,12 @@ export const execute: CommandExecute = async ({
     content:
       type === 'Promise'
         ? 'Promise {\n' +
-          strOutput[i]
+          pages[i]
             .split('\n')
             .map((v: string) => '  ' + v)
             .join('\n') +
           '\n}'
-        : strOutput.slice(0, 1850),
+        : pages[i],
     code: mobile ? 'py' : 'js',
   });
   let currI = 0;

@@ -44,7 +44,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
       where: {
         userid: target.id,
       },
-    }).catch(() => null)) || { objectPronoun: 'them' };
+    }).exec()) || { objectPronoun: 'them' };
   } catch {
     user = { objectPronoun: 'them' };
   }

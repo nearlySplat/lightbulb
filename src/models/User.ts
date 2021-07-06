@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { model, Schema } from 'mongoose';
+
 const schemaData = {
   achievements: [Number],
   commands: [String],
@@ -24,11 +25,12 @@ const schemaData = {
     subject: String,
     object: String,
     possessiveDeterminer: String,
-    posessivePronoun: String,
+    possessivePronoun: String,
     singularOrPlural: String,
   },
   isDeveloper: Boolean,
 };
+
 export interface IUser {
   achievements: number[];
   commands: string[];
@@ -37,10 +39,23 @@ export interface IUser {
     subject: string;
     object: string;
     possessiveDeterminer: string;
-    posessivePronoun: string;
+    possessivePronoun: string;
     singularOrPlural: string;
   };
   isDeveloper: boolean;
 }
+
+export enum Achievement {
+  FirstCommand,
+}
+
+export const DefaultPronouns = {
+  subject: 'they',
+  object: 'them',
+  possessiveDeterminer: 'their',
+  possessivePronoun: 'theirs',
+  singularOrPlural: 'plural',
+};
+
 const schema = new Schema(schemaData);
 export const User = model<IUser>('User', schema);
