@@ -38,9 +38,9 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
-  let user = (await User.findOne({
+  const user = (await User.findOne({
       uid: target.id,
-    }).exec()) || <IUser>(<any>({ pronouns: { object: 'them' } }));
+    }).exec()) || <IUser>(<unknown>({ pronouns: { object: 'them' } }));
   const { pronouns: { object: objectPronoun } } = user;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async (): Promise<CommandResponse> => {
