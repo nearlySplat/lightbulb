@@ -44,7 +44,7 @@ export const execute: CommandExecute<'chars'> = async ({
       code: string;
       char: typeof str;
       url: string;
-    }>('http://localhost:5432/info?char=' + str.charCodeAt(0).toString(16));
+    }>('http://localhost:5431/info?char=' + str.charCodeAt(0).toString(16));
     if (req.status !== 200) {
       arr.push('An error occurred.');
       break;
