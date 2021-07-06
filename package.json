@@ -52,10 +52,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.13.1",
     "node-fetch": "^2.6.1",
-    "pg": "^8.5.1",
-    "reflect-metadata": "^0.1.13",
     "statcord.js": "^3.2.0",
-    "typeorm": "^0.2.31",
     "yaml": "^1.10.2"
   },
   "type": "commonjs",
