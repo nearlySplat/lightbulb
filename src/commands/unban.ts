@@ -31,21 +31,13 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
-  let user: Partial<IUser>;
-  try {
-    user = (await User.findOne({
+  let user = (await User.findOne({
       where: {
         userid: target.id,
       },
     }).exec()) ?? {
-      pronouns: {
-        subject: 'they',
-        singularOrPlural: 'plural',
-      },
+      pronouns: DefaultPronouns,
     };
-  } catch {
-    user = { subjectPronoun: 'them', singularOrPluralPronoun: 'plural' };
-  }
   const { subject, singularOrPlural } = user.pronouns;
   const banInfo: GuildBan | null = await message.guild.bans
     .fetch(target.id)
