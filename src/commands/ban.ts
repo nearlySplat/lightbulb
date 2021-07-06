@@ -39,11 +39,8 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .catch(() => null);
   if (!target) return false;
   let user = (await User.findOne({
-      where: {
-        userid: target.id,
-      },
+      uid: target.id,
     }).exec()) || <IUser>(<any>({ pronouns: { object: 'them' } }));
-  } 
   const { pronouns: { object: objectPronoun } } = user;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async (): Promise<CommandResponse> => {
