@@ -41,37 +41,31 @@ import {
 } from 'discord.js';
 import { config } from 'dotenv';
 import { get } from 'lodash';
+import { connect } from 'mongoose';
 import { join } from 'path';
-import 'reflect-metadata';
-import { createConnection } from 'typeorm';
+import * as Statcord from 'statcord.js';
 import { INTENTS } from './constants';
-import { User as U } from './entity/User';
 import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
-import * as Statcord from 'statcord.js';
-export const loggr = new CatLoggr();
+export const env = config({
+  path: join(__dirname, '..', '.env'),
+});
+export let mongoose: typeof import('mongoose') = connect(process.env.MONGO, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}) as unknown as typeof import('mongoose');
+export const loggr = new CatLoggr({});
 export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
-export let connectionName = 'default';
-export let hasConnection = false;
-config({
-  path: join(__dirname, '..', '.env'),
-});
-createConnection({
-  type: 'postgres',
-  entities: [U],
-  password: 'mabuis1',
-  database: 'splat',
-})
-  .then(c => {
-    console.log('Connected to database', c.name);
-    connectionName = c.name;
-    hasConnection = true;
-  })
-  .catch(e => ((hasConnection = false), console.error(e)));
+(async () => {
+  mongoose = await Promise.resolve(
+    <Promise<typeof import('mongoose')>>(<unknown>mongoose)
+  );
+  loggr.info('[MONGODB] connected to mongodb server');
+})();
 const moduleConfig: {
   [k: string]: {
     enabledModules: string[];
@@ -108,7 +102,7 @@ statcord
   .on('post', status => {
     // status = false if the post was successful
     // status = "Error message" or status = Error if there was an error
-    if (!status) console.info('[Statcord] Successful post');
+    if (!status) loggr.info('[Statcord] Successful post');
     else loggr.error('[Statcord]', status);
   })
   .on('autopost-start', () => {

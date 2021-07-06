@@ -15,10 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { ClientPresenceStatusData, MessageEmbed, Snowflake } from 'discord.js';
-import { User } from '../entity/User';
+import { User } from '../models/User';
 import { CommandExecute, CommandMetadata } from '../types';
 import { getMember, i18n } from '../util';
 import { formatPronouns } from './whataremypronouns';
+import { commands } from '..';
 import moment from 'moment';
 
 export const meta: CommandMetadata = {
@@ -53,10 +54,8 @@ export const execute: CommandExecute<'target'> = async ({
         )
         .catch(() => null)),
     lightbulbUserData = await User.findOne({
-      where: {
-        userid: user.id,
-      },
-    }).catch(() => null);
+      uid: user.id,
+    }).exec();
   if (!user) {
     message.channel.send('no such user could be found');
     return false;
@@ -89,10 +88,13 @@ export const execute: CommandExecute<'target'> = async ({
           'Lightbulb-generated User Information',
           lightbulbUserData
             ? `**Developer**: ${!!lightbulbUserData.isDeveloper}
-	      **Pronouns**: ${formatPronouns(lightbulbUserData.pronouns)}`.replace(
-                /\n[\t\n ]*/g,
-                '\n'
-              )
+	             **Pronouns**: ${formatPronouns(lightbulbUserData.pronouns)}
+               **Commands used**: ${(
+                 lightbulbUserData.commands.length / commands.size
+               ).toFixed(2)}%
+               **Achievements**: ${
+                 lightbulbUserData.achievements.length
+               }`.replace(/\n[\t\n ]*/g, '\n')
             : 'None',
           true
         ),

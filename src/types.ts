@@ -52,6 +52,7 @@ export type CommandExecute<T extends string = string> = (
 export declare type Awaited<T> = T | Promise<T>;
 export interface ExtendedMessageOptions extends MessageOptions {
   embed?: MessageEmbed;
+  code?: boolean | string;
 }
 export type CommandResponse =
   | [options: ExtendedMessageOptions, handler: ButtonInteractionHandler]

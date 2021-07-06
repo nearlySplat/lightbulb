@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -14,46 +15,47 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Snowflake } from 'discord.js';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
-import { Base } from './Base';
-export class User extends Base {
-  @PrimaryGeneratedColumn()
-  id!: number;
-  @Column()
-  created_at!: Date;
-  @Column()
-  updated_at: Date;
-  @Column()
-  subjectPronoun = 'they';
-  @Column()
-  objectPronoun = 'them';
-  @Column()
-  possessiveDeterminer = 'their';
-  @Column()
-  possessivePronoun = 'theirs';
-  @Column()
-  singularOrPluralPronoun = 'plural';
+import { model, Schema } from 'mongoose';
 
-  get pronouns(): {
+const schemaData = {
+  achievements: [Number],
+  commands: [String],
+  uid: String,
+  pronouns: {
+    subject: String,
+    object: String,
+    possessiveDeterminer: String,
+    possessivePronoun: String,
+    singularOrPlural: String,
+  },
+  isDeveloper: Boolean,
+};
+
+export interface IUser {
+  achievements: number[];
+  commands: string[];
+  uid: string;
+  pronouns: {
     subject: string;
     object: string;
     possessiveDeterminer: string;
-    posessivePronoun: string;
+    possessivePronoun: string;
     singularOrPlural: string;
-  } {
-    return {
-      subject: this.subjectPronoun,
-      object: this.objectPronoun,
-      possessiveDeterminer: this.possessiveDeterminer,
-      posessivePronoun: this.possessivePronoun,
-      singularOrPlural: this.singularOrPluralPronoun,
-    };
-  }
-
-  @Column()
-  userid!: Snowflake;
-
-  @Column()
+  };
   isDeveloper: boolean;
 }
+
+export enum Achievement {
+  FirstCommand,
+}
+
+export const DefaultPronouns = {
+  subject: 'they',
+  object: 'them',
+  possessiveDeterminer: 'their',
+  possessivePronoun: 'theirs',
+  singularOrPlural: 'plural',
+};
+
+const schema = new Schema(schemaData);
+export const User = model<IUser>('User', schema);

@@ -24,7 +24,7 @@ import {
 import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { config, ERROR_CODES, WHITELIST } from '../constants';
-import { User } from '../entity/User';
+import { User, IUser } from '../models/User';
 import { defaultDeleteButton, reloadBlacklists } from '../events/message';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
@@ -38,17 +38,10 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
-  let user: { objectPronoun: string };
-  try {
-    user = (await User.findOne({
-      where: {
-        userid: target.id,
-      },
-    }).catch(() => null)) || { objectPronoun: 'them' };
-  } catch {
-    user = { objectPronoun: 'them' };
-  }
-  const { objectPronoun } = user;
+  const user = (await User.findOne({
+      uid: target.id,
+    }).exec()) || <IUser>(<unknown>({ pronouns: { object: 'them' } }));
+  const { pronouns: { object: objectPronoun } } = user;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async (): Promise<CommandResponse> => {
     return [

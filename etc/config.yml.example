@@ -1,0 +1,15 @@
+owner:
+  name:
+  markov:
+    trigger:
+    suffix:
+    name:
+    file: etc/markov
+  id:
+
+bot: 
+  prefix:
+  name:
+  support_server:
+whitelist: 
+  -

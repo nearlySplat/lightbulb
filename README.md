@@ -1,37 +1,34 @@
 # lightbulb
 
-A small memebot that is focused on utility and a bit of moderation.
+A small memebot that is focused on utility and a bit of moderation. I would prefer if you didn't selfhost my bot, and instead invited it using this link: [click me!](https://discord.com/oauth2/authorize?client_id=808333699879796787&scope=bot). This helps me a lot because it lets me know that people have noticed me.
+
+If you're me, and want to host it, or you're not me and are disrespecting my instructions above (smh), self-hosting instructions are below.
 
 ## Self-hosting
 
-Running this code will require TypeScript. To install typescript, run
+Running this code will require TypeScript, and a whole lot of other stuff you can install by running
 
-```bash
-# for yarn
-yarn global add typescript
-# for npm
-npm i -g typescript
+```sh
+npm install
 ```
 
-Cool! Now you can use `npm run` or `yarn run` with our `dev` and `watch` commands!
+If you just want to run it without compiling, a [Release](https://github.com/nearlySplat/lightbulb/releases) just _might_ be published once in a while.
 
-- `dev`
+Compiling is pretty easy to be honest. Just install all the dependencies (including the dev ones), while simultaneously knocking out your storage drive, then run `tsc`. The code will then be compiled and it (won't) be ready to go.
 
-Runs `nodemon dist`. You will need to have compiled the code first.
+You'll then need to fix all the runtime errors (they'll _probably_ be descriptive enough for you to figure them out, hopefully).
 
-- `watch`
+I've included a few `.example` files for you to fill out with configuration for the bot, but other files you'll have to create on your own. When you're finished with those, rename them to their original name but without the `.example` suffix.
 
-Runs `tsc` in watch mode. This will compile your code when you save the file.
+### Database
 
-**TL;DR**:
-
-```bash
-npm i -g typescript && npm i && tsc && node dist
-```
+You'll need to have a MongoDB database ready for this. Put the URL in the `.env` file under the name `MONGO`.
 
 ## Running the bot
 
-You'll need a PostgreSQL database of the name `splat` and username `splat`, password `mabuis1` for this to work uwu.
+You'll need to install [`nodemon`](https://npmjs.com/package/nodemon) for this as some stray child process code has been left (intentionally, maybe) in the index file. This will be fixed in a future version.
+
+When all that is done, run `nodemon` and the bot will hopefully connect to Discord!
 
 ## Contributing
 
