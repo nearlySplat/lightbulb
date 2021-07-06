@@ -38,17 +38,13 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
-  let user: { objectPronoun: string };
-  try {
-    user = (await User.findOne({
+  let user = (await User.findOne({
       where: {
         userid: target.id,
       },
-    }).exec()) || { objectPronoun: 'them' };
-  } catch {
-    user = { objectPronoun: 'them' };
-  }
-  const { objectPronoun } = user;
+    }).exec()) || <IUser>(<any>({ pronouns: { object: 'them' } }));
+  } 
+  const { pronouns: { object: objectPronoun } } = user;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async (): Promise<CommandResponse> => {
     return [
