@@ -55,17 +55,15 @@ export const env = config({
 export let mongoose: typeof import('mongoose') = connect(process.env.MONGO, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}) as any;
+}) as unknown as typeof import('mongoose');
 export const loggr = new CatLoggr({});
 export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
-export let connectionName = 'default';
-export let hasConnection = false;
 (async () => {
   mongoose = await Promise.resolve(
-    <Promise<typeof import('mongoose')>>(<any>mongoose)
+    <Promise<typeof import('mongoose')>>(<unknown>mongoose)
   );
   loggr.info('[MONGODB] connected to mongodb server');
 })();
