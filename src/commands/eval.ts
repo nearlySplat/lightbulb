@@ -54,15 +54,14 @@ export const execute: CommandExecute = async ({
   const mobile = !!message.author.presence.clientStatus.mobile;
   const getPage = (i: number) => ({
     content:
-      type === 'Promise'
+      `\`\`\`${mobile ? 'py' : 'js'}\n${type === 'Promise'
         ? 'Promise {\n' +
           pages[i]
             .split('\n')
             .map((v: string) => '  ' + v)
             .join('\n') +
           '\n}'
-        : pages[i],
-    code: mobile ? 'py' : 'js',
+        : pages[i]}\n\`\`\``,
   });
   let currI = 0;
   return [
