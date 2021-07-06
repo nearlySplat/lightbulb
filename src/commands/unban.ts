@@ -18,7 +18,7 @@ import { GuildBan, Permissions, Snowflake } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { config, ERROR_CODES } from '../constants';
-import { User, IUser, DefaultPronouns } from '../models/User';
+import { User, DefaultPronouns } from '../models/User';
 import { reloadBlacklists } from '../events/message';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
@@ -31,7 +31,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
-  let user = (await User.findOne({
+  const user = (await User.findOne({
       where: {
         userid: target.id,
       },
