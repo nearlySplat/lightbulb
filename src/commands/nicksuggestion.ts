@@ -19,9 +19,9 @@ import { NICKSUGGEST_WORDS } from '../constants.js';
 import { CommandExecute, CommandMetadata } from '../types.js';
 
 export const meta: CommandMetadata = {
-  name: 'nicksuggestion',
+  name: 'ion',
   description: 'Suggests a nickname for you',
-  aliases: ['nicksuggest', 'nick'],
+  aliases: ['', 'nick'],
   accessLevel: 0,
   // j: true
 };
