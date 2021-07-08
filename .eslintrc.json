@@ -13,7 +13,7 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "prefer-arrow-callback": "warn",
-    "no-undef": "warn",
+    "no-undef": "off", // ts can handle this
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/prefer-nullish-coalescing": "warn"
   }

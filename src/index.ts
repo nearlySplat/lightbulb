@@ -37,7 +37,7 @@ import {
   ReactionUserManager,
   TextChannel,
   User,
-  WSEventType,
+  WSEventType
 } from 'discord.js';
 import { config } from 'dotenv';
 import { get } from 'lodash';
@@ -46,6 +46,7 @@ import { join } from 'path';
 import * as Statcord from 'statcord.js';
 import { INTENTS } from './constants';
 import { guilds as guildConfig } from './modules/config.json';
+import './site';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
 export const env = config({
@@ -72,7 +73,7 @@ const moduleConfig: {
     staffRole?: string;
   };
 } = guildConfig;
-const client = new Client({
+export const client = new Client({
   allowedMentions: { users: [], roles: [], parse: [], repliedUser: false },
   presence: {
     status: 'idle',
