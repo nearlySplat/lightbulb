@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lightblub</title>
+  </head>
+
+  <body>
+    <h1>Your Lightbulb Profile</h1>
+    <% if (!profile) { %>
+    <p>
+      You do not have a profile. Please run at least one command so I can
+      generate one for you!
+    </p>
+    <% } else { %>
+    <p>
+      Hi, thanks for using Lightbulb! In return, you get this profile which
+      anyone can see by typing <code>bulb info &lt;user&gt;</code>
+    </p>
+    <% } %>
+    <hr />
+    <div>
+      <table style="box-sizing: border-box">
+        <tbody style="box-sizing: border-box">
+          <td style="size: 1rem; box-sizing: border-box">
+            <img
+              src="<%- user.displayAvatarURL({dynamic:true, size: 32}) %>"
+              alt="Your avatar"
+              style="border-radius: 50%"
+            />
+          </td>
+
+          <td><%= user.tag %></td>
+        </tbody>
+      </table>
+      <a href="/">Home</a> <a href="/dashboard">Dashboard</a>
+      <a href="/logout">Logout</a>
+    </div>
+    <main>
+      <ul>
+        <li>
+          <b>Commands used:</b>
+          <%= profile.commands.length %> (<%-
+          (profile.commands.length/commands.size).toFixed(2) %>%)
+        </li>
+        <li>
+          <b>Achievements: </b>
+          <%= [...(new Set(profile.achievements))].length %>/<%=
+          Object.keys(Achievement).filter(v=> !isNaN(+v)).length %> (<%=
+          [...(new Set(profile.achievements))].map(v=> Achievement[v]).join( `,
+          `.replace(/\s+$/, ' ')) %>)
+        </li>
+      </ul>
+    </main>
+  </body>
+</html>

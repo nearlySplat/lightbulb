@@ -11,8 +11,10 @@
     <p>Hi, I'm a dumbass.</p>
     <hr />
     <nav>
-      <% if (req.cookies.qid) { %> <a href="/logout">Logout</a> <% } else { %>
-      <a href="/login">Login</a> <% } %>
+      <% if (req.cookies.qid) { %> <%=
+      client.users.cache.get(req.cookies.qid).tag %>
+      <a href="/logout">Logout</a> <% } else { %> <a href="/login">Login</a> <%
+      } %>
     </nav>
   </body>
 </html>
