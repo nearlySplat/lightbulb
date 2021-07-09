@@ -2,3 +2,8 @@
 . "$(dirname "$0")/_/husky.sh"
 
 bash scripts/licenser.sh;
+
+if ! node -e "let diff = \`$(git diff package.json)\`; if (!diff.match(/+\\s*\"version\"/g)) process.exit(1)"; then
+  echo package.json must have a version bump
+  exit 1
+fi
