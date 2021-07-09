@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -26,7 +27,8 @@ import {
 } from 'discord.js';
 import { commands, loggr, statcord } from '..';
 import { config, PREFIXES, WHITELIST } from '../constants';
-import { User, Achievement, DefaultPronouns } from '../models/User.js';
+import { User, Achievement, DefaultPronouns } from '../models/User';
+import { GuildConfig, IGuildConfig } from '../models/GuildConfig';
 import { ButtonInteractionHandler, Command, CommandResponse } from '../types';
 import {
   CommandParameters,
@@ -35,6 +37,7 @@ import {
   i18n,
 } from '../util';
 import { tags } from '../util/tags';
+import { Document as MongoDBDocument } from 'mongoose';
 export const buttonHandlers = new Collection<
   Snowflake,
   ButtonInteractionHandler
@@ -51,6 +54,15 @@ export const defaultDeleteButton = [
   }),
 ];
 const bls: Snowflake[] = [];
+export const guildConfigCache = new Map<
+  Snowflake,
+  IGuildConfig & MongoDBDocument<any, any, IGuildConfig>
+>();
+export function updateGuildConfigCache(
+  data: IGuildConfig & MongoDBDocument<any, any, IGuildConfig>
+): typeof guildConfigCache {
+  return guildConfigCache.set(data.gid, data);
+}
 export async function reloadBlacklists(client: Client): Promise<Snowflake[]> {
   const bans = await client.guilds.cache
     .get(config.bot.support_server)
@@ -197,10 +209,21 @@ export const execute = async (
       return true;
     } else return false;
   }
+  let guildInfo: IGuildConfig & MongoDBDocument<any, any, IGuildConfig>;
+  if (guildConfigCache.has(message.guild.id))
+    guildInfo = guildConfigCache.get(message.guild.id);
+  else guildInfo = await GuildConfig.findOne({ gid: message.guild.id }).exec();
+  if (!guildInfo) {
+    guildInfo = new GuildConfig();
+    guildInfo.gid = message.guild.id;
+    await guildInfo.save();
+    updateGuildConfigCache(guildInfo);
+  }
   for (const prefix of [
     `<@${(client.user as ClientUser).id}>`,
     `<@!${client.user!.id}>`,
     ...PREFIXES,
+    ...guildInfo.prefixes.map(v => v.value),
   ].filter(v => v !== 'pls' || !isKsIn)) {
     handleCommand(prefix, prefix === '!');
     if (

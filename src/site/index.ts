@@ -26,6 +26,8 @@ import { /*config, */ __prod__ } from '../constants.js';
 import { APIPartialGuild } from 'discord-api-types';
 import { client, commands, loggr } from '../index.js';
 import { Achievement, User as UserModel } from '../models/User';
+import { updateGuildConfigCache } from '../events/messageCreate.js';
+import { GuildConfig } from '../models/GuildConfig.js';
 const PORT = __prod__ ? 80 : 8000;
 const IP = /* __prod__ ? config.website :*/ 'localhost';
 const guildCache = new Map<Snowflake, APIPartialGuild[]>();
@@ -245,6 +247,25 @@ app.get('/dashboard', isLoggedIn, async (req, res) => {
 //
 
 //
+
+app.patch('/guild/:gid/preferences', async (req, res) => {
+  if (!client.guilds.cache.has(<Snowflake>req.params.gid))
+    return res.status(404).send('Not Found');
+  if (req.body.newPrefix) {
+    let conf = await GuildConfig.findOne({
+      gid: <Snowflake>req.params.gid,
+    }).exec();
+    if (!conf) {
+      conf = new GuildConfig();
+      conf.gid = <Snowflake>req.params.gid;
+    }
+    conf.prefixes.push(req.body.newPrefix);
+    conf.prefixes = [...new Set(conf.prefixes)];
+    conf.save();
+    updateGuildConfigCache(conf);
+    return res.status(200).send('Success');
+  }
+});
 
 app.use((req, res) =>
   res
