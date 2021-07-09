@@ -4,11 +4,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- template('head') %>
     <title>Lightblub</title>
   </head>
 
   <body>
-    <h1>Your Lightbulb Profile</h1>
+    <header>
+      <h1>Lightbulb</h1>
+      <%- template('navbar', {client, req, user}) %>
+    </header>
     <% if (!profile) { %>
     <p>
       You do not have a profile. Please run at least one command so I can
@@ -20,8 +24,6 @@
       anyone can see by typing <code>bulb info &lt;user&gt;</code>
     </p>
     <% } %>
-    <hr />
-    <%- template('navbar', { client, req, user }) %>
     <main>
       <h3>User Stats</h3>
       <b>Commands used:</b>

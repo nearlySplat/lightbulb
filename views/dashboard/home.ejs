@@ -8,8 +8,10 @@
     <%- template('head') %>
   </head>
   <body>
-    <h1>Lightbulb</h1>
-    <%- template('navbar', {client, req, user}) %>
+    <header>
+      <h1>Lightbulb</h1>
+      <%- template('navbar', {client, req, user}) %>
+    </header>
     <table>
       <small
         >Some guilds might not show. If that is the case, please
@@ -22,17 +24,18 @@
         chunk of chunks) {%>
         <tr>
           <% for (const guild of chunk) { %>
-          <td>
+          <td class="guild">
             <b><%= guild.name %></b>
-            <button>
-              <a
-                href="<%= client.guilds.cache.has(guild.id) 
+            <br />
+            <a
+              href="<%= client.guilds.cache.has(guild.id) 
                   ? '/dashboard/' + guild.id 
                   : `https://discord.com/oauth2/authorize?client_id=${client.user.id}&scope=bot%20applications.commands&guild=${guild.id}` %>"
-                ><%= client.guilds.cache.has(guild.id) ? 'Dashboard' : 'Invite'
-                %></a
-              >
-            </button>
+              ><button>
+                <%= client.guilds.cache.has(guild.id) ? 'Dashboard' : 'Invite'
+                %>
+              </button></a
+            >
           </td>
           <% } %>
         </tr>
