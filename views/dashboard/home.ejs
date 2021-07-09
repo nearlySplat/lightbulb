@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lightblub</title>
+    <%- template('head') %>
+  </head>
+  <body>
+    <h1>Lightbulb</h1>
+    <%- template('navbar', {client, req, user}) %>
+    <table>
+      <small
+        >Some guilds might not show. If that is the case, please
+        <a href="<%= req.path %>?force=true">click here</a>.</small
+      >
+      <tbody>
+        <% const chunks =[]; const glist = guilds.filter(v => new
+        Permissions(BigInt(v.permissions)).has(Permissions.FLAGS.MANAGE_GUILD));
+        while (glist.length > 0) { chunks .push( glist.splice(0,3)) } for(const
+        chunk of chunks) {%>
+        <tr>
+          <% for (const guild of chunk) { %>
+          <td>
+            <b><%= guild.name %></b>
+            <button>
+              <a
+                href="<%= client.guilds.cache.has(guild.id) 
+                  ? '/dashboard/' + guild.id 
+                  : `https://discord.com/oauth2/authorize?client_id=${client.user.id}&scope=bot%20applications.commands&guild=${guild.id}` %>"
+                ><%= client.guilds.cache.has(guild.id) ? 'Dashboard' : 'Invite'
+                %></a
+              >
+            </button>
+          </td>
+          <% } %>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </body>
+</html>

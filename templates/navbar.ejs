@@ -1,0 +1,9 @@
+<div id="navbar">
+  <a href="/">Home</a> | <a href="/dashboard">Dashboard</a> | <span></span>
+  <% if (req.cookies.qid) { %>
+  <a href="/profile">Profile</a> |
+  <a href="/logout">Logout</a>
+  <% } else { %>
+  <a href="/login?last_page=<%- encodeURIComponent(req.path) %>">Login</a>
+  <% } %>
+</div>

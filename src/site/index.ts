@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -14,26 +15,48 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import express from 'express';
-import { /*config, */ __prod__ } from '../constants.js';
-import { client, loggr, commands } from '../index.js';
-import fetch from 'node-fetch';
 import cookie_parser from 'cookie-parser';
 import { Permissions, Snowflake, User } from 'discord.js';
-import { User as UserModel, Achievement } from '../models/User';
+import ejs from 'ejs';
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import fetch from 'node-fetch';
+import { /*config, */ __prod__ } from '../constants.js';
+import { APIPartialGuild } from 'discord-api-types';
+import { client, commands, loggr } from '../index.js';
+import { Achievement, User as UserModel } from '../models/User';
 const PORT = __prod__ ? 80 : 8000;
 const IP = /* __prod__ ? config.website :*/ 'localhost';
+const guildCache = new Map<Snowflake, APIPartialGuild[]>();
 
 const app = express();
 const states = new Map<string, Buffer>();
-
-app.use(cookie_parser());
-app.use((_, _2, next) => {
-  while (!client.user) {
-    //
+const context = (req: any, user?: User) => ({
+  template(name: string, vars: Record<string, unknown> = {}) {
+    const str = fs.readFileSync('./templates/' + name + '.ejs', 'utf-8');
+    return ejs.render(str, vars);
+  },
+  client,
+  req,
+  user,
+  commands,
+});
+const isLoggedIn = (req: any, res: any, next: any) => {
+  if (!client.users.cache.get(req.cookies.qid)) {
+    return res.redirect('/login?last_page=' + encodeURIComponent(req.path));
   }
   next();
+};
+
+app.use(cookie_parser());
+
+app.use((_, res, next) => {
+  if (client.user) return next();
+  return res.status(503).send('Service Unavailable');
 });
+
+app.use(express.static(path.resolve('./assets/site')));
 
 app.use(async (req, res, next) => {
   if (req.cookies.qe <= Date.now()) {
@@ -70,9 +93,13 @@ app.use(async (req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-  return res.render('index.ejs', { req, client });
+  return res.render(
+    'index.ejs',
+    context(req, client.users.cache.get(req.cookies.qid))
+  );
 });
 app.get('/login', (req, res) => {
+  if (req.cookies.qt) return res.redirect(<string>req.query.last_page || '/');
   const state = Buffer.from(
     `${Math.random() * Number.MAX_SAFE_INTEGER}${
       Math.random() * Number.MAX_SAFE_INTEGER
@@ -94,7 +121,6 @@ app.get('/login', (req, res) => {
 
 app.get('/auth', async (req, res) => {
   res.clearCookie('qst');
-  // return res.send(require('util').inspect(req.query.state));
   if (
     (<string>req.query.state || '') !==
     states.get(req.ip)?.toString('base64url')
@@ -146,6 +172,7 @@ app.get('/auth', async (req, res) => {
 
 app.get('/logout', async (req, res) => {
   if (!req.cookies.qt) return res.status(400).send('No token to revoke');
+  guildCache.delete(req.cookies.qid);
   res.clearCookie('qid');
   res.clearCookie('qe');
   res.clearCookie('qrt');
@@ -153,38 +180,76 @@ app.get('/logout', async (req, res) => {
   return res.redirect('/');
 });
 
-app.use((req, res, next) => {
-  if (!req.cookies.qid) {
-    return res.redirect('/');
-  }
-  next();
-});
-
-app.get('/profile', async (req, res) =>
+app.get('/profile', isLoggedIn, async (req, res) =>
   res.render('profile.ejs', {
-    req,
     res,
-    user: client.users.cache.get(req.cookies.qid),
     profile: await UserModel.findOne({ uid: req.cookies.qid }).exec(),
     commands: commands,
     Achievement,
+    ...context(req, client.users.cache.get(req.cookies.qid)),
   })
 );
-app.get('/dashboard/:gid', async (req, res) => {
+app.get('/dashboard/:gid', isLoggedIn, async (req, res) => {
   const guild = client.guilds.cache.get(<Snowflake>req.params.gid);
-  if (!guild) return res.render('dashboard/404.ejs');
+  if (!guild)
+    return res.render(
+      'dashboard/404.ejs',
+      context(req, client.users.cache.get(req.cookies.qid))
+    );
   if (
     !(await guild.members.fetch({ user: req.cookies.qid, cache: true })) ||
     !guild.members.cache
       .get(req.cookies.qid)
       .permissions.has(Permissions.FLAGS.MANAGE_GUILD)
   )
-    return res.status(403).render('dashboard/unauthorized.ejs');
+    return res
+      .status(403)
+      .render(
+        'dashboard/unauthorized.ejs',
+        context(req, client.users.cache.get(req.cookies.qid))
+      );
   return res.render('dashboard/index.ejs', {
-    req,
-    client,
+    ...context(req, client.users.cache.get(req.cookies.qid)),
     guild,
   });
 });
+
+app.get('/dashboard', isLoggedIn, async (req, res) => {
+  let json: APIPartialGuild[] =
+    guildCache.has(req.cookies.qid) && !req.query.force
+      ? guildCache.get(req.cookies.qid)
+      : [];
+  try {
+    if (json.length === 0) {
+      const result = await fetch(
+        'https://discord.com/api/v9/users/@me/guilds',
+        {
+          headers: { Authorization: `Bearer ${req.cookies.qt}` },
+        }
+      );
+      if (!result.ok) throw '';
+      json = await result.json();
+    }
+  } catch {
+    return res.redirect('/login?last_page=/dashboard');
+  }
+  guildCache.set(req.cookies.qid, json);
+  return res.render('dashboard/home.ejs', {
+    guilds: json,
+    ...context(req, client.users.cache.get(req.cookies.qid)),
+    Permissions,
+  });
+});
+//
+
+//
+
+//
+
+app.use((req, res) =>
+  res
+    .status(404)
+    .render('404.ejs', context(req, client.users.cache.get(req.cookies.qid)))
+);
 
 app.listen(PORT, () => loggr.info('Website listening on port', PORT));

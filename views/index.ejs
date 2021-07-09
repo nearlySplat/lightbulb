@@ -4,17 +4,32 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- template('head') %>
     <title>Lightblub</title>
   </head>
   <body>
-    <h1>Lightbulb - your local not-ready-for-use bot</h1>
-    <p>Hi, I'm a dumbass.</p>
-    <hr />
-    <nav>
-      <% if (req.cookies.qid) { %> <%=
-      client.users.cache.get(req.cookies.qid).tag %>
-      <a href="/logout">Logout</a> <% } else { %> <a href="/login">Login</a> <%
-      } %>
-    </nav>
+    <header>
+      <h1>Lightbulb</h1>
+      <%- template('navbar', { client, req, user }) %>
+    </header>
+    <article>
+      <section id="1">
+        <p>
+          From moderation to utility to scratching your butt, Lightbulb is (not)
+          the bot for you. With absolutely no worthwhile features and a lazy,
+          procrastinating author, Lightbulb is bound to be the worst bot you
+          could ever invite to your server.
+          <br />
+          If you manage to be dumb enough to invite it, you'll have <%=
+          commands.length %> glorious commands at your disposal, none of which
+          work as intended.
+        </p>
+        <img
+          src="assets/img/help_no.png"
+          alt="Lightbulb won't help you"
+          id="help_no"
+        />
+      </section>
+    </article>
   </body>
 </html>

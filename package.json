@@ -23,6 +23,7 @@
     "@splatterxl/tsconfig": "^1.0.0",
     "@types/chess.js": "^0.11.0",
     "@types/cookie-parser": "^1.4.2",
+    "@types/ejs": "^3.0.7",
     "@types/eslint": "^7.2.6",
     "@types/express": "^4.17.13",
     "@types/graceful-fs": "^4.1.5",
