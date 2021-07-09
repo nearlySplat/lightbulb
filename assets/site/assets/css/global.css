@@ -59,12 +59,12 @@ a:link {
   grid-column: 1;
   grid-row: 1;
   border-radius: 4%;
-  align-items: center;
+  padding: 13.5%;
 }
 
 article section {
   display: grid;
-  gap: 6px;
+  gap: 3%;
   grid-auto-rows: auto;
 }
 
