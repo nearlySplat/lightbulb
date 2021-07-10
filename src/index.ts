@@ -1,17 +1,4 @@
 /* eslint-disable no-undef */
-let seq = 0;
-process.on('message', message => {
-  if (message.seq) seq = message.seq;
-});
-setInterval(() => {
-  process.send({
-    op: 2,
-    seq,
-    m: 'PING',
-  });
-}, 1000);
-setTimeout(() => process.send({ op: 3 }), 10000);
-console.log('[PROCESS_CHILD] Logged messages.');
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -37,7 +24,7 @@ import {
   ReactionUserManager,
   TextChannel,
   User,
-  WSEventType
+  WSEventType,
 } from 'discord.js';
 import { config } from 'dotenv';
 import { get } from 'lodash';
@@ -46,7 +33,6 @@ import { join } from 'path';
 import * as Statcord from 'statcord.js';
 import { INTENTS } from './constants';
 import { guilds as guildConfig } from './modules/config.json';
-import './site';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
 export const env = config({
@@ -66,6 +52,7 @@ export const startedAt = new Date();
     <Promise<typeof import('mongoose')>>(<unknown>mongoose)
   );
   loggr.info('[MONGODB] connected to mongodb server');
+  client.login(process.env.TOKEN);
 })();
 const moduleConfig: {
   [k: string]: {
@@ -254,4 +241,4 @@ client.on('raw', packet => {
     });
 });
 
-client.login(process.env.TOKEN);
+void import('./site');

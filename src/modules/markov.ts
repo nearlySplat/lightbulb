@@ -34,7 +34,7 @@ const markov = fs
 const instance = new Markov(markov);
 export const splatMarkov = {
   emitter: 'on',
-  eventName: 'message',
+  eventName: 'messageCreate',
   guildablePath: 'params[0].guild.id',
   restricted: false,
   execute: async (client: Client, message: Message): Promise<boolean> => {
