@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
     "outDir": "./dist",
     "target": "esnext",
     "moduleResolution": "node",
     "diagnostics": false,
-    "extendedDiagnostics": false
+    "extendedDiagnostics": false,
+    "paths": {
+      "@lightbulb/lib/*": ["lib/*"],
+      "@lightbulb/src/*": ["src/*"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "lib/**/*"],
   "compileOnSave": false,
   "exclude": ["dist/**"],
   "extends": "@splatterxl/tsconfig"
