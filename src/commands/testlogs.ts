@@ -24,7 +24,7 @@ export const execute: CommandExecute = async ({ message }) => {
         ((value as TextChannel).topic as string | undefined)?.includes(
           '--lightbulb-logs'
         )) &&
-        value.type == 'text' &&
+        value.type == 'GUILD_TEXT' &&
         value
           .permissionsFor(message.guild.me as GuildMember)
           ?.has('SEND_MESSAGES')) ??

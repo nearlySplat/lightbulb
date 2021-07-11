@@ -47,12 +47,12 @@ export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
+// import './site';
 (async () => {
   mongoose = await Promise.resolve(
     <Promise<typeof import('mongoose')>>(<unknown>mongoose)
   );
   loggr.info('[MONGODB] connected to mongodb server');
-  client.login(process.env.TOKEN);
 })();
 const moduleConfig: {
   [k: string]: {
@@ -241,4 +241,4 @@ client.on('raw', packet => {
     });
 });
 
-void import('./site');
+client.login(process.env.TOKEN);

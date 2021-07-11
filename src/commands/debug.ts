@@ -38,7 +38,7 @@ export const execute: CommandExecute = async ({
         .setAuthor(`Lightbulb v${pkg.version} Debug Information`)
         .setDescription(
           `
-      - I am currently on shard \`${message.guild?.shardID}\` with \`${
+      - I am currently on shard \`${message.guild?.shardId}\` with \`${
             commands.size
           }\` commands.
         - I have requested gateway intents of \`${INTENTS}\` (${new Intents(

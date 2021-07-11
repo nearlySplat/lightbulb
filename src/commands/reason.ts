@@ -16,13 +16,12 @@
  */
 import {
   Guild,
-  GuildMember,
   Permissions,
   TextChannel,
   Message,
   Snowflake,
 } from 'discord.js';
-import { createLogMessage } from '../util';
+import { createLogMessage, getLogChannel } from '../util';
 import { CommandMetadata, Context } from '../types';
 
 export const execute = async ({ message, args }: Context): Promise<void> => {
@@ -32,16 +31,7 @@ export const execute = async ({ message, args }: Context): Promise<void> => {
     )
   )
     return;
-  const channel = (message.guild as Guild).channels.cache.find(
-    value =>
-      ((value.name?.match(/^💡(-log(s|ging)?)?$/g) ||
-        (value as TextChannel).topic?.includes('--lightbulb-logs')) &&
-        value.type == 'text' &&
-        value
-          .permissionsFor((message.guild as Guild).me as GuildMember)
-          ?.has('SEND_MESSAGES')) ??
-      false
-  ) as TextChannel;
+  const channel = getLogChannel(message.guild) as TextChannel;
   await channel.messages.fetch({});
   async function updateMessages(cases: (number | string)[]) {
     for (const value of cases) {

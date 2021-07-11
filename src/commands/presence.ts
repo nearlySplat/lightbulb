@@ -43,8 +43,9 @@ export const execute: CommandExecute = ctx => {
     target = getMember(ctx.message.guild, ctx.args.data.user).user;
   }
   if (!target) return [{ content: 'No user found.' }, null];
-  if (!target.presence.clientStatus) return [{ content: 'No data.' }, null];
-  const status = target.presence.clientStatus;
+  const presence = ctx.message.guild.presences.cache.get(target.id);
+  if (!presence.clientStatus) return [{ content: 'No data.' }, null];
+  const status = presence.clientStatus;
   return [
     {
       content: `**__${target.tag}'s Presence__**\n\n${

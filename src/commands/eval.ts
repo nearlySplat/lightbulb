@@ -51,17 +51,19 @@ export const execute: CommandExecute = async ({
           depth: 0,
         });
   const pages = strOutput.match(/[\s\S]{1,1850}/gi) || ['undefined'];
-  const mobile = !!message.author.presence.clientStatus.mobile;
+  const mobile = !!message.guild.presences.cache.get(message.author.id)
+    .clientStatus.mobile;
   const getPage = (i: number) => ({
-    content:
-      `\`\`\`${mobile ? 'py' : 'js'}\n${type === 'Promise'
+    content: `\`\`\`${mobile ? 'py' : 'js'}\n${
+      type === 'Promise'
         ? 'Promise {\n' +
           pages[i]
             .split('\n')
             .map((v: string) => '  ' + v)
             .join('\n') +
           '\n}'
-        : pages[i]}\n\`\`\``,
+        : pages[i]
+    }\n\`\`\``,
   });
   let currI = 0;
   return [
@@ -72,12 +74,12 @@ export const execute: CommandExecute = async ({
           new MessageButton()
             .setEmoji('cutie_backward:848237448269135924')
             .setStyle('PRIMARY')
-            .setCustomID('<-'),
+            .setCustomId('<-'),
           defaultDeleteButton[0].components[0],
           new MessageButton()
             .setEmoji('cutie_forward:848237230363246612')
             .setStyle('PRIMARY')
-            .setCustomID('->')
+            .setCustomId('->')
         ),
       ],
     },

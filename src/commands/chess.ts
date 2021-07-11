@@ -251,7 +251,7 @@ export const meta: CommandMetadata = {
 
 const vsButton = new MessageButton()
   .setStyle('SECONDARY')
-  .setCustomID('ig_vs')
+  .setCustomId('ig_vs')
   .setLabel('v.')
   .setDisabled(true);
 function generatePlayerRow(players: [User | null, User | null]) {
@@ -265,7 +265,7 @@ function generatePlayerRow(players: [User | null, User | null]) {
       ...[
         new MessageButton()
           .setStyle('PRIMARY')
-          .setCustomID((players[i] === null ? '' : 'ig_') + 'p' + (i + 1))
+          .setCustomId((players[i] === null ? '' : 'ig_') + 'p' + (i + 1))
           .setLabel(players[i] ? players[i].tag : 'Player ' + (i + 1))
           .setDisabled(!!players[i]),
         i === 0 ? vsButton : undefined,
@@ -396,12 +396,12 @@ function winHandler(
 const helpButton = new MessageButton()
   .setEmoji('📚')
   .setLabel('Help')
-  .setCustomID('help')
+  .setCustomId('help')
   .setStyle('SUCCESS');
 const historyButton = new MessageButton()
   .setEmoji('🕰')
   .setLabel('Move History')
-  .setCustomID('history')
+  .setCustomId('history')
   .setStyle('DANGER');
 const rulesButton = new MessageButton()
   .setLabel("FIDE's Laws of Chess")

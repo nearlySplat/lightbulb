@@ -69,7 +69,7 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
       return [{ embed: _ }, null];
     }
     case 'bots':
-      if (ctx.message.channel.type == 'dm') return false;
+      if (ctx.message.channel.type == 'DM') return false;
       else
         ctx.message.channel = ctx.message.channel as TextChannel | NewsChannel;
       msgs = msgs
@@ -97,7 +97,7 @@ export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
       return true;
 
     case 'all':
-      if (ctx.message.channel.type === 'dm') return false;
+      if (ctx.message.channel.type === 'DM') return false;
       if (!isNaN(parseInt(ctx.args.data.amount))) {
         const amount = parseInt(ctx.args.data.amount);
         await ctx.message.delete();

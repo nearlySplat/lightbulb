@@ -23,17 +23,17 @@ export async function pagination(
     new MessageActionRow().addComponents(
       defaultDeleteButton[0].components[0].setDisabled(disabled),
       new MessageButton()
-        .setCustomID('p_prev')
+        .setCustomId('p_prev')
         .setStyle('PRIMARY')
         .setEmoji('cutie_backward:848237448269135924')
         .setDisabled(pages.length === 1 || i === 0 || disabled),
       new MessageButton()
-        .setCustomID('p_stop')
+        .setCustomId('p_stop')
         .setStyle('DANGER')
         .setEmoji('cutie_stop:848633645123371038')
         .setDisabled(disabled),
       new MessageButton()
-        .setCustomID('p_next')
+        .setCustomId('p_next')
         .setStyle('PRIMARY')
         .setEmoji('cutie_forward:848237230363246612')
         .setDisabled(pages.length === 1 || i === pages.length - 1 || disabled)
@@ -47,7 +47,7 @@ export async function pagination(
           })
         )
         .setDisabled(disabled)
-        .setCustomID('p_page')
+        .setCustomId('p_page')
     ),
   ];
   const handle: ButtonInteractionHandler = ctx => {

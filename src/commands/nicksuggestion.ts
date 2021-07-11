@@ -19,11 +19,10 @@ import { NICKSUGGEST_WORDS } from '../constants.js';
 import { CommandExecute, CommandMetadata } from '../types.js';
 
 export const meta: CommandMetadata = {
-  name: 'ion',
+  name: 'nicksuggestion',
   description: 'Suggests a nickname for you',
-  aliases: ['', 'nick'],
+  aliases: ['nicksuggest', 'nick'],
   accessLevel: 0,
-  // j: true
 };
 export function generateNick(): [string, string] {
   const ly =
@@ -49,12 +48,12 @@ export const execute: CommandExecute = ctx => {
       new MessageButton()
         .setLabel('Reload')
         .setStyle('PRIMARY')
-        .setCustomID('r')
+        .setCustomId('r')
     ),
   ];
   if (ctx.message.member.manageable)
     components[0].components.unshift(
-      new MessageButton().setLabel('Apply').setCustomID('a').setStyle('SUCCESS')
+      new MessageButton().setLabel('Apply').setCustomId('a').setStyle('SUCCESS')
     );
   return [
     {

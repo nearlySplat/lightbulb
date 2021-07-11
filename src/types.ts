@@ -167,24 +167,14 @@ export type MessageComponentInteraction = IMessageComponentInteraction &
 export interface IMessageComponentInteraction extends Interaction {
   message: APIMessage;
   data: {
-    component_type: Exclude<
-      // eslint-disable-next-line no-undef
-      MessageComponentTypes,
-      // eslint-disable-next-line no-undef
-      MessageComponentTypes.ACTION_ROW
-    >;
+    component_type: 2 | 3;
     custom_id: string;
   };
 }
 export interface IMessageComponentSelectMenuInteraction
   extends IMessageComponentInteraction {
   data: {
-    component_type: Exclude<
-      // eslint-disable-next-line no-undef
-      MessageComponentTypes,
-      // eslint-disable-next-line no-undef
-      MessageComponentTypes.ACTION_ROW
-    >;
+    component_type: 2 | 3;
     values: string[];
     custom_id: string;
   };

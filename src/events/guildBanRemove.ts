@@ -35,7 +35,7 @@ export const execute = async (
       value =>
         ((value.name?.match(/^💡(-log(s|ging)?)?$/g) ||
           (value as TextChannel).topic?.includes('--lightbulb-logs')) &&
-          value.type == 'text' &&
+          value.type == 'GUILD_TEXT' &&
           value
             .permissionsFor(guild.me as GuildMember)
             ?.has('SEND_MESSAGES')) ??

@@ -48,7 +48,7 @@ export const defaultDeleteButton = [
       new MessageButton()
         .setEmoji('cutie_trash:848216792845516861')
         .setStyle('DANGER')
-        .setCustomID('internal__delete')
+        .setCustomId('internal__delete')
         .setLabel(''),
     ],
   }),

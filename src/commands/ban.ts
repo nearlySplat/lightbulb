@@ -38,10 +38,13 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
-  const user = (await User.findOne({
+  const user =
+    (await User.findOne({
       uid: target.id,
-    }).exec()) || <IUser>(<unknown>({ pronouns: { object: 'them' } }));
-  const { pronouns: { object: objectPronoun } } = user;
+    }).exec()) || <IUser>(<unknown>{ pronouns: { object: 'them' } });
+  const {
+    pronouns: { object: objectPronoun },
+  } = user;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async (): Promise<CommandResponse> => {
     return [
@@ -54,11 +57,11 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
             components: [
               new MessageButton()
                 .setLabel('Yes')
-                .setCustomID('y')
+                .setCustomId('y')
                 .setStyle('SUCCESS'),
               new MessageButton()
                 .setLabel('No')
-                .setCustomID('n')
+                .setCustomId('n')
                 .setStyle('DANGER'),
             ],
           }),
@@ -110,7 +113,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   if (!member) {
     return ban();
   }
-  if (member.user.id === message.guild.ownerID) {
+  if (member.user.id === message.guild.ownerId) {
     message.channel.send(
       interpolate(get('GENERIC_ERROR', locale), {
         code: ERROR_CODES.TARGET_IS_OWNER.toString(),

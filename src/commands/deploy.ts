@@ -18,6 +18,7 @@ import { CommandExecute, CommandMetadata } from '../types';
 import { WHITELIST } from '../constants';
 import { MessageActionRow, MessageButton } from 'discord.js';
 import path from 'path';
+
 const nerrix = '332864061496623104';
 export const meta: CommandMetadata = {
   name: 'deploy',
@@ -35,11 +36,11 @@ export const execute: CommandExecute = async ctx => {
         new MessageActionRow().addComponents(
           new MessageButton()
             .setLabel('Authorize')
-            .setCustomID('a')
+            .setCustomId('a')
             .setStyle('SUCCESS'),
           new MessageButton()
             .setLabel('Decline')
-            .setCustomID('d')
+            .setCustomId('d')
             .setStyle('DANGER')
         ),
       ],
@@ -50,7 +51,7 @@ export const execute: CommandExecute = async ctx => {
       });
       coll.on('collect', async interaction => {
         coll.stop();
-        if (interaction.customID === 'a')
+        if (interaction.customId === 'a')
           await interaction.reply({
             content: 'Obama has been deployed.',
             files: ['1.png', '2.jpeg', '3.jpeg', 'final.png'].map(v =>
@@ -62,10 +63,10 @@ export const execute: CommandExecute = async ctx => {
           components: [],
           content:
             'Deployment has ' +
-            (interaction.customID === 'd' ? 'not ' : '') +
+            (interaction.customId === 'd' ? 'not ' : '') +
             'been authorized.',
         });
-        if (interaction.customID === 'a') r(true);
+        if (interaction.customId === 'a') r(true);
         else r(false);
       });
     });

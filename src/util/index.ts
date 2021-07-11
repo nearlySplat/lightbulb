@@ -53,7 +53,7 @@ export function getLogChannel(guild: Guild): TextChannel | undefined {
         /^💡(-log(s|ging)?)?$/g
       ) ||
         ((value as TextChannel).topic || '').includes('--lightbulb-logs')) &&
-      value.type == 'text' &&
+      value.type == 'GUILD_TEXT' &&
       (
         value.permissionsFor(guild.me as GuildMember) || {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars

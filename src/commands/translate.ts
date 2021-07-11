@@ -92,7 +92,7 @@ export const execute: CommandExecute<'text'> = async ctx => {
       return [{ content: 'No text to translate' }, null];
     }
     target = await ctx.message.channel.messages.fetch(
-      ctx.message.reference.messageID
+      ctx.message.reference.messageId
     );
   }
   if (typeof target === 'string') result.content = await translate(target);
