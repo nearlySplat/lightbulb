@@ -38,7 +38,7 @@ export const execute: CommandExecute = async ({ client, message }) => {
   }
   for (const [, command] of toAdd)
     client.api.applications(client.user!.id).commands.post({
-      data: command.meta as unknown as Record<string, unknown>,
+      data: (command.meta as unknown) as Record<string, unknown>,
     });
   return [{ content: get('SLASHSYNC_SUCCESSFUL') }, null];
 };

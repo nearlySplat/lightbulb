@@ -21,8 +21,7 @@ import { CommandMetadata } from '../types';
 // @ts-ignore
 export class CommandParameters<T extends string>
   extends Array<string>
-  implements PrimitiveArray
-{
+  implements PrimitiveArray {
   // eslint-disable-next-line no-undef
   [key: number]: string;
   private _data: ParametersData;

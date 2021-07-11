@@ -56,7 +56,16 @@ export const execute: CommandExecute = async ctx => {
             content: 'Obama has been deployed.',
             files: ['1.png', '2.jpeg', '3.jpeg', 'final.png'].map(v =>
               // eslint-disable-next-line no-undef
-              path.resolve(__dirname, '..', '..', '..', 'assets', 'img', 'obama', v)
+              path.resolve(
+                __dirname,
+                '..',
+                '..',
+                '..',
+                'assets',
+                'img',
+                'obama',
+                v
+              )
             ),
           });
         await msg.edit({

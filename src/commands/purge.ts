@@ -48,11 +48,9 @@ export const meta: CommandMetadata = {
 export const execute: CommandExecute<'criteria' | 'amount'> = async ctx => {
   let msgs: MsgsCollectionType = [ctx.message] as MsgsCollectionType;
 
-  msgs = (
-    ctx.args.data.criteria === 'help'
-      ? []
-      : await ctx.message.channel.messages.fetch({})
-  ) as MsgsCollectionType;
+  msgs = (ctx.args.data.criteria === 'help'
+    ? []
+    : await ctx.message.channel.messages.fetch({})) as MsgsCollectionType;
   switch (ctx.args.data.criteria) {
     case 'help': {
       const _ = new MessageEmbed()

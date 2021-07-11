@@ -44,17 +44,17 @@ export const execute = async (
   interaction: GatewayInteractionCreateDispatchData
 ): Promise<unknown> => {
   if (
-    (interaction.type as unknown as InteractionTypes) ===
+    ((interaction.type as unknown) as InteractionTypes) ===
     InteractionTypes.APPLICATION_COMMAND
   )
-    return slashCommandExecute(client, interaction as unknown as Interaction);
+    return slashCommandExecute(client, (interaction as unknown) as Interaction);
   else if (
-    (interaction.type as unknown as InteractionTypes) ===
+    ((interaction.type as unknown) as InteractionTypes) ===
     InteractionTypes.MESSAGE_COMPONENT
   ) {
     buttonExecute(
       client,
-      interaction as unknown as MessageComponentInteraction
+      (interaction as unknown) as MessageComponentInteraction
     );
   }
 };
@@ -67,8 +67,8 @@ export const slashCommandExecute = async (
     ApplicationCommandOptionType.SubCommand,
     ApplicationCommandOptionType.SubCommandGroup,
   ].includes(interaction.data.options[0].type)
-    ? (interaction.data
-        .options[0] as unknown as ApplicationCommandInteractionDataOptionSubCommand)
+    ? ((interaction.data
+        .options[0] as unknown) as ApplicationCommandInteractionDataOptionSubCommand)
     : null;
   function getOption(
     name: string
@@ -77,11 +77,11 @@ export const slashCommandExecute = async (
     | ApplicationCommandInteractionDataOptionSubCommand
     | ApplicationCommandInteractionDataOptionSubCommandGroup
   > {
-    return (
-      subcommand
-        ? subcommand.options.find(v => v.name === name)
-        : interaction.data.options.find(v => v.name === name)
-    ) as APIApplicationCommandInteractionDataOptionWithValues;
+    return (subcommand
+      ? subcommand.options.find(v => v.name === name)
+      : interaction.data.options.find(
+          v => v.name === name
+        )) as APIApplicationCommandInteractionDataOptionWithValues;
   }
   function respond(data: { data: SlashCommandResponse }) {
     return client.api

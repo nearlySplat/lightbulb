@@ -41,9 +41,10 @@ export const getCurrentLevel = (member: GuildMember): 0 | 1 | 2 | 3 => {
   ) {
     return getAccessLevel('ADMINISTRATOR');
   } else if (
-    [Permissions.FLAGS.BAN_MEMBERS, Permissions.FLAGS.KICK_MEMBERS].every(
-      perm => member.permissions.has(perm)
-    )
+    [
+      Permissions.FLAGS.BAN_MEMBERS,
+      Permissions.FLAGS.KICK_MEMBERS,
+    ].every(perm => member.permissions.has(perm))
   )
     return getAccessLevel('MODERATOR');
   else return getAccessLevel('USER');

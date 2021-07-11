@@ -17,8 +17,7 @@
 import { config } from '../../../constants';
 import { Parameter } from '../../Parameters';
 
-export const ABOUT_LONG_DESCRIPTION =
-  `👋 Hi! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
+export const ABOUT_LONG_DESCRIPTION = `👋 Hi! I'm 🤖💡, the [TypeScript](https://typescriptlang.org) rewrite of Eureka!
 
     **My features**:
     - Logging
