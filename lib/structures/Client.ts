@@ -21,7 +21,7 @@ export class Candle extends DJSClient {
     this.sentry.init({
       dsn: config.sentry_dsn,
       environment: __prod__ ? 'production' : 'development',
-      release: this.manager.versionSlug,
+      release: this.manager.commit,
     });
   }
 

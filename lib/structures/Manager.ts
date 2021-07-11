@@ -24,6 +24,6 @@ export class Manager {
   }
 
   get versionSlug(): string {
-    return `${this.packageName}@${this.version}-${this.commit}`;
+    return `${this.packageName}@${this.version}-${this.commit.slice(0, 7)}`;
   }
 }
