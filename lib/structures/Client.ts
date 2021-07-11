@@ -4,6 +4,7 @@ import moment, { Moment } from 'moment';
 import { ClientOptions } from '../interfaces/ClientOptions';
 import { i18n } from '../../src/util/index.js';
 import { config, __prod__ } from '../../src/constants.js';
+import * as Tracing from '@sentry/tracing';
 
 export class Candle extends DJSClient {
   liftoff: Moment;
@@ -22,6 +23,7 @@ export class Candle extends DJSClient {
       dsn: config.sentry_dsn,
       environment: __prod__ ? 'production' : 'development',
       release: this.manager.commit,
+      integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })],
     });
   }
 
