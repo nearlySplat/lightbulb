@@ -15,28 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import * as Sentry from '@sentry/node';
 import CatLoggr from 'cat-loggr/ts';
-import {
-  Client,
-  ClientEvents,
-  MessageReaction,
-  ReactionEmoji,
-  ReactionUserManager,
-  TextChannel,
-  User,
-  WSEventType,
-} from 'discord.js';
+import { Client, ClientEvents, WSEventType } from 'discord.js';
 import { config } from 'dotenv';
 import { get } from 'lodash';
 import { connect } from 'mongoose';
 import { join } from 'path';
 import * as Statcord from 'statcord.js';
 import { Candle } from '../lib/structures/Client.js';
-import { INTENTS, config as yamlConfig } from './constants';
+import { config as yamlConfig, INTENTS } from './constants';
 import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
-import * as Sentry from '@sentry/node';
 
 export const env = config({
   path: join(__dirname, '..', '..', '.env'),
@@ -65,7 +56,7 @@ const moduleConfig: {
   };
 } = guildConfig;
 
-export const client = new Candle(process.env.TOKEN, {
+export const candle = new Candle(process.env.TOKEN, {
   allowedMentions: { users: [], roles: [], parse: [], repliedUser: false },
   presence: {
     status: 'idle',
@@ -84,7 +75,7 @@ export const client = new Candle(process.env.TOKEN, {
 });
 
 export const statcord = new Statcord.Client({
-  client,
+  client: candle,
   key: process.env.STATCORD,
   postCpuStatistics:
     true /* Whether to post memory statistics or not, defaults to true */,
@@ -108,23 +99,22 @@ statcord
 loggr.debug('Loading events...');
 // normal events
 for (const [event, { execute }] of loadFiles<EventType>('../events')) {
-  client.on(
-    event as keyof ClientEvents,
-    (...params) => execute(client, ...params) as unknown as void
-  );
+  candle.on(event as keyof ClientEvents, execute.bind(null, candle));
   loggr.debug(`Loaded event ${event}`);
 }
-type EventType = { execute: (client: Client, ...args: unknown[]) => boolean };
+type EventType = {
+  execute: (client: Candle, ...args: unknown[]) => void;
+};
 // websocket events
 for (const [event, { execute }] of loadFiles<EventType>('../events/ws')) {
-  client.ws.on(event as WSEventType, (...params) => execute(client, ...params));
+  candle.ws.on(event as WSEventType, execute.bind(null, candle));
   loggr.debug(`Loaded WebSocket event ${event}`);
 }
 
 export type LightbulbModule = {
   ws?: boolean;
   eventName: string;
-  execute: (client: Client, ...params: unknown[]) => boolean | Promise<boolean>;
+  execute: (client: Candle, ...params: unknown[]) => boolean | Promise<boolean>;
   name: string;
   emitter: 'on' | 'once';
   guildablePath: string;
@@ -135,7 +125,7 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
   '../modules'
 )) {
   for (const [name, value] of Object.entries(modules)) {
-    client[value.emitter](value.eventName, (...params) => {
+    candle[value.emitter](value.eventName, (...params) => {
       const id = get(
         params[0],
         value.guildablePath
@@ -153,112 +143,21 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
           ))
       )
         return;
-      value.execute(client, ...params);
+      value.execute(candle, ...params);
     });
   }
 }
 
-// emit reactions for uncached messages
-client.on('raw', packet => {
-  // We don't want this to run on unrelated packets
-  if (!['MESSAGE_REACTION_ADD', 'MESSAGE_REACTION_REMOVE'].includes(packet.t))
-    return;
-
-  // Grab the channel to check the message from
-  const channel = client.channels.cache.get(packet.d.channel_id) as TextChannel;
-  // Since we have confirmed the message is not cached, let's fetch it
-  channel!.messages
-    .fetch(packet.d.message_id, {
-      cache: true,
-      force: true,
-    })
-    .then(message => {
-      // Emojis can have identifiers of name:id format, so we have to account for that case as well
-      const emoji = packet.d.emoji.id
-        ? `${packet.d.emoji.name}:${packet.d.emoji.id}`
-        : packet.d.emoji.name;
-      // This gives us the reaction we need to emit the event properly, in top of the message object
-      let reaction =
-        packet.t === 'MESSAGE_REACTION_REMOVE' &&
-        message.reactions.resolve(emoji);
-      // Adds the currently reacting user to the reaction's users collection.
-      if (reaction)
-        reaction.users.cache.set(
-          packet.d.user_id,
-          client.users.cache.get(packet.d.user_id) as User
-        );
-      else {
-        reaction = {
-          count: 0,
-          message,
-          client,
-          get emoji() {
-            return new ReactionEmoji(
-              this as unknown as MessageReaction,
-              packet.d.emoji
-            );
-          },
-          _emoji: packet.d.emoji,
-          partial: false,
-          me: false,
-          toJSON() {
-            return { ...this };
-          },
-          async remove(): Promise<null> {
-            return null;
-          },
-          get users() {
-            const h = {
-              // eslint-disable-next-line @typescript-eslint/ban-types
-              get(): {} {
-                return new Proxy({}, h);
-              },
-            };
-            return new Proxy({}, h) as ReactionUserManager;
-          },
-          async fetch() {
-            return this;
-          },
-        } as unknown as MessageReaction;
-      }
-
-      // Check which type of event it is before emitting
-      if (packet.t === 'MESSAGE_REACTION_ADD') {
-        client.emit(
-          'messageReactionAdd',
-          reaction,
-          client.users.cache.get(packet.d.user_id) as User
-        );
-        client.emit(
-          'actualMessageReactionAdd',
-          reaction,
-          client.users.cache.get(packet.d.user_id) as User
-        );
-      } else if (packet.t === 'MESSAGE_REACTION_REMOVE') {
-        client.emit(
-          'messageReactionRemove',
-          reaction,
-          client.users.cache.get(packet.d.user_id) as User
-        );
-        client.emit(
-          'actualMessageReactionRemove',
-          reaction,
-          client.users.cache.get(packet.d.user_id) as User
-        );
-      }
-    });
-});
-
-client.login(process.env.TOKEN);
+candle.light();
 
 process.on('unhandledPromiseRejection', error => {
-  const transaction = client.sentry.startTransaction({
+  const transaction = candle.sentry.startTransaction({
     op: 'upr',
     name: `Unhandled Promise Rejection [${
       error.name
     }] at ${new Date().toLocaleString()} UTC`,
   });
-  client.sentry.captureException(error);
+  candle.sentry.captureException(error);
   transaction.finish();
 });
 

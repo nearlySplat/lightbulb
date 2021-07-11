@@ -16,13 +16,13 @@ export class Candle extends DJSClient {
     super(options);
     this.token = token;
     this.sentry = options.sentry;
+    this.manager = new Manager();
 
     this.sentry.init({
       dsn: config.sentry_dsn,
       environment: __prod__ ? 'production' : 'development',
+      release: this.manager.versionSlug,
     });
-
-    this.manager = new Manager();
   }
 
   // meme helper functions
@@ -35,7 +35,6 @@ export class Candle extends DJSClient {
 
   /**
    * @private
-   * @internal
    */
   async login(token: string): Promise<string> {
     await super.login(token);

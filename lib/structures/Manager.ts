@@ -1,4 +1,4 @@
-import { config } from '@lightbulb/src/constants';
+import { config, COMMIT } from '../../src/constants';
 import { version as DJSVersion } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
@@ -17,5 +17,13 @@ export class Manager {
 
   get packageName(): string {
     return pkg.name;
+  }
+
+  get commit(): string {
+    return COMMIT;
+  }
+
+  get versionSlug(): string {
+    return `${this.packageName}@${this.version}-${this.commit}`;
   }
 }

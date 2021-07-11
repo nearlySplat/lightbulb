@@ -108,4 +108,6 @@ export const NICKSUGGEST_WORDS = {
   ],
 };
 
-export const COMMIT = child_process.execSync('git log -n 1 --format="%H"');
+export const COMMIT = child_process
+  .execSync('git log -n 1 --format="%H"')
+  .toString();
