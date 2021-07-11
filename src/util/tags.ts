@@ -14,6 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+/**
+ * @todo Replace tags.json with user content
+ * @body This file and system of tags should be removed and replaced with user-created tags. Additionally, a shorter way to create commands should be added.
+ *
+ */
 import fs from 'fs';
 import path from 'path';
 const rawTags = JSON.parse(

@@ -38,7 +38,7 @@ import {
 } from '../util';
 import { tags } from '../util/tags';
 import { Document as MongoDBDocument } from 'mongoose';
-import { Candle } from '../../lib/structures/Client.js';
+import { Candle } from '@lightbulb/lib/structures/Client';
 export const buttonHandlers = new Collection<
   Snowflake,
   ButtonInteractionHandler
