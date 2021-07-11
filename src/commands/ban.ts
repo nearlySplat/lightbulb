@@ -25,7 +25,7 @@ import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { config, ERROR_CODES, WHITELIST } from '../constants';
 import { User, IUser } from '../models/User';
-import { defaultDeleteButton, reloadBlacklists } from '../events/message';
+import { defaultDeleteButton, reloadBlacklists } from '../events/messageCreate';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
   args,

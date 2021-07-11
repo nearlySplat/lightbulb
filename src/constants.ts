@@ -21,9 +21,10 @@ import { readFileSync as readFile } from 'fs';
 import { join } from 'path';
 import { YAMLConfig } from './types';
 import { add } from 'lodash';
+import child_process from 'child_process';
 
 export const config = parse(
-  readFile(join(__dirname, '..', 'etc', 'config.yml'), 'utf8')
+  readFile(join(__dirname, '..', '..', 'etc', 'config.yml'), 'utf8')
 ) as YAMLConfig;
 
 export const PREFIXES = Array.isArray(config.bot.prefix)
@@ -70,7 +71,6 @@ export const NICKSUGGEST_WORDS = {
     'Easily',
     'Friendly',
     'Kindly',
-    'H',
   ],
   ed: [
     'Energized',
@@ -88,7 +88,6 @@ export const NICKSUGGEST_WORDS = {
     'Deleted',
     'Recoveried',
     'Obfuscated',
-    'H',
   ],
   thing: [
     'Parakeet',
@@ -106,6 +105,7 @@ export const NICKSUGGEST_WORDS = {
     'Biscuit',
     'Moderator',
     'Administrator',
-    'H',
   ],
 };
+
+export const COMMIT = child_process.execSync('git log -n 1 --format="%H"');

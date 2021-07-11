@@ -13,3 +13,5 @@ bot:
   support_server:
 whitelist: 
   -
+
+sentry_dsn:

@@ -15,9 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import fs from 'fs';
+import path from 'path';
 const rawTags = JSON.parse(
   // eslint-disable-next-line no-undef
-  fs.readFileSync(__dirname + '/../../etc/tags.json', 'utf-8')
+  fs.readFileSync(
+    path.join(__dirname, '..', '..', '..', 'etc', 'tags.json'),
+    'utf-8'
+  )
 );
 export const tags = new Map<string, string>(
   Object.entries(rawTags).map(v => (console.log(v), v)) as [string, string][]

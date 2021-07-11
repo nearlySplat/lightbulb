@@ -5,4 +5,5 @@ import { ClientOptions as DJSClientOptions } from 'discord.js';
 export interface ClientOptions extends DJSClientOptions {
   config: YAMLConfig;
   loggr: CatLoggr;
+  sentry: typeof import('@sentry/node');
 }

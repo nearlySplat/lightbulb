@@ -37,7 +37,7 @@ import {
   SlashCommand,
   SlashCommandResponse,
 } from '../../types';
-import { buttonHandlers } from '../message';
+import { buttonHandlers } from '../messageCreate';
 
 export const execute = async (
   client: Client,

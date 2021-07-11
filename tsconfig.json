@@ -6,8 +6,8 @@
     "diagnostics": false,
     "extendedDiagnostics": false,
     "paths": {
-      "@lightbulb/lib/*": ["lib/*"],
-      "@lightbulb/src/*": ["src/*"]
+      "@lightbulb/lib/*": ["./lib/*"],
+      "@lightbulb/src/*": ["./src/*"]
     }
   },
   "include": ["src/**/*", "lib/**/*"],

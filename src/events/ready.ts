@@ -16,7 +16,7 @@
  */
 import { Client } from 'discord.js';
 import { loggr, statcord } from '..';
-import { reloadBlacklists } from './message';
+import { reloadBlacklists } from './messageCreate';
 
 export const execute = (client: Client): boolean => {
   reloadBlacklists(client);

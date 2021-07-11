@@ -29,7 +29,10 @@ import path from 'path';
 import { EOL } from 'os';
 import { Markov } from '../util/markov';
 const markov = fs
-  .readFileSync(path.join(__dirname, '..', '..', 'etc', 'markov.txt'), 'utf-8')
+  .readFileSync(
+    path.join(__dirname, '..', '..', '..', 'etc', 'markov.txt'),
+    'utf-8'
+  )
   .split(EOL);
 const instance = new Markov(markov);
 export const splatMarkov = {
@@ -61,7 +64,7 @@ export const splatMarkov = {
       if (INVALID(message.content)) return false;
       markov.push(message.cleanContent);
       fs.writeFileSync(
-        path.join(__dirname, '..', '..', 'etc', 'markov.txt'),
+        path.join(__dirname, '..', '..', '..', 'etc', 'markov.txt'),
         markov.join(EOL)
       );
       instance.seed(markov);
@@ -137,7 +140,7 @@ export const splatMarkov = {
         )(v => v.cleanContent)
       );
       fs.writeFileSync(
-        path.join(__dirname, '..', '..', 'etc', 'markov.txt'),
+        path.join(__dirname, '..', '..', '..', 'etc', 'markov.txt'),
         markov.join(EOL)
       );
       instance.seed(markov);

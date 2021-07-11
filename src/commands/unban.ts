@@ -19,7 +19,7 @@ import { CommandExecute, CommandMetadata } from '../types';
 import { get, interpolate } from '../util/i18n';
 import { config, ERROR_CODES } from '../constants';
 import { User, DefaultPronouns } from '../models/User';
-import { reloadBlacklists } from '../events/message';
+import { reloadBlacklists } from '../events/messageCreate';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
   args,
@@ -32,12 +32,12 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .catch(() => null);
   if (!target) return false;
   const user = (await User.findOne({
-      where: {
-        userid: target.id,
-      },
-    }).exec()) ?? {
-      pronouns: DefaultPronouns,
-    };
+    where: {
+      userid: target.id,
+    },
+  }).exec()) ?? {
+    pronouns: DefaultPronouns,
+  };
   const { subject, singularOrPlural } = user.pronouns;
   const banInfo: GuildBan | null = await message.guild.bans
     .fetch(target.id)

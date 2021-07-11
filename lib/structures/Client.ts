@@ -2,14 +2,27 @@ import { Client as DJSClient } from 'discord.js';
 import { Manager } from './Manager';
 import moment, { Moment } from 'moment';
 import { ClientOptions } from '../interfaces/ClientOptions';
+import { i18n } from '../../src/util/index.js';
+import { config, __prod__ } from '../../src/constants.js';
 
 export class Candle extends DJSClient {
   liftoff: Moment;
   manager: Manager;
+  sentry: typeof import('@sentry/node');
+
+  i18n = i18n;
 
   constructor(token: string, options: ClientOptions) {
     super(options);
     this.token = token;
+    this.sentry = options.sentry;
+
+    this.sentry.init({
+      dsn: config.sentry_dsn,
+      environment: __prod__ ? 'production' : 'development',
+    });
+
+    this.manager = new Manager();
   }
 
   // meme helper functions

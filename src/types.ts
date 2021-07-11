@@ -193,6 +193,7 @@ export interface YAMLConfig {
   bot: Bot;
   whitelist: null | string[];
   nodb: boolean;
+  sentry_dsn: string;
 }
 
 export interface Owner {

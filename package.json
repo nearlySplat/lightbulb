@@ -2,20 +2,18 @@
   "name": "lightbulb",
   "version": "1.42.1",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
-    "dev": "nodemon dist",
+    "dev": "nodemon",
     "watch": "tsc -w",
     "compile": "tsc",
     "pull": "git pull",
-    "run": "pm2 restart lightbulb",
+    "run": "node .",
     "prepare": "husky install",
     "format": "fish scripts/format.fish",
-    "commit": "cz",
-    "commit:semver": "bash commit.sh",
     "license": "fish scripts/licenser.fish"
   },
-  "author": "",
+  "author": "Splatterxl <splatterxl@outlook.ie>",
   "license": "ISC",
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
@@ -41,6 +39,8 @@
   },
   "dependencies": {
     "@discordjs/collection": "^0.1.6",
+    "@sentry/node": "^6.8.0",
+    "@sentry/tracing": "^6.8.0",
     "@splatterxl/fetchbuilder": "^0.1.1-1",
     "axios": "^0.21.1",
     "cat-loggr": "^1.1.0",

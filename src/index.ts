@@ -31,12 +31,15 @@ import { get } from 'lodash';
 import { connect } from 'mongoose';
 import { join } from 'path';
 import * as Statcord from 'statcord.js';
-import { INTENTS } from './constants';
+import { Candle } from '../lib/structures/Client.js';
+import { INTENTS, config as yamlConfig } from './constants';
 import { guilds as guildConfig } from './modules/config.json';
 import { Command, SlashCommand } from './types';
 import { loadFiles } from './util';
+import * as Sentry from '@sentry/node';
+
 export const env = config({
-  path: join(__dirname, '..', '.env'),
+  path: join(__dirname, '..', '..', '.env'),
 });
 export let mongoose: typeof import('mongoose') = connect(process.env.MONGO, {
   useNewUrlParser: true,
@@ -47,20 +50,22 @@ export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
 export const startedTimestamp = Date.now();
 export const startedAt = new Date();
-// import './site';
+
 (async () => {
   mongoose = await Promise.resolve(
     <Promise<typeof import('mongoose')>>(<unknown>mongoose)
   );
   loggr.info('[MONGODB] connected to mongodb server');
 })();
+
 const moduleConfig: {
   [k: string]: {
     enabledModules: string[];
     staffRole?: string;
   };
 } = guildConfig;
-export const client = new Client({
+
+export const client = new Candle(process.env.TOKEN, {
   allowedMentions: { users: [], roles: [], parse: [], repliedUser: false },
   presence: {
     status: 'idle',
@@ -73,6 +78,9 @@ export const client = new Client({
   },
   intents: INTENTS,
   partials: ['USER', 'GUILD_MEMBER', 'CHANNEL', 'MESSAGE', 'REACTION'],
+  config: yamlConfig,
+  loggr,
+  sentry: Sentry,
 });
 
 export const statcord = new Statcord.Client({
@@ -242,3 +250,14 @@ client.on('raw', packet => {
 });
 
 client.login(process.env.TOKEN);
+
+process.on('unhandledPromiseRejection', error => {
+  const transaction = client.sentry.startTransaction({
+    op: 'upr',
+    name: `Unhandled Promise Rejection [${
+      error.name
+    }] at ${new Date().toLocaleString()} UTC`,
+  });
+  client.sentry.captureException(error);
+  transaction.finish();
+});

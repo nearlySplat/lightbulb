@@ -6,8 +6,8 @@ import {
   MessageSelectMenu,
   Snowflake,
 } from 'discord.js';
-import { defaultDeleteButton } from '../events/message.js';
-import { ButtonInteractionHandler, CommandResponse } from '../types.js';
+import { defaultDeleteButton } from '../events/messageCreate';
+import { ButtonInteractionHandler, CommandResponse } from '../types';
 // written by bread, ported to ts by Splatterxl
 export async function pagination(
   pages: {

@@ -17,7 +17,7 @@
 import { MessageActionRow, MessageButton } from 'discord.js';
 import { inspect } from 'util';
 import { WHITELIST } from '../constants';
-import { defaultDeleteButton } from '../events/message';
+import { defaultDeleteButton } from '../events/messageCreate';
 import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 export const execute: CommandExecute = async ({
   message,
