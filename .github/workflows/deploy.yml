@@ -1,7 +1,10 @@
 name: Deploy to all services that need deployment
 
 on:
-  - push
+  push:
+    branches: 
+      - "rewrite"
+      - "development"
 
 jobs:
   sentry:
