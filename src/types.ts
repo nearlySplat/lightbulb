@@ -39,6 +39,7 @@ import {
   Snowflake,
   User,
 } from 'discord.js';
+import { Candle } from '../lib/structures/Client.js';
 import { CommandParameters, Parameter } from './util';
 
 export type Command = {
@@ -68,7 +69,7 @@ export interface ButtonInteractionHandlerContext {
   user: User;
   channel: Channel;
   message: Message;
-  client: Client;
+  client: Candle;
   guild?: Guild;
   interaction: MessageComponentInteraction;
   customID: string;

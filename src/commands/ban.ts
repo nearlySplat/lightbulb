@@ -101,6 +101,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
               components: defaultDeleteButton,
             });
         } catch (e) {
+          ctx.client.sentry.captureException(e);
           ctx.message.edit({
             content: `\`\`\`${e}\`\`\``,
             components: defaultDeleteButton,

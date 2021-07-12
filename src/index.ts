@@ -17,7 +17,7 @@
  */
 import * as Sentry from '@sentry/node';
 import CatLoggr from 'cat-loggr/ts';
-import { Client, ClientEvents, WSEventType } from 'discord.js';
+import { ClientEvents, WSEventType } from 'discord.js';
 import { config } from 'dotenv';
 import { get } from 'lodash';
 import { connect } from 'mongoose';
@@ -32,10 +32,10 @@ import { loadFiles } from './util';
 export const env = config({
   path: join(__dirname, '..', '..', '.env'),
 });
-export let mongoose: typeof import('mongoose') = (connect(process.env.MONGO, {
+export let mongoose: typeof import('mongoose') = connect(process.env.MONGO, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}) as unknown) as typeof import('mongoose');
+}) as unknown as typeof import('mongoose');
 export const loggr = new CatLoggr({});
 export const commands = loadFiles<Command>('../commands');
 export const slashCommands = loadFiles<SlashCommand>('../commands/slash');
@@ -77,9 +77,12 @@ export const candle = new Candle(process.env.TOKEN, {
 export const statcord = new Statcord.Client({
   client: candle,
   key: process.env.STATCORD,
-  postCpuStatistics: true /* Whether to post memory statistics or not, defaults to true */,
-  postMemStatistics: true /* Whether to post memory statistics or not, defaults to true */,
-  postNetworkStatistics: true /* Whether to post memory statistics or not, defaults to true */,
+  postCpuStatistics:
+    true /* Whether to post memory statistics or not, defaults to true */,
+  postMemStatistics:
+    true /* Whether to post memory statistics or not, defaults to true */,
+  postNetworkStatistics:
+    true /* Whether to post memory statistics or not, defaults to true */,
 });
 
 statcord
@@ -148,14 +151,7 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
 candle.light();
 
 process.on('unhandledPromiseRejection', error => {
-  const transaction = candle.sentry.startTransaction({
-    op: 'upr',
-    name: `Unhandled Promise Rejection [${
-      error.name
-    }] at ${new Date().toLocaleString()} UTC`,
-  });
   candle.sentry.captureException(error);
-  transaction.finish();
 });
 
 // This allows TypeScript to detect our global value

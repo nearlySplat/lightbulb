@@ -38,6 +38,7 @@ import {
 } from '../util';
 import { tags } from '../util/tags';
 import { Document as MongoDBDocument } from 'mongoose';
+import { Candle } from '../../lib/structures/Client.js';
 export const buttonHandlers = new Collection<
   Snowflake,
   ButtonInteractionHandler
@@ -80,7 +81,7 @@ export async function reloadBlacklists(client: Client): Promise<Snowflake[]> {
   return bls;
 }
 export const execute = async (
-  client: Client,
+  client: Candle,
   message: Message
 ): Promise<boolean> => {
   const deleteButtonHandler: ButtonInteractionHandler = async ctx => {
@@ -198,6 +199,7 @@ export const execute = async (
           deleteButtonHandler,
         });
       } catch (e) {
+        client.sentry.captureException(e);
         handleCommandResult([
           { content: `\`\`\`js\n${e.toString()}\n\`\`\`` },
           null,
