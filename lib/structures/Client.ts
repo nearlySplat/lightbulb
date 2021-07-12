@@ -25,6 +25,11 @@ export class Candle extends DJSClient {
       release: this.manager.commit,
       integrations: [new Tracing.Integrations.Mongo({ useMongoose: true })],
     });
+    
+    this.transaction = this.sentry.startTransaction({
+      op: `transaction-${this.readyAt.getTime()}`,
+      name: 'Automatic transaction on client ready'
+    });
   }
 
   // meme helper functions
