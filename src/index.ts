@@ -150,10 +150,6 @@ for (const [filename, modules] of loadFiles<Record<string, LightbulbModule>>(
 
 candle.light();
 
-process.on('unhandledPromiseRejection', error => {
-  candle.sentry.captureException(error);
-});
-
 // This allows TypeScript to detect our global value
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -165,3 +161,8 @@ declare global {
 }
 
 (global as NodeJS.Global).__rootdir__ = __dirname || process.cwd();
+
+process.on('beforeExit', code => {
+  candle.transaction.finish();
+  candle.loggr.info('Process exiting with code', code);
+});

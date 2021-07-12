@@ -18,7 +18,7 @@ import { readdirSync } from 'fs';
 
 // eslint-disable-next-line no-undef
 export const localeList = readdirSync(__dirname).filter(
-  v => !v.match(/\.[jt]s$/g)
+  v => !v.match(/\.([jt]s|map)$/g)
 );
 
 const strings: { [index: string]: Record<string, string> } = {};

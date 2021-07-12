@@ -39,8 +39,9 @@
   },
   "dependencies": {
     "@discordjs/collection": "^0.1.6",
-    "@sentry/node": "^6.8.0",
-    "@sentry/tracing": "^6.8.0",
+    "@sentry/integrations": "^6.9.0",
+    "@sentry/node": "^6.9.0",
+    "@sentry/tracing": "^6.9.0",
     "@splatterxl/fetchbuilder": "^0.1.1-1",
     "axios": "^0.21.1",
     "cat-loggr": "^1.1.0",
@@ -59,6 +60,7 @@
     "mongoose": "^5.13.1",
     "node-fetch": "^2.6.1",
     "statcord.js": "^3.2.0",
+    "tslib": "^2.3.0",
     "yaml": "^1.10.2"
   },
   "type": "commonjs"
