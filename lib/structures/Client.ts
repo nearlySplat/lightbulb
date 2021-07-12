@@ -1,11 +1,11 @@
+import { config, __prod__ } from '../../src/constants.js';
+import { i18n } from '../../src/util';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import CatLoggr from 'cat-loggr/ts';
 import { Client } from 'discord.js';
 import moment, { Moment } from 'moment';
-import { config, __prod__ } from '../../src/constants.js';
-import { i18n } from '../../src/util/index.js';
 import { ClientOptions } from '../interfaces/ClientOptions';
 import { Manager } from './Manager';
 
@@ -18,6 +18,7 @@ export class Candle extends Client {
   sentry: typeof import('@sentry/node');
   transaction: import('@sentry/types/dist/transaction').Transaction;
 
+  // i18n
   i18n = i18n;
 
   constructor(token: string, options: ClientOptions) {

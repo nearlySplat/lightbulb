@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import { I18nManager } from '@lightbulb/lib/structures/I18nManager.js';
 import { Guild, GuildChannel, GuildMember, TextChannel } from 'discord.js';
 import { get as _get } from 'lodash';
 import { Awaited } from '../types.js';
@@ -21,7 +22,6 @@ import { Awaited } from '../types.js';
 export * from './createLogMessage';
 export * from './getAccessLevel';
 export * from './getCases';
-export * as i18n from './i18n';
 export * from './loadFiles';
 export * from './noop';
 export * from './Parameters';
@@ -123,3 +123,5 @@ export function formatBytes(bytes: number): string {
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   return `${parseFloat((bytes / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`;
 }
+
+export const i18n = new I18nManager();
