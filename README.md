@@ -26,13 +26,11 @@ You'll need to have a MongoDB database ready for this. Put the URL in the `.env`
 
 ## Running the bot
 
-You'll need to install [`nodemon`](https://npmjs.com/package/nodemon) for this as some stray child process code has been left (intentionally, maybe) in the index file. This will be fixed in a future version.
-
-When all that is done, run `nodemon` and the bot will hopefully connect to Discord!
+You can run the bot in any way 
 
 ## Contributing
 
-This projects uses the [Conventional Commits standard](https://www.conventionalcommits.org/en/v1.0.0/) for commits. If you want to generate your commit message interactively, use `npm run commit`. Commit messages are linted befote commit using Git Hooks via Husky.
+This projects uses the [Conventional Commits standard](https://conventionalcommits.org/en/v1.0.0) for commits. If you want to generate your commit message interactively, use `npm run commit`. Commit messages are linted befote commit using Git Hooks via Husky.
 
 License headers are applied to every file before commit, if you want your name to be explicitly mentioned contact a maintainer.
 
@@ -40,12 +38,11 @@ Every file is also formatted before commit using Husky, again.
 
 ## Legal Stuff
 
-Lightbulb is a Discord Bot made by Splatterxl. You are free to use its code in your bot if you
-
-1. do not claim it is your code, and
-1. credit the actual author in a prominent place in your code, e.g. a `NOTICE` file.
+Lightbulb is a Discord Bot made by Splatterxl. You are free to use its code in your bot if you keep the original license in a prominent place in your code, e.g. at the top of the file the code has been copied to or in a NOTICE file. Read the [GNU Affero General Public License](https://www.gnu.org/licenses).
 
 ```
+Lightbulb: a utility-focused meme bot.
+
 Copyright (C) 2020 Splatterxl
 
 This program is free software: you can redistribute it and/or modify
@@ -61,3 +58,4 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
+
