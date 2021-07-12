@@ -261,3 +261,15 @@ process.on('unhandledPromiseRejection', error => {
   client.sentry.captureException(error);
   transaction.finish();
 });
+
+// This allows TypeScript to detect our global value
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace NodeJS {
+    interface Global {
+      __rootdir__?: string;
+    }
+  }
+}
+
+(global as NodeJS.Global).__rootdir__ = __dirname || process.cwd();

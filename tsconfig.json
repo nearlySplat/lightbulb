@@ -8,7 +8,10 @@
     "paths": {
       "@lightbulb/lib/*": ["./lib/*"],
       "@lightbulb/src/*": ["./src/*"]
-    }
+    },
+    "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "/"
   },
   "include": ["src/**/*", "lib/**/*"],
   "compileOnSave": false,
