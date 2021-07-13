@@ -16,14 +16,14 @@
  */
 import { CommandExecute, CommandMetadata } from '../types';
 import { AccessLevels, getAccessLevel, toProperCase } from '../util';
-import { get } from '../util/i18n';
 
 export const execute: CommandExecute<'commandName'> = ({
   locale,
   commands,
   args,
+  t,
 }) => {
-  if (!args[0]) return [{ content: get('HELP_ARRIVED', locale) }, null];
+  if (!args[0]) return [{ content: t('help.arrived', locale) }, null];
   else
     return [
       {
@@ -32,7 +32,7 @@ export const execute: CommandExecute<'commandName'> = ({
             ? `\`\`\`ini\n${constructHelpCommand(
                 commands.get(args.data!.commandName)!.meta
               )}\`\`\``
-            : get('HELP_ARRIVED', locale)) ?? 'No data.',
+            : t('help.arrived', locale)) ?? 'No data.',
       },
       null,
     ];
