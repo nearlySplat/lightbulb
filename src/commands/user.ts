@@ -22,6 +22,11 @@ import { formatPronouns } from './whataremypronouns';
 import { commands } from '..';
 import moment from 'moment';
 
+/**
+ * @todo I18n strings for user command
+ * @body Currently, this is always going to be in English.
+ */
+
 export const meta: CommandMetadata = {
   name: 'user',
   description: 'all the info on a user',
@@ -57,15 +62,18 @@ export const execute: CommandExecute<'target'> = async ({
       uid: user.id,
     }).exec();
   if (!user) {
-    message.channel.send('no such user could be found');
-    return false;
+    return [
+      { content: message.client.i18n.get('user.not_found', locale) },
+      null,
+    ];
   }
+  const presence = message.guild.presences.cache.get(user.id);
   return [
     {
       embed: new MessageEmbed()
         .setColor(message.guild.me!.roles.highest.color)
         .setFooter(
-          i18n.interpolate(i18n.get('GENERIC_REQUESTED_BY', locale), {
+          message.client.i18n.get('generic_requested_by', locale, {
             requester: `${message.author.tag} (${message.author.id})`,
           })
         )
@@ -80,7 +88,7 @@ export const execute: CommandExecute<'target'> = async ({
           ).fromNow()})
 	      **Account Type**: ${user.system ? 'System' : user.bot ? 'Bot' : 'Normal'}
 	      **Status**: ${getBestPresence(
-          user.presence.clientStatus as ClientPresenceStatusData
+          presence.clientStatus as ClientPresenceStatusData
         )}`.replace(/\n[\t ]*/g, '\n'),
           true
         )

@@ -16,32 +16,18 @@
  */
 import { CommandMetadata, CommandExecute } from '../types';
 import { GuildMember, Snowflake, TextChannel } from 'discord.js';
-import { createLogMessage } from '../util';
-export const execute: CommandExecute = async ({ message }) => {
-  const channel = message.guild.channels.cache.find(
-    value =>
-      ((value.name?.match(/^💡(-log(s|ging)?)?$/g) ||
-        ((value as TextChannel).topic as string | undefined)?.includes(
-          '--lightbulb-logs'
-        )) &&
-        value.type == 'GUILD_TEXT' &&
-        value
-          .permissionsFor(message.guild.me as GuildMember)
-          ?.has('SEND_MESSAGES')) ??
-      false
-  ) as TextChannel;
+import { createLogMessage, getLogChannel } from '../util';
+export const execute: CommandExecute = async ({ message, locale }) => {
+  const channel = getLogChannel(message.guild);
   if (channel) {
     const result = createLogMessage({
       compact: channel.topic?.includes('--compact'),
-      victim: {
-        id: '0'.repeat(19) as Snowflake,
-        tag: 'Clyde#0000',
-      },
+      victim: message.author,
       perpetrator: {
-        id: '0'.repeat(17) as Snowflake,
+        id: '0'.repeat(18) as Snowflake,
         tag: 'Nelly#0000',
       },
-      reason: `Mod log test by **${message.author.tag}**`,
+      reason: message.client.i18n.get('moderation.no_reason', locale),
       case: 0,
       action: 'Ban',
       emoji: '🔨',

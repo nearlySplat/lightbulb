@@ -197,6 +197,7 @@ export const execute = async (
           locale: 'en',
           commandName,
           deleteButtonHandler,
+          t: client.i18n.i18next.t,
         });
       } catch (e) {
         client.sentry.captureException(e);

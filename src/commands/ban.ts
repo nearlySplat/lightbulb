@@ -36,21 +36,14 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     return false;
   const target = await message.client.users
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
-    .catch(() => null);
+    .catch(() => {});
   if (!target) return false;
-  const user =
-    (await User.findOne({
-      uid: target.id,
-    }).exec()) || <IUser>(<unknown>{ pronouns: { object: 'them' } });
-  const {
-    pronouns: { object: objectPronoun },
-  } = user;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async (): Promise<CommandResponse> => {
     return [
       {
         content: message.client.i18n.get('ban.confirmation', locale, {
-          objectPronoun,
+          target,
         }),
         components: [
           new MessageActionRow({
@@ -80,7 +73,8 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
         try {
           await message.guild.members.ban(target.id, {
             reason: `[ ${message.author.tag} ]: ${
-              args.data.reason || `None provided`
+              args.data.reason ||
+              message.client.i18n.get('moderation.no_reason')
             }`,
           });
           if (message.guild.id === config.bot.support_server) {

@@ -95,7 +95,7 @@ export const execute: CommandExecute = async () => {
           data: {
             embeds: [
               {
-                description: ctx.message.client.i18n.get('chess.help'),
+                description: ctx.t('chess.help'),
                 color: (
                   ctx.message.member || {
                     roles: { highest: { color: CLIENT_COLOUR } },

@@ -41,6 +41,7 @@ import {
 import { Candle } from '../lib/structures/Client.js';
 import { Message } from '@lightbulb/lib/structures/Message';
 import { CommandParameters, Parameter } from './util';
+import { TFunction } from 'i18next';
 
 export type Command = {
   execute: CommandExecute;
@@ -86,6 +87,7 @@ export interface Context<T extends string = string> {
   locale: string;
   commandName: string;
   deleteButtonHandler: ButtonInteractionHandler;
+  t: TFunction;
 }
 
 export interface CommandMetadata {

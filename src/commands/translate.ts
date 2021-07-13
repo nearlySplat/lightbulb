@@ -89,7 +89,12 @@ export const execute: CommandExecute<'text'> = async ctx => {
   const result: ExtendedMessageOptions = {};
   if (!text) {
     if (!ctx.message.reference) {
-      return [{ content: 'No text to translate' }, null];
+      return [
+        {
+          content: ctx.t('translate.no_text', ctx.locale),
+        },
+        null,
+      ];
     }
     target = await ctx.message.channel.messages.fetch(
       ctx.message.reference.messageId

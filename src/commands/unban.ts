@@ -15,8 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { GuildBan, Permissions, Snowflake } from 'discord.js';
-import { CommandExecute, CommandMetadata } from '../types';
-import { get, interpolate } from '../util/i18n';
+import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 import { config, ERROR_CODES } from '../constants';
 import { User, DefaultPronouns } from '../models/User';
 import { reloadBlacklists } from '../events/messageCreate';
@@ -42,13 +41,13 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   const banInfo: GuildBan | null = await message.guild.bans
     .fetch(target.id)
     .catch(() => null);
-  const unban = async () => {
+  const unban = async (): Promise<CommandResponse> => {
     try {
       return await message.guild.members
         .unban(
           target.id,
           `[ ${message.author.tag} ]: ${
-            args.data.reason || `No reason provided.`
+            args.data.reason || message.client.i18n.get('moderation.no_reason')
           }`
         )
         .then(() => {
@@ -56,14 +55,12 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
           return [
             {
               content:
-                interpolate(get('UNBAN_SUCCESSFUL', locale), {
-                  target: target.tag,
+                message.client.i18n.get('unban.success', locale, {
+                  target: target,
                   bannedFor: banInfo!.reason,
-                  singular: (singularOrPlural === 'singular').toString(),
-                  subject,
                 }) +
                 (message.guild.id === config.bot.support_server
-                  ? '\nAdditionally, as this server is my support server, I have updated the blacklist.'
+                  ? message.client.i18n.get('moderation.blacklist')
                   : ''),
             },
             null,
@@ -72,7 +69,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     } catch (e) {
       return [
         {
-          content: interpolate(get('GENERIC_ERROR', locale), {
+          content: message.client.i18n.get('error.generic', locale, {
             code: ERROR_CODES.BAN_UNSUCCESSFUL.toString(),
             message: e,
           }),
@@ -86,9 +83,9 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   } else if (!banInfo) {
     return [
       {
-        content: interpolate(get('GENERIC_ERROR', locale), {
+        content: message.client.i18n.get('error.generic', locale, {
           code: ERROR_CODES.UNBAN_NOT_BANNED.toString(),
-          message: 'User is not banned from this guild.',
+          message: message.client.i18n.get('unban.not_banned'),
         }),
       },
       null,

@@ -16,16 +16,15 @@
  */
 import { CommandExecute, CommandMetadata } from '../types';
 import { slashCommands } from '..';
-import { get } from '../util/i18n';
 
 export const meta: CommandMetadata = {
   name: 'syncslash',
   description: 'Syncs slash commands (owner only)',
   accessLevel: 3,
-  aliases: ['syncinteractions'],
+  aliases: ['syncinteractions', 'slashsync'],
 };
 
-export const execute: CommandExecute = async ({ client, message }) => {
+export const execute: CommandExecute = async ({ client, message, locale }) => {
   const curr = await client.api
     .applications(client.user!.id)
     .commands.get<{ name: string }[]>();
@@ -33,12 +32,19 @@ export const execute: CommandExecute = async ({ client, message }) => {
     ({ meta: { name } }) => !curr.find(({ name: iName }) => iName === name)
   );
   if (!toAdd.size) {
-    message.channel.send(get('SLASHSYNC_NO_TARGETS'));
+    message.channel.send(message.client.i18n.get('slashsync.no_targets'));
     return false;
   }
   for (const [, command] of toAdd)
     client.api.applications(client.user!.id).commands.post({
-      data: (command.meta as unknown) as Record<string, unknown>,
+      data: command.meta as unknown as Record<string, unknown>,
     });
-  return [{ content: get('SLASHSYNC_SUCCESSFUL') }, null];
+  return [
+    {
+      content: message.client.i18n.get('slashsync.successWithCount', locale, {
+        count: toAdd.size,
+      }),
+    },
+    null,
+  ];
 };

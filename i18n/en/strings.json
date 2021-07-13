@@ -8,8 +8,8 @@
   "generic_requested_by": "Requested by {{requester}}",
   "ban": {
     "success": "**{{target.user.tag}}** was banned successfully.",
-    "blacklist": "\u0020Additionally, as this is my support server, the blacklists have been updated.",
-    "noperms": "One or both of us has insufficient permissions to ban this user."
+    "noperms": "One or both of us has insufficient permissions to ban this user.",
+    "confirmation": "Are you sure you want to ban **{{target.user.tag}}**?"
   },
   "error": {
     "generic": "An error occured. `{{code}} {{message}}`",
@@ -32,5 +32,36 @@
   "messageinfo": {
     "channel_not_found": "Could not resolve channel.",
     "not_found": "Could not resolve message."
+  },
+  "user": {
+    "not_found": "Could not resolve user."
+  },
+  "moderation": {
+    "no_reason": "No reason provided",
+    "blacklist": "\u0020Additionally, as this is my support server, the blacklists have been updated."
+  },
+  "unban": {
+    "success": "**{{target.user.tag}}** was unbanned successfully. They were previously banned for:\n```\n{{bannedFor}}\n```",
+    "not_banned": "The user is not banned from this server."
+  },
+  "translate": {
+    "no_text": "No text was provided to translate."
+  },
+  "slashsync": {
+    "no_targets": "All slash commands are synced.",
+    "successWithCount": "Successfully synced {{count}} command.",
+    "successWithCount_plural": "Successfully synced {{count}} commands."
+  },
+  "source": {
+    "link": "Take us into Hyperspace, Chewie!"
+  },
+  "reload": {
+    "succeeded": "Succeeded",
+    "failed": "Failed",
+    "none": "None"
+  },
+  "presence": {
+    "no_data": "No data.",
+    "header": "__**{{target.user.tag}}**'s Presence__"
   }
 }
