@@ -22,7 +22,6 @@ import {
   Collection,
   Guild,
   GuildMember,
-  Message,
   Snowflake,
 } from 'discord.js';
 import { commands, loggr, statcord } from '..';
@@ -39,6 +38,8 @@ import {
 import { tags } from '../util/tags';
 import { Document as MongoDBDocument } from 'mongoose';
 import { Candle } from '@lightbulb/lib/structures/Client';
+import { Message } from '@lightbulb/lib/structures/Message';
+
 export const buttonHandlers = new Collection<
   Snowflake,
   ButtonInteractionHandler
@@ -118,7 +119,7 @@ export const execute = async (
   if (!message.guild || !message.member) return false;
   const isKsIn = !!(await message
     .guild!.members.fetch('236726289665490944')
-    .catch(() => null));
+    .catch(() => {}));
 
   async function handleCommand(
     prefix: string,
@@ -149,7 +150,6 @@ export const execute = async (
         let result = tags.get(args.join(' ')) || tags.get(commandName);
         if (Array.isArray(result))
           result = result[Math.floor(Math.random() * result.length)];
-        result = i18n.interpolate(result, { args0: args[0] });
         handleCommandResult([{ content: result }, null]);
         return true;
       } else return false;
@@ -194,7 +194,7 @@ export const execute = async (
           commands,
           commandHandlerStarted: timeStarted,
           accessLevel: getCurrentLevel(message.member as GuildMember),
-          locale: 'en_UK',
+          locale: 'en',
           commandName,
           deleteButtonHandler,
         });

@@ -32,7 +32,6 @@ import {
   Guild,
   GuildMember,
   GuildPreview,
-  Message,
   MessageEmbed,
   MessageOptions,
   PermissionFlags,
@@ -40,6 +39,7 @@ import {
   User,
 } from 'discord.js';
 import { Candle } from '../lib/structures/Client.js';
+import { Message } from '@lightbulb/lib/structures/Message';
 import { CommandParameters, Parameter } from './util';
 
 export type Command = {
@@ -83,7 +83,7 @@ export interface Context<T extends string = string> {
   commands: Collection<string, Command>;
   commandHandlerStarted: number;
   accessLevel: number;
-  locale: 'uwu' | 'en_UK';
+  locale: string;
   commandName: string;
   deleteButtonHandler: ButtonInteractionHandler;
 }

@@ -23,7 +23,6 @@ import {
   TextChannel,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
-import { i18n } from '../util';
 
 export const meta: CommandMetadata = {
   name: 'message',
@@ -73,7 +72,9 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
       message.channel.id) as Snowflake
   ) as TextChannel;
   if (!channel || ![NewsChannel, TextChannel].some(v => channel instanceof v)) {
-    message.channel.send(i18n.get('MESSAGEINFO_CHANNEL_NOT_FOUND', locale));
+    message.channel.send(
+      message.client.i18n.get('messageinfo.channel_not_found', locale)
+    );
     return false;
   }
   let target: Message;
@@ -88,7 +89,9 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
           (args.data.messageid || message.id) as Snowflake
         ))) as Message;
   } catch {
-    message.channel.send(i18n.get('MESSAGEINFO_MESSAGE_NOT_FOUND', locale));
+    message.channel.send(
+      message.client.i18n.get('messageinfo.not_found', locale)
+    );
     return false;
   }
   const text = `**__ID__**: ${target.id}
@@ -130,7 +133,7 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
         color: message.guild.me!.roles.highest.color,
         description: text,
         footer: {
-          text: i18n.interpolate(i18n.get('GENERIC_REQUESTED_BY', locale), {
+          text: message.client.i18n.get('generic_requested_by', locale, {
             requester: `${message.author.tag} (${message.author.id})`,
           }),
           iconURL: message.author.avatarURL() as string,

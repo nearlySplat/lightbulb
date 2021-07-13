@@ -1,3 +1,36 @@
 {
-  "hello_world": "Hello, World"
+  "about": "Hi, I'm a bot. Splatterxl#8999 made me.",
+  "achoo": "Bless you!",
+  "areyoualive": "no.",
+  "avatar": {
+    "title": "{{target.user.tag}}'s Avatar"
+  },
+  "generic_requested_by": "Requested by {{requester}}",
+  "ban": {
+    "success": "**{{target.user.tag}}** was banned successfully.",
+    "blacklist": "\u0020Additionally, as this is my support server, the blacklists have been updated.",
+    "noperms": "One or both of us has insufficient permissions to ban this user."
+  },
+  "error": {
+    "generic": "An error occured. `{{code}} {{message}}`",
+    "target_owner": "Target is owner",
+    "disallowed_target": "Disallowed target",
+    "self_mod_target": "Self is moderation target"
+  },
+  "banne": {
+    "success": "Successfully bent **{{target.user.tag}}**. ��"
+  },
+  "bean": {
+    "success": "Successfully beaned **{{target.user.tag}}**. <:bean:813134247505559572>"
+  },
+  "chess": {
+    "help": "Hi there! So, you want to take a go at the centuries-old game of chess? Here's how to play it with {{botname}}!\n\n**Buttons**\nYou may notice we are using buttons for this command. Yes, we are, but because of the 5×5 (${\n  5 * 5\n}) limit on the amount of buttons on each message, you'll be using text to control your pieces.\n\nSince this looks absolutely horrible on mobile, we have taken care to have the bot delete valid commands (related to the current game, of course) when it can. And, if it can't, it'll react with ✅ or ❌ depending on whether the command was valid.\n\n**How to play**\nWe are using a chess framework called **[chess.js](https://npmjs.com/package/chess.js)** to manage your games, so all the [rules of chess](https://rcc.fide.com/wp-content/uploads/2019/11/FIDE_Laws-Of_Chess_2018-1.pdf) \\*should\\* be reflected.\n**Commands**\nTo use any of the commands listed below, just type them in chat! No prefix, no anything.\n\n*Mods, if you're reading this, only players in a current game are responded to.*\n\n- `show me the legal moves` — ... shows you the legal moves\n- `what colour am I` (with the capital `I`) — self explanatory\n- `resign` — forfeits your move and awards the other player with a win\n- and finally, any valid move (see the first command) — resolves the pieces to move, moves those pieces, captures pieces if necessary and forwards the move to the next person. *Note: reacts with ❌ if the move is illegal*"
+  },
+  "die": {
+    "success": "\\*light turns off*"
+  },
+  "messageinfo": {
+    "channel_not_found": "Could not resolve channel.",
+    "not_found": "Could not resolve message."
+  }
 }

@@ -26,7 +26,7 @@ import {
   User,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
-import { AccessLevels, i18n, reverseIndex } from '../util';
+import { AccessLevels, reverseIndex } from '../util';
 import {
   Chess as ChessClient,
   PieceType as ChessJSPieceType,
@@ -95,7 +95,7 @@ export const execute: CommandExecute = async () => {
           data: {
             embeds: [
               {
-                description: i18n.get('CHESS_HELP'),
+                description: ctx.message.client.i18n.get('chess.help'),
                 color: (
                   ctx.message.member || {
                     roles: { highest: { color: CLIENT_COLOUR } },
@@ -255,11 +255,11 @@ const vsButton = new MessageButton()
   .setLabel('v.')
   .setDisabled(true);
 function generatePlayerRow(players: [User | null, User | null]) {
-  const arr: [
+  const arr: [MessageButton, MessageButton, MessageButton] = [] as unknown as [
     MessageButton,
     MessageButton,
     MessageButton
-  ] = ([] as unknown) as [MessageButton, MessageButton, MessageButton];
+  ];
   for (let i = 0; i < players.length; i++) {
     arr.push(
       ...[
@@ -323,7 +323,7 @@ function generatePieceArray(board: Chess.Board) {
 function generateBoard(
   board: ({ type: ChessJSPieceType; color: 'b' | 'w' } | null)[][]
 ): Chess.Board {
-  const toReturn = (Object.fromEntries(
+  const toReturn = Object.fromEntries(
     board.flat().map((v, i) => [
       coords[i],
       {
@@ -335,7 +335,7 @@ function generateBoard(
           v,
       },
     ])
-  ) as unknown) as Chess.Board;
+  ) as unknown as Chess.Board;
   return toReturn;
 }
 

@@ -15,12 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { CommandExecute, CommandMetadata } from '../types';
-import { get } from '../util/i18n';
 
-export const execute: CommandExecute = ({ locale }) => [
-  { content: get('ACHOO', locale) },
-  null,
-];
+export const execute: CommandExecute = ({
+  locale,
+  message: {
+    client: { i18n },
+  },
+}) => [{ content: i18n.get('achoo', locale) }, null];
 
 export const meta: CommandMetadata = {
   name: 'achoo',

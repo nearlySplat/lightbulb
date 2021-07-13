@@ -17,7 +17,6 @@
 import { TextChannel } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { createLogMessage, getLogChannel, getMember } from '../util';
-import { get, interpolate } from '../util/i18n';
 export const execute: CommandExecute<'user' | 'reason'> = ({
   message,
   args,
@@ -26,9 +25,9 @@ export const execute: CommandExecute<'user' | 'reason'> = ({
   const target = getMember(message.guild, args.data.user) ?? {
     user: { tag: args.data.user, id: '0' },
   };
-  message.reply(
-    interpolate(get('BANNE_SUCCESSFUL', locale), { target: target.user.tag })
-  );
+  message.reply({
+    content: message.client.i18n.get('banne.success', locale, { target }),
+  });
   const channel = getLogChannel(message.guild) as TextChannel;
   if (!channel) return true;
   channel.send(

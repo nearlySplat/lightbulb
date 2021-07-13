@@ -31,4 +31,7 @@ export const meta: CommandMetadata = {
   ],
 };
 
-export const execute: CommandExecute = () => [{ content: 'no' }, null];
+export const execute: CommandExecute = ctx => [
+  { content: ctx.message.client.i18n.get('areyoualive', ctx.locale) },
+  null,
+];

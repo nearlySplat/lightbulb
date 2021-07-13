@@ -21,11 +21,11 @@ import {
   Permissions,
   Snowflake,
 } from 'discord.js';
-import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
-import { get, interpolate } from '../util/i18n';
+import { Message } from '../../lib/structures/Message.js';
 import { config, ERROR_CODES, WHITELIST } from '../constants';
-import { User, IUser } from '../models/User';
 import { defaultDeleteButton, reloadBlacklists } from '../events/messageCreate';
+import { IUser, User } from '../models/User';
+import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
   args,
@@ -49,7 +49,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   const ban = async (): Promise<CommandResponse> => {
     return [
       {
-        content: interpolate(get('BAN_CONFIRMATION', locale), {
+        content: message.client.i18n.get('ban.confirmation', locale, {
           objectPronoun,
         }),
         components: [
@@ -87,16 +87,15 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
             void reloadBlacklists(message.client);
             ctx.message.edit({
               content:
-                interpolate(get('BAN_SUCCESSFUL', locale), {
-                  target: target.tag,
-                }) +
-                ' Additionally, as this is my support server, the blacklist has been updated.',
+                message.client.i18n.get('ban.success', locale, {
+                  target,
+                }) + message.client.i18n.get('ban.blacklist'),
               components: defaultDeleteButton,
             });
           } else
             ctx.message.edit({
-              content: interpolate(get('BAN_SUCCESSFUL', locale), {
-                target: target.tag,
+              content: message.client.i18n.get('ban.success', locale, {
+                target,
               }),
               components: defaultDeleteButton,
             });
@@ -116,30 +115,32 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   }
   if (member.user.id === message.guild.ownerId) {
     message.channel.send(
-      interpolate(get('GENERIC_ERROR', locale), {
+      message.client.i18n.get('error.generic', locale, {
         code: ERROR_CODES.TARGET_IS_OWNER.toString(),
-        message: 'Target is owner',
+        message: message.client.i18n.get('error.target_owner'),
       })
     );
+
     return false;
   }
+
   if (
     member.user.id === message.client.user.id ||
     WHITELIST.includes(target.id)
   ) {
     message.channel.send(
-      interpolate(get('GENERIC_ERROR', locale), {
+      message.client.i18n.get('error.generic', locale, {
         code: ERROR_CODES.DISALLOWED_TARGET.toString(),
-        message: 'Disallowed target',
+        message: message.client.i18n.get('error.disallowed_target'),
       })
     );
     return false;
   }
   if (member.user.id === message.author.id) {
     message.channel.send(
-      interpolate(get('GENERIC_ERROR', locale), {
+      message.client.i18n.get('error.generic', locale, {
         code: ERROR_CODES.SELF_IS_MODERATION_TARGET.toString(),
-        message: 'Self is moderation target',
+        message: message.client.i18n.get('error.self_mod_target'),
       })
     );
     return false;
@@ -151,7 +152,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
         message.member.roles.highest.rawPosition
     ) {
       message.channel.send(
-        interpolate(get('BAN_INSUFFICIENT_PERMISSIONS', locale), {
+        message.client.i18n.get('ban.noperms', locale, {
           target: member.user.tag,
         })
       );

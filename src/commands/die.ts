@@ -15,15 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { Context, CommandMetadata } from '../types';
-import { get } from '../util/i18n';
-export const execute = ({
+export const execute = async ({
   message,
   args,
   locale,
-}: Context): boolean | Promise<boolean> => {
-  void message.reply(get('DIE_SUCCESS', locale));
+}: Context): Promise<boolean> => {
+  await message.reply({
+    content: message.client.i18n.get('die.success', locale),
+  });
+  message.client.destroy();
   // eslint-disable-next-line no-undef
-  setTimeout(() => process.exit(+args.data.code), 0);
+  setTimeout(() => process.exit(+args.data.code), 100);
   return true;
 };
 

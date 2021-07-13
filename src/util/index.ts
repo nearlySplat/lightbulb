@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { I18nManager } from '@lightbulb/lib/structures/I18nManager.js';
+import { I18nManager } from '../../lib/structures/I18nManager.js';
 import { Guild, GuildChannel, GuildMember, TextChannel } from 'discord.js';
 import { get as _get } from 'lodash';
 import { Awaited } from '../types.js';
