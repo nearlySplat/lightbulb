@@ -8,9 +8,9 @@ This is the roadmap for the current rewrite.
 - [ ] clean code and make it more readable
 - [x] switch to [`i18next`][i18next] package instead of wonky custom implementation
 - [ ] extend discord.js's classes to avoid importing from index.js
-- [ ] work on using database space more, currently the user can't set _any_ configuration of their guild
 - [ ] tags
 - [ ] use pronouns more widely
+- [ ] Guild settings (currently prefixes are supported but you can't set it)
 
 ## Other
 
