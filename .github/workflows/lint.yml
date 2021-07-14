@@ -1,9 +1,6 @@
 name: Lint code
 on:
-  push:
-    branches: 
-      - development
-      - rewrite
+  - push
 jobs:
   docs:
     name: Lint
