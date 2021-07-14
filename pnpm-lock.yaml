@@ -10,7 +10,7 @@ specifiers:
   '@splatterxl/fetchbuilder': ^0.1.1-1
   '@splatterxl/tsconfig': 1.0.0
   '@types/chess.js': 0.11.2
-  '@types/eslint': 7.2.14
+  '@types/eslint': 7.28.0
   '@types/graceful-fs': 4.1.5
   '@types/lodash': 4.14.171
   '@types/node': 16.3.2
@@ -72,7 +72,7 @@ devDependencies:
   '@commitlint/config-conventional': 12.1.4
   '@splatterxl/tsconfig': 1.0.0
   '@types/chess.js': 0.11.2
-  '@types/eslint': 7.2.14
+  '@types/eslint': 7.28.0
   '@types/graceful-fs': 4.1.5
   '@types/lodash': 4.14.171
   '@types/node': 16.3.2
@@ -504,8 +504,8 @@ packages:
     resolution: {integrity: sha512-ZgT0f5Dm1x+kjA/RhCQpBM2NoUGkdk9JFdwncW7/GdqzHCOkLsOTq4k/EKRiRTCFLXR4fTKk8j7KNOmzzHQVgg==}
     dev: true
 
-  /@types/eslint/7.2.14:
-    resolution: {integrity: sha512-pESyhSbUOskqrGcaN+bCXIQDyT5zTaRWfj5ZjjSlMatgGjIn3QQPfocAu4WSabUR7CGyLZ2CQaZyISOEX7/saw==}
+  /@types/eslint/7.28.0:
+    resolution: {integrity: sha512-07XlgzX0YJUn4iG1ocY4IX9DzKSmMGUs6ESKlxWhZRaa0fatIWaHWUVapcuGa8r5HFnTqzj+4OCjd5f7EZ/i/A==}
     dependencies:
       '@types/estree': 0.0.47
       '@types/json-schema': 7.0.7
