@@ -30,7 +30,8 @@ import {
   User,
 } from 'discord.js';
 import { slashCommands } from '../..';
-import { Candle } from '../../../lib/structures/Client.js';
+import { Candle } from '../../../lib/structures/Client';
+import { Message } from '../../../lib/structures/Message';
 import {
   Interaction,
   InteractionTypes,
@@ -165,7 +166,7 @@ export const buttonExecute = async (
   const channel = (await client.channels.fetch(
     interaction.message.channel_id
   )) as TextChannel;
-  const message = await channel.messages.fetch(interaction.message.id);
+  const message = <Message>await channel.messages.fetch(interaction.message.id);
   if (buttonHandlers.has(message.id)) {
     const handler = buttonHandlers.get(message.id);
     const user = await client.users.fetch(

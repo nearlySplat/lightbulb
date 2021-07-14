@@ -61,7 +61,7 @@ export const execute: CommandExecute = async ctx => {
         .setAuthor('Reload')
         .addFields(
           {
-            name: 'Succeeded',
+            name: ctx.t('reload.succeeded'),
             value:
               done
                 .filter(([done]) => done)
@@ -69,7 +69,7 @@ export const execute: CommandExecute = async ctx => {
                 .join('\n') || 'None',
           },
           {
-            name: 'Failed',
+            name: ctx.t('reload.failed'),
             value:
               done
                 .filter(([done]) => !done)

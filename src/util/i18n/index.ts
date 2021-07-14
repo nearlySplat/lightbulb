@@ -1,4 +1,4 @@
-import { I18nManager } from '@lightbulb/lib/structures/I18nManager';
+import { I18nManager } from '../../../lib/structures/I18nManager';
 
 exports = {};
 

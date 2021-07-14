@@ -74,6 +74,7 @@ export const execute: CommandExecute = ctx => {
           },
         };
       switch (buttonCTX.customID) {
+        case 'internal__hide':
         case 'internal__delete': {
           return ctx.deleteButtonHandler(buttonCTX);
         }

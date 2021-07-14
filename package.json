@@ -10,8 +10,10 @@
     "pull": "git pull",
     "run": "node .",
     "prepare": "husky install",
-    "format": "fish scripts/format.fish",
-    "license": "fish scripts/licenser.fish"
+    "format": "prettier -w .",
+    "license": "bash scripts/licenser.sh",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "yarn lint --fix"
   },
   "author": "Splatterxl <splatterxl@outlook.ie>",
   "license": "ISC",
@@ -31,8 +33,8 @@
     "cz-conventional-changelog": "3.3.0",
     "eslint": "^7.20.0",
     "husky": "^7.0.0",
-    "nodemon": "^2.0.9",
-    "typescript": "^4.3.2"
+    "nodemon": "^2.0.12",
+    "typescript": "^4.3.5"
   },
   "dependencies": {
     "@discordjs/collection": "^0.1.6",
@@ -50,6 +52,7 @@
     "dotenv": "^10.0.0",
     "graceful-fs": "^4.2.6",
     "i18next": "^20.3.2",
+    "i18next-http-backend": "^1.2.6",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mongoose": "^5.13.1",

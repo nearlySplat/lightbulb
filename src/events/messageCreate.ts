@@ -15,30 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { MessageActionRow, MessageButton, MessageOptions } from 'discord.js';
+import { Candle } from '@lightbulb/lib/structures/Client';
+import { Message } from '@lightbulb/lib/structures/Message';
 import {
   Client,
   ClientUser,
   Collection,
   Guild,
   GuildMember,
-  Message,
+  MessageActionRow,
+  MessageButton,
+  MessageOptions,
   Snowflake,
 } from 'discord.js';
+import { Document as MongoDBDocument } from 'mongoose';
 import { commands, loggr, statcord } from '..';
 import { config, PREFIXES, WHITELIST } from '../constants';
-import { User, Achievement, DefaultPronouns } from '../models/User';
 import { GuildConfig, IGuildConfig } from '../models/GuildConfig';
+import { Achievement, DefaultPronouns, User } from '../models/User';
 import { ButtonInteractionHandler, Command, CommandResponse } from '../types';
-import {
-  CommandParameters,
-  getAccessLevel,
-  getCurrentLevel,
-  i18n,
-} from '../util';
+import { CommandParameters, getAccessLevel, getCurrentLevel } from '../util';
 import { tags } from '../util/tags';
-import { Document as MongoDBDocument } from 'mongoose';
-import { Candle } from '@lightbulb/lib/structures/Client';
 export const buttonHandlers = new Collection<
   Snowflake,
   ButtonInteractionHandler
@@ -49,8 +46,11 @@ export const defaultDeleteButton = [
       new MessageButton()
         .setEmoji('cutie_trash:848216792845516861')
         .setStyle('DANGER')
-        .setCustomId('internal__delete')
-        .setLabel(''),
+        .setCustomId('internal__delete'),
+      new MessageButton()
+        .setStyle('SECONDARY')
+        .setCustomId('internal__hide')
+        .setLabel('Hide'),
     ],
   }),
 ];
@@ -85,8 +85,15 @@ export const execute = async (
   message: Message
 ): Promise<boolean> => {
   const deleteButtonHandler: ButtonInteractionHandler = async ctx => {
-    if (ctx.user.id === message.author.id) await ctx.message.delete();
-    else
+    if (ctx.user.id === message.author.id) {
+      if (ctx.customID === 'internal__delete') {
+        await ctx.message.delete();
+        ctx.removeListener();
+      } else if (ctx.customID === 'internal__hide') {
+        ctx.message.edit({ components: [] });
+        return { type: 6 };
+      }
+    } else
       return {
         type: 4,
         data: { content: "You can't do that!", flags: 64 },
@@ -118,7 +125,9 @@ export const execute = async (
   if (!message.guild || !message.member) return false;
   const isKsIn = !!(await message
     .guild!.members.fetch('236726289665490944')
-    .catch(() => null));
+    .catch(() => {
+      // do nothing
+    }));
 
   async function handleCommand(
     prefix: string,
@@ -149,7 +158,6 @@ export const execute = async (
         let result = tags.get(args.join(' ')) || tags.get(commandName);
         if (Array.isArray(result))
           result = result[Math.floor(Math.random() * result.length)];
-        result = i18n.interpolate(result, { args0: args[0] });
         handleCommandResult([{ content: result }, null]);
         return true;
       } else return false;
@@ -185,6 +193,8 @@ export const execute = async (
     }
     statcord.postCommand(commandName, message.author.id);
     if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation) {
+      // soon:tm:
+      const locale = 'en';
       let result: CommandResponse | boolean;
       try {
         result = await command.execute({
@@ -194,9 +204,10 @@ export const execute = async (
           commands,
           commandHandlerStarted: timeStarted,
           accessLevel: getCurrentLevel(message.member as GuildMember),
-          locale: 'en_UK',
+          locale,
           commandName,
           deleteButtonHandler,
+          t: client.i18n.i18next.getFixedT(locale),
         });
       } catch (e) {
         client.sentry.captureException(e);

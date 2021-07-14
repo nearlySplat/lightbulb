@@ -58,7 +58,7 @@ export const execute: CommandExecute = async ctx => {
             new MessageButton()
               .setURL(url)
               .setStyle('LINK')
-              .setLabel('Take us into Hyperspace, Chewie!'),
+              .setLabel(ctx.t('source.link')),
           ],
         }),
       ],

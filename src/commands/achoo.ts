@@ -15,10 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { CommandExecute, CommandMetadata } from '../types';
-import { get } from '../util/i18n';
 
-export const execute: CommandExecute = ({ locale }) => [
-  { content: get('ACHOO', locale) },
+export const execute: CommandExecute = ({ t }) => [
+  { content: t('achoo') },
   null,
 ];
 

@@ -26,7 +26,7 @@ import {
   User,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
-import { AccessLevels, i18n, reverseIndex } from '../util';
+import { AccessLevels, reverseIndex } from '../util';
 import {
   Chess as ChessClient,
   PieceType as ChessJSPieceType,
@@ -69,7 +69,7 @@ const coords: Chess.Coordinates[] = [
   ...'abcdefgh',
 ].map((v, i) => v + '' + (Math.floor(i / 8) + 1)) as Chess.Coordinates[];
 
-export const execute: CommandExecute = async () => {
+export const execute: CommandExecute = async ({ t }) => {
   const players: [p1: User, p2: User] = [null, null] as [User, User];
   let board: Chess.Board = {} as Chess.Board;
   let currentlyMoving: 0 | 1 = 0;
@@ -95,7 +95,7 @@ export const execute: CommandExecute = async () => {
           data: {
             embeds: [
               {
-                description: i18n.get('CHESS_HELP'),
+                description: t('chess.help'),
                 color: (
                   ctx.message.member || {
                     roles: { highest: { color: CLIENT_COLOUR } },
@@ -153,13 +153,17 @@ export const execute: CommandExecute = async () => {
                     .map(v => `\`${v}\``)
                     .join(', ')}`
                 );
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
                 return;
               } else if (msg.content.match('what colou?r am I')) {
                 msg.channel.send(
                   `You are ${currentlyMoving ? 'black' : 'white'}.`
                 );
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
                 return;
               } else if (msg.content === 'resign') {
                 isOver = () => true;
@@ -172,7 +176,9 @@ export const execute: CommandExecute = async () => {
                 );
                 coll.stop();
                 msg.react('✅');
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
                 return;
               }
               const move = instance.move(msg.content);
@@ -210,7 +216,9 @@ export const execute: CommandExecute = async () => {
                     players
                   );
                 }
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
               }
             }
 
@@ -255,11 +263,11 @@ const vsButton = new MessageButton()
   .setLabel('v.')
   .setDisabled(true);
 function generatePlayerRow(players: [User | null, User | null]) {
-  const arr: [
+  const arr: [MessageButton, MessageButton, MessageButton] = [] as unknown as [
     MessageButton,
     MessageButton,
     MessageButton
-  ] = ([] as unknown) as [MessageButton, MessageButton, MessageButton];
+  ];
   for (let i = 0; i < players.length; i++) {
     arr.push(
       ...[
@@ -323,7 +331,7 @@ function generatePieceArray(board: Chess.Board) {
 function generateBoard(
   board: ({ type: ChessJSPieceType; color: 'b' | 'w' } | null)[][]
 ): Chess.Board {
-  const toReturn = (Object.fromEntries(
+  const toReturn = Object.fromEntries(
     board.flat().map((v, i) => [
       coords[i],
       {
@@ -335,7 +343,7 @@ function generateBoard(
           v,
       },
     ])
-  ) as unknown) as Chess.Board;
+  ) as unknown as Chess.Board;
   return toReturn;
 }
 

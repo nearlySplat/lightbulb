@@ -17,20 +17,19 @@
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandMetadata, CommandExecute } from '../types';
-import { get, interpolate } from '../util/i18n';
-export const execute: CommandExecute = ({ message, locale, args }) => {
+export const execute: CommandExecute = ({ message, args, t }) => {
   return [
     {
       embed: new MessageEmbed()
         .setDescription(
-          interpolate(get('STALLMAN_TEXT', locale), {
+          t('gnu.text', {
             text: args.join(' ') || 'Linux',
           })
         )
         .setColor(CLIENT_COLOUR)
-        .setAuthor(get('STALLMAN_HEADER', locale))
+        .setAuthor(t('gnu.header'))
         .setFooter(
-          interpolate(get('GENERIC_REQUESTED_BY', locale), {
+          t('generic_requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           }),
           message.author.avatarURL() as string
