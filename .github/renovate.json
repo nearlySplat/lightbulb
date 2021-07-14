@@ -1,9 +1,0 @@
-{
-  "extends": [
-    "config:base"
-  ],
-  "body": "[skip ci]",
-  "assignees": [
-    "nearlySplat"
-  ]
-}
