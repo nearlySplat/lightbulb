@@ -21,10 +21,8 @@ import {
   Permissions,
   Snowflake,
 } from 'discord.js';
-import { Message } from '../../lib/structures/Message.js';
 import { config, ERROR_CODES, WHITELIST } from '../constants';
 import { defaultDeleteButton, reloadBlacklists } from '../events/messageCreate';
-import { IUser, User } from '../models/User';
 import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
@@ -36,7 +34,9 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     return false;
   const target = await message.client.users
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
-    .catch(() => {});
+    .catch(() => {
+      // do nothing
+    });
   if (!target) return false;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async (): Promise<CommandResponse> => {
@@ -67,7 +67,9 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
         }
         if (ctx.interaction.data.custom_id === 'n') {
           ctx.message.delete();
-          message.delete().catch(() => {});
+          message.delete().catch(() => {
+            // do nothing
+          });
           return { type: 6 };
         }
         try {

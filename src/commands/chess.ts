@@ -153,13 +153,17 @@ export const execute: CommandExecute = async ({ t }) => {
                     .map(v => `\`${v}\``)
                     .join(', ')}`
                 );
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
                 return;
               } else if (msg.content.match('what colou?r am I')) {
                 msg.channel.send(
                   `You are ${currentlyMoving ? 'black' : 'white'}.`
                 );
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
                 return;
               } else if (msg.content === 'resign') {
                 isOver = () => true;
@@ -172,7 +176,9 @@ export const execute: CommandExecute = async ({ t }) => {
                 );
                 coll.stop();
                 msg.react('✅');
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
                 return;
               }
               const move = instance.move(msg.content);
@@ -210,7 +216,9 @@ export const execute: CommandExecute = async ({ t }) => {
                     players
                   );
                 }
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
               }
             }
 

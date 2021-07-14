@@ -15,31 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { MessageActionRow, MessageButton, MessageOptions } from 'discord.js';
+import { Candle } from '@lightbulb/lib/structures/Client';
+import { Message } from '@lightbulb/lib/structures/Message';
 import {
   Client,
   ClientUser,
   Collection,
   Guild,
   GuildMember,
+  MessageActionRow,
+  MessageButton,
+  MessageOptions,
   Snowflake,
 } from 'discord.js';
+import { Document as MongoDBDocument } from 'mongoose';
 import { commands, loggr, statcord } from '..';
 import { config, PREFIXES, WHITELIST } from '../constants';
-import { User, Achievement, DefaultPronouns } from '../models/User';
 import { GuildConfig, IGuildConfig } from '../models/GuildConfig';
+import { Achievement, DefaultPronouns, User } from '../models/User';
 import { ButtonInteractionHandler, Command, CommandResponse } from '../types';
-import {
-  CommandParameters,
-  getAccessLevel,
-  getCurrentLevel,
-  i18n,
-} from '../util';
+import { CommandParameters, getAccessLevel, getCurrentLevel } from '../util';
 import { tags } from '../util/tags';
-import { Document as MongoDBDocument } from 'mongoose';
-import { Candle } from '@lightbulb/lib/structures/Client';
-import { Message } from '@lightbulb/lib/structures/Message';
-
 export const buttonHandlers = new Collection<
   Snowflake,
   ButtonInteractionHandler
@@ -119,7 +115,9 @@ export const execute = async (
   if (!message.guild || !message.member) return false;
   const isKsIn = !!(await message
     .guild!.members.fetch('236726289665490944')
-    .catch(() => {}));
+    .catch(() => {
+      // do nothing
+    }));
 
   async function handleCommand(
     prefix: string,
@@ -185,6 +183,8 @@ export const execute = async (
     }
     statcord.postCommand(commandName, message.author.id);
     if ((isExclamation && ['reason'].includes(commandName)) || !isExclamation) {
+      // soon:tm:
+      const locale = 'en';
       let result: CommandResponse | boolean;
       try {
         result = await command.execute({
@@ -194,10 +194,10 @@ export const execute = async (
           commands,
           commandHandlerStarted: timeStarted,
           accessLevel: getCurrentLevel(message.member as GuildMember),
-          locale: 'en',
+          locale,
           commandName,
           deleteButtonHandler,
-          t: client.i18n.i18next.t,
+          t: client.i18n.i18next.getFixedT(locale),
         });
       } catch (e) {
         client.sentry.captureException(e);
