@@ -69,7 +69,7 @@ const coords: Chess.Coordinates[] = [
   ...'abcdefgh',
 ].map((v, i) => v + '' + (Math.floor(i / 8) + 1)) as Chess.Coordinates[];
 
-export const execute: CommandExecute = async () => {
+export const execute: CommandExecute = async ({ t }) => {
   const players: [p1: User, p2: User] = [null, null] as [User, User];
   let board: Chess.Board = {} as Chess.Board;
   let currentlyMoving: 0 | 1 = 0;
@@ -95,7 +95,7 @@ export const execute: CommandExecute = async () => {
           data: {
             embeds: [
               {
-                description: ctx.t('chess.help'),
+                description: t('chess.help'),
                 color: (
                   ctx.message.member || {
                     roles: { highest: { color: CLIENT_COLOUR } },
