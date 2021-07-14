@@ -15,4 +15,4 @@ whitelist:
   -
 
 sentry_dsn:
-i18n_path: # https://raw.githubuserassets.com/lightbulb-bot/i18n/main/{{lng}}/{{ns}}.json
+i18n_path:

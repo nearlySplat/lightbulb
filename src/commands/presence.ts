@@ -48,7 +48,7 @@ export const execute: CommandExecute = ctx => {
   const status = presence.clientStatus;
   return [
     {
-      content: `${ctx.t('presence.header', ctx.locale, {
+      content: `${ctx.t('presence.header', {
         target,
       })}\n\n${
         status.desktop

@@ -91,7 +91,7 @@ export const execute: CommandExecute<'text'> = async ctx => {
     if (!ctx.message.reference) {
       return [
         {
-          content: ctx.t('translate.no_text', ctx.locale),
+          content: ctx.t('translate.no_text'),
         },
         null,
       ];

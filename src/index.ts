@@ -161,8 +161,3 @@ declare global {
 }
 
 (global as NodeJS.Global).__rootdir__ = __dirname || process.cwd();
-
-const exitHandler = () => {
-  candle.transaction.finish();
-  candle.loggr.info('Process exiting...');
-};

@@ -65,16 +65,14 @@ const keywords = {
 export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
   message,
   args,
-  locale,
+  t,
 }) => {
   const channel = message.guild.channels.cache.get(
     (args.data.channelid?.replace(/(^<#|>$)/g, '') ||
       message.channel.id) as Snowflake
   ) as TextChannel;
   if (!channel || ![NewsChannel, TextChannel].some(v => channel instanceof v)) {
-    message.channel.send(
-      message.client.i18n.get('messageinfo.channel_not_found', locale)
-    );
+    message.channel.send(t('messageinfo.channel_not_found'));
     return false;
   }
   let target: Message;
@@ -89,9 +87,7 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
           (args.data.messageid || message.id) as Snowflake
         ))) as Message;
   } catch {
-    message.channel.send(
-      message.client.i18n.get('messageinfo.not_found', locale)
-    );
+    message.channel.send(t('messageinfo.not_found'));
     return false;
   }
   const text = `**__ID__**: ${target.id}
@@ -133,7 +129,7 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
         color: message.guild.me!.roles.highest.color,
         description: text,
         footer: {
-          text: message.client.i18n.get('generic_requested_by', locale, {
+          text: t('generic_requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           }),
           iconURL: message.author.avatarURL() as string,

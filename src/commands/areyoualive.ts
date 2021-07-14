@@ -32,6 +32,6 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = ctx => [
-  { content: ctx.t('areyoualive', ctx.locale) },
+  { content: ctx.t('areyoualive') },
   null,
 ];

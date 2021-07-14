@@ -15,14 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { GuildBan, Permissions, Snowflake } from 'discord.js';
-import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 import { config, ERROR_CODES } from '../constants';
-import { User, DefaultPronouns } from '../models/User';
 import { reloadBlacklists } from '../events/messageCreate';
+import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
   args,
-  locale,
+  t,
 }) => {
   if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
     return false;
@@ -30,14 +29,6 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
     .catch(() => null);
   if (!target) return false;
-  const user = (await User.findOne({
-    where: {
-      userid: target.id,
-    },
-  }).exec()) ?? {
-    pronouns: DefaultPronouns,
-  };
-  const { subject, singularOrPlural } = user.pronouns;
   const banInfo: GuildBan | null = await message.guild.bans
     .fetch(target.id)
     .catch(() => null);
@@ -47,7 +38,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
         .unban(
           target.id,
           `[ ${message.author.tag} ]: ${
-            args.data.reason || message.client.i18n.get('moderation.no_reason')
+            args.data.reason || t('moderation.no_reason')
           }`
         )
         .then(() => {
@@ -55,12 +46,12 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
           return [
             {
               content:
-                message.client.i18n.get('unban.success', locale, {
+                t('unban.success', {
                   target: target,
                   bannedFor: banInfo!.reason,
                 }) +
                 (message.guild.id === config.bot.support_server
-                  ? message.client.i18n.get('moderation.blacklist')
+                  ? t('moderation.blacklist')
                   : ''),
             },
             null,
@@ -69,7 +60,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     } catch (e) {
       return [
         {
-          content: message.client.i18n.get('error.generic', locale, {
+          content: t('error.generic', {
             code: ERROR_CODES.BAN_UNSUCCESSFUL.toString(),
             message: e,
           }),
@@ -83,9 +74,9 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   } else if (!banInfo) {
     return [
       {
-        content: message.client.i18n.get('error.generic', locale, {
+        content: t('error.generic', {
           code: ERROR_CODES.UNBAN_NOT_BANNED.toString(),
-          message: message.client.i18n.get('unban.not_banned'),
+          message: t('unban.not_banned'),
         }),
       },
       null,

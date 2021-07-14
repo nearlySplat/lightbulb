@@ -27,15 +27,24 @@ export class I18nManager {
   constructor() {
     this.i18next = i18next;
 
-    this.i18next.use(Backend).init({
-      lng: 'en',
-      fallbackLng: 'en',
-      resources: this.resources,
-      defaultNS: 'strings',
-      backend: {
-        loadPath: config.i18n_path,
-      },
-    });
+    console.log('pulling from', config.i18n_path);
+    this.i18next
+      .use(Backend)
+      .init({
+        lng: 'en',
+        fallbackLng: 'en',
+        supportedLngs: ['en'],
+        resources: this.resources,
+        defaultNS: 'strings',
+        backend: {
+          loadPath: config.i18n_path,
+          crossDomain: true,
+        },
+        ns: 'strings',
+      })
+      .then(() => {
+        this.i18next.reloadResources();
+      });
   }
 
   /**
@@ -58,11 +67,6 @@ export class I18nManager {
       'DeprecationWarning'
     );
     return string;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get(key: string, locale = 'en', vars: Record<string, any> = {}): string {
-    return this.i18next.t(key, locale, vars);
   }
 }
 

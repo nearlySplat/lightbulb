@@ -24,7 +24,7 @@ export const meta: CommandMetadata = {
   aliases: ['syncinteractions', 'slashsync'],
 };
 
-export const execute: CommandExecute = async ({ client, message, locale }) => {
+export const execute: CommandExecute = async ({ client, message, t }) => {
   const curr = await client.api
     .applications(client.user!.id)
     .commands.get<{ name: string }[]>();
@@ -32,7 +32,7 @@ export const execute: CommandExecute = async ({ client, message, locale }) => {
     ({ meta: { name } }) => !curr.find(({ name: iName }) => iName === name)
   );
   if (!toAdd.size) {
-    message.channel.send(message.client.i18n.get('slashsync.no_targets'));
+    message.channel.send(t('slashsync.no_targets'));
     return false;
   }
   for (const [, command] of toAdd)
@@ -41,7 +41,7 @@ export const execute: CommandExecute = async ({ client, message, locale }) => {
     });
   return [
     {
-      content: message.client.i18n.get('slashsync.successWithCount', locale, {
+      content: t('slashsync.successWithCount', {
         count: toAdd.size,
       }),
     },

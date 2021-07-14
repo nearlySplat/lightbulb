@@ -58,7 +58,7 @@ export const execute: CommandExecute = async ctx => {
             new MessageButton()
               .setURL(url)
               .setStyle('LINK')
-              .setLabel(ctx.t('source.link', ctx.locale)),
+              .setLabel(ctx.t('source.link')),
           ],
         }),
       ],

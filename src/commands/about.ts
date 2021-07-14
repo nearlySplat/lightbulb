@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { CommandExecute, CommandMetadata } from '../types';
-export const execute: CommandExecute = ({ message, locale }) => [
+export const execute: CommandExecute = ({ t }) => [
   {
-    content: message.client.i18n.get('about'),
+    content: t('about'),
   },
   null,
 ];

@@ -18,10 +18,10 @@ import { Context, CommandMetadata } from '../types';
 export const execute = async ({
   message,
   args,
-  locale,
+  t,
 }: Context): Promise<boolean> => {
   await message.reply({
-    content: message.client.i18n.get('die.success', locale),
+    content: t('die.success'),
   });
   message.client.destroy();
   // eslint-disable-next-line no-undef

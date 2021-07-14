@@ -46,8 +46,11 @@ export const defaultDeleteButton = [
       new MessageButton()
         .setEmoji('cutie_trash:848216792845516861')
         .setStyle('DANGER')
-        .setCustomId('internal__delete')
-        .setLabel(''),
+        .setCustomId('internal__delete'),
+      new MessageButton()
+        .setStyle('SECONDARY')
+        .setCustomId('internal__hide')
+        .setLabel('Hide'),
     ],
   }),
 ];
@@ -82,8 +85,15 @@ export const execute = async (
   message: Message
 ): Promise<boolean> => {
   const deleteButtonHandler: ButtonInteractionHandler = async ctx => {
-    if (ctx.user.id === message.author.id) await ctx.message.delete();
-    else
+    if (ctx.user.id === message.author.id) {
+      if (ctx.customID === 'internal__delete') {
+        await ctx.message.delete();
+        ctx.removeListener();
+      } else if (ctx.customID === 'internal__hide') {
+        ctx.message.edit({ components: [] });
+        return { type: 6 };
+      }
+    } else
       return {
         type: 4,
         data: { content: "You can't do that!", flags: 64 },

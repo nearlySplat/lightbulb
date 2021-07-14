@@ -17,17 +17,15 @@
 import { GuildMember } from 'discord.js';
 import { CommandMetadata, CommandExecute } from '../types';
 import { getMember } from '../util';
-export const execute: CommandExecute<'user'> = ({ message, args, locale }) => {
+export const execute: CommandExecute<'user'> = ({ message, args, t }) => {
   if (!args[0])
-    return message
-      .reply({ content: message.client.i18n.get('bean.no_target', locale) })
-      .then(() => false);
+    return message.reply({ content: t('bean.no_target') }).then(() => false);
   const target =
     getMember(message.guild, args.data.user) ??
     ({ user: { tag: args.data.user } } as GuildMember);
   return [
     {
-      content: message.client.i18n.get('BEAN_SUCCESSFUL', locale, {
+      content: t('BEAN_SUCCESSFUL', {
         target,
       }),
     },

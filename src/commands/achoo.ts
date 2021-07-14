@@ -16,12 +16,10 @@
  */
 import { CommandExecute, CommandMetadata } from '../types';
 
-export const execute: CommandExecute = ({
-  locale,
-  message: {
-    client: { i18n },
-  },
-}) => [{ content: i18n.get('achoo', locale) }, null];
+export const execute: CommandExecute = ({ t }) => [
+  { content: t('achoo') },
+  null,
+];
 
 export const meta: CommandMetadata = {
   name: 'achoo',

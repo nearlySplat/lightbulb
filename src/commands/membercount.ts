@@ -15,10 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { CommandExecute, CommandMetadata } from '../types';
-export const execute: CommandExecute = ({ message, locale, t }) => {
+export const execute: CommandExecute = ({ message, t }) => {
   return [
     {
-      content: t('membercount', locale, {
+      content: t('membercount', {
         guild: message.guild,
       }),
     },

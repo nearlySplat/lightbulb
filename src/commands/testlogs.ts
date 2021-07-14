@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { CommandMetadata, CommandExecute } from '../types';
-import { GuildMember, Snowflake, TextChannel } from 'discord.js';
+import { Snowflake } from 'discord.js';
+import { CommandExecute, CommandMetadata } from '../types';
 import { createLogMessage, getLogChannel } from '../util';
-export const execute: CommandExecute = async ({ message, locale }) => {
+export const execute: CommandExecute = async ({ message, t }) => {
   const channel = getLogChannel(message.guild);
   if (channel) {
     const result = createLogMessage({
@@ -27,7 +27,7 @@ export const execute: CommandExecute = async ({ message, locale }) => {
         id: '0'.repeat(18) as Snowflake,
         tag: 'Nelly#0000',
       },
-      reason: message.client.i18n.get('moderation.no_reason', locale),
+      reason: t('moderation.no_reason'),
       case: 0,
       action: 'Ban',
       emoji: '🔨',

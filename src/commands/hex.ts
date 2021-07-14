@@ -18,26 +18,26 @@ import { MessageEmbed } from 'discord.js';
 import { CommandMetadata, CommandExecute } from '../types';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export const execute: CommandExecute = ({ message, args, locale, t }) => {
+export const execute: CommandExecute = ({ message, args, t }) => {
   if (isNaN(parseInt(args[0], 16)))
     return [{ content: 'Invalid hex color.' }, null] as const;
   return [
     {
       embed: new MessageEmbed()
         .setDescription(
-          t('hex.body', locale, {
+          t('hex.body', {
             hex_value: parseInt(args[0], 16).toString(16),
             decimal_value: parseInt(args[0], 16).toString(),
           })
         )
         .setColor(parseInt(args[0], 16))
         .setAuthor(
-          t('hex.header', locale, {
+          t('hex.header', {
             color: parseInt(args[0], 16).toString(16),
           })
         )
         .setFooter(
-          t('generic_requested_by', locale, {
+          t('generic_requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           }),
           message.author.avatarURL() as string

@@ -85,7 +85,7 @@ export const execute: CommandExecute = async ({
     },
     ctx => {
       const customID = ctx.interaction.data.custom_id;
-      if (customID === 'internal__delete') return deleteButtonHandler(ctx);
+      if (['internal__delete', 'internal__hide'].includes(ctx.customID)) return deleteButtonHandler(ctx);
       else {
         switch (customID) {
           case '->': {

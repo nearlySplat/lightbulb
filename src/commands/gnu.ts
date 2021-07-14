@@ -17,19 +17,19 @@
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandMetadata, CommandExecute } from '../types';
-export const execute: CommandExecute = ({ message, locale, args, t }) => {
+export const execute: CommandExecute = ({ message, args, t }) => {
   return [
     {
       embed: new MessageEmbed()
         .setDescription(
-          t('gnu.text', locale, {
+          t('gnu.text', {
             text: args.join(' ') || 'Linux',
           })
         )
         .setColor(CLIENT_COLOUR)
-        .setAuthor(t('gnu.header', locale))
+        .setAuthor(t('gnu.header'))
         .setFooter(
-          t('generic_requested_by', locale, {
+          t('generic_requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           }),
           message.author.avatarURL() as string

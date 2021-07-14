@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { ClientPresenceStatusData, MessageEmbed, Snowflake } from 'discord.js';
+import moment from 'moment';
+import { commands } from '..';
 import { User } from '../models/User';
 import { CommandExecute, CommandMetadata } from '../types';
-import { getMember, i18n } from '../util';
+import { getMember } from '../util';
 import { formatPronouns } from './whataremypronouns';
-import { commands } from '..';
-import moment from 'moment';
 
 /**
  * @todo I18n strings for user command
@@ -44,7 +44,7 @@ export const meta: CommandMetadata = {
 export const execute: CommandExecute<'target'> = async ({
   message,
   args,
-  locale,
+  t,
 }) => {
   const member = getMember(
     message.guild,
@@ -62,10 +62,7 @@ export const execute: CommandExecute<'target'> = async ({
       uid: user.id,
     }).exec();
   if (!user) {
-    return [
-      { content: message.client.i18n.get('user.not_found', locale) },
-      null,
-    ];
+    return [{ content: t('user.not_found') }, null];
   }
   const presence = message.guild.presences.cache.get(user.id);
   return [
@@ -73,7 +70,7 @@ export const execute: CommandExecute<'target'> = async ({
       embed: new MessageEmbed()
         .setColor(message.guild.me!.roles.highest.color)
         .setFooter(
-          message.client.i18n.get('generic_requested_by', locale, {
+          t('generic_requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           })
         )

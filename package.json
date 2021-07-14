@@ -10,8 +10,10 @@
     "pull": "git pull",
     "run": "node .",
     "prepare": "husky install",
-    "format": "fish scripts/format.fish",
-    "license": "fish scripts/licenser.fish"
+    "format": "prettier -w .",
+    "license": "bash scripts/licenser.sh",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "yarn lint --fix"
   },
   "author": "Splatterxl <splatterxl@outlook.ie>",
   "license": "ISC",
@@ -32,7 +34,7 @@
     "eslint": "^7.20.0",
     "husky": "^7.0.0",
     "nodemon": "^2.0.12",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.5"
   },
   "dependencies": {
     "@discordjs/collection": "^0.1.6",

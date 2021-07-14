@@ -27,7 +27,7 @@ import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
   args,
-  locale,
+  t,
   deleteButtonHandler,
 }) => {
   if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
@@ -42,7 +42,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   const ban = async (): Promise<CommandResponse> => {
     return [
       {
-        content: message.client.i18n.get('ban.confirmation', locale, {
+        content: t('ban.confirmation', {
           target,
         }),
         components: [
@@ -62,7 +62,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
       },
       async ctx => {
         if (ctx.user.id !== message.author.id) return { type: 6 };
-        if (ctx.interaction.data.custom_id === 'internal__delete') {
+        if (['internal__delete', 'internal__hide'].includes(ctx.customID)) {
           return deleteButtonHandler(ctx);
         }
         if (ctx.interaction.data.custom_id === 'n') {
@@ -75,22 +75,21 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
         try {
           await message.guild.members.ban(target.id, {
             reason: `[ ${message.author.tag} ]: ${
-              args.data.reason ||
-              message.client.i18n.get('moderation.no_reason')
+              args.data.reason || t('moderation.no_reason')
             }`,
           });
           if (message.guild.id === config.bot.support_server) {
             void reloadBlacklists(message.client);
             ctx.message.edit({
               content:
-                message.client.i18n.get('ban.success', locale, {
+                t('ban.success', {
                   target,
-                }) + message.client.i18n.get('ban.blacklist'),
+                }) + t('ban.blacklist'),
               components: defaultDeleteButton,
             });
           } else
             ctx.message.edit({
-              content: message.client.i18n.get('ban.success', locale, {
+              content: t('ban.success', {
                 target,
               }),
               components: defaultDeleteButton,
@@ -111,9 +110,9 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   }
   if (member.user.id === message.guild.ownerId) {
     message.channel.send(
-      message.client.i18n.get('error.generic', locale, {
+      t('error.generic', {
         code: ERROR_CODES.TARGET_IS_OWNER.toString(),
-        message: message.client.i18n.get('error.target_owner'),
+        message: t('error.target_owner'),
       })
     );
 
@@ -125,18 +124,18 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
     WHITELIST.includes(target.id)
   ) {
     message.channel.send(
-      message.client.i18n.get('error.generic', locale, {
+      t('error.generic', {
         code: ERROR_CODES.DISALLOWED_TARGET.toString(),
-        message: message.client.i18n.get('error.disallowed_target'),
+        message: t('error.disallowed_target'),
       })
     );
     return false;
   }
   if (member.user.id === message.author.id) {
     message.channel.send(
-      message.client.i18n.get('error.generic', locale, {
+      t('error.generic', {
         code: ERROR_CODES.SELF_IS_MODERATION_TARGET.toString(),
-        message: message.client.i18n.get('error.self_mod_target'),
+        message: t('error.self_mod_target'),
       })
     );
     return false;
@@ -148,7 +147,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
         message.member.roles.highest.rawPosition
     ) {
       message.channel.send(
-        message.client.i18n.get('ban.noperms', locale, {
+        t('ban.noperms', {
           target: member.user.tag,
         })
       );

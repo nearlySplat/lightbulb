@@ -20,7 +20,7 @@ import { createLogMessage, getLogChannel, getMember } from '../util';
 export const execute: CommandExecute<'user' | 'reason'> = ({
   message,
   args,
-  locale,
+  t,
 }) => {
   const target = getMember(message.guild, args.data.user) ?? {
     user: { tag: args.data.user, id: '0' },
@@ -44,7 +44,7 @@ export const execute: CommandExecute<'user' | 'reason'> = ({
   }
   return [
     {
-      content: message.client.i18n.get('banne.success', locale, { target }),
+      content: t('banne.success', { target }),
     },
     null,
   ];

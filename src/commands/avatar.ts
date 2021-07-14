@@ -33,12 +33,12 @@ export const execute: CommandExecute = async ctx => {
   return [
     {
       embed: new MessageEmbed()
-        .setAuthor(ctx.t('avatar.title', ctx.locale, { target }))
+        .setAuthor(ctx.t('avatar.title', { target }))
         .setColor(ctx.message.guild.me.roles.color.color || CLIENT_COLOUR)
         .setImage(target.displayAvatarURL({ dynamic: true, size: 4096 }))
         .setTimestamp()
         .setFooter(
-          ctx.t('generic_requested_by', ctx.locale, {
+          ctx.t('generic_requested_by', {
             requester: `${ctx.message.author.tag} (${ctx.message.author.id})`,
           })
         ),
