@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@commitlint/cli': 12.1.4
   '@commitlint/config-conventional': 12.1.4
-  '@discordjs/collection': ^0.1.6
+  '@discordjs/collection': ^0.2.0
   '@sentry/integrations': ^6.9.0
   '@sentry/node': ^6.9.0
   '@sentry/tracing': ^6.9.0
@@ -43,7 +43,7 @@ specifiers:
   yaml: ^1.10.2
 
 dependencies:
-  '@discordjs/collection': 0.1.6
+  '@discordjs/collection': 0.2.0
   '@sentry/integrations': 6.9.0
   '@sentry/node': 6.9.0
   '@sentry/tracing': 6.9.0
@@ -306,6 +306,11 @@ packages:
 
   /@discordjs/collection/0.1.6:
     resolution: {integrity: sha512-utRNxnd9kSS2qhyivo9lMlt5qgAUasH2gb7BEOn6p0efFh24gjGomHzWKMAPn2hEReOPQZCJaRKoURwRotKucQ==}
+    dev: false
+
+  /@discordjs/collection/0.2.0:
+    resolution: {integrity: sha512-ZSiyfQsQmJq5EDgTocUg6n7IOft64MH/53RC8q3+Z5Ltipgc6eH1lLyDMJz2fcY/xq5zrILd9LyqFgEdragDNA==}
+    engines: {node: '>=14.0.0'}
     dev: false
 
   /@discordjs/form-data/3.0.1:
