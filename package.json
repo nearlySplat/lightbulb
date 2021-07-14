@@ -54,6 +54,7 @@
     "i18next": "^20.3.2",
     "i18next-http-backend": "^1.2.6",
     "lodash": "^4.17.21",
+    "module-alias": "^2.2.2",
     "moment": "^2.29.1",
     "mongoose": "^5.13.1",
     "node-fetch": "^2.6.1",
@@ -62,7 +63,7 @@
     "yaml": "^1.10.2"
   },
   "type": "commonjs",
-  "imports": {
+  "_moduleAliases": {
     "@lightbulb": "./dist"
   }
 }
