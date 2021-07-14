@@ -15,15 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { CommandExecute, CommandMetadata } from '../types';
-import { get, interpolate } from '../util/i18n';
-export const execute: CommandExecute = ({ message, locale }) => {
-  message.reply(
-    interpolate(get('MEMBERCOUNT_TEXT', locale), {
-      guild: message.guild.name,
-      count: message.guild.memberCount.toLocaleString(),
-    })
-  );
-  return true;
+export const execute: CommandExecute = ({ message, locale, t }) => {
+  return [
+    {
+      content: t('membercount', locale, {
+        guild: message.guild,
+      }),
+    },
+    null,
+  ];
 };
 
 export const meta: CommandMetadata = {

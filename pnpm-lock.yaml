@@ -31,6 +31,7 @@ specifiers:
   graceful-fs: ^4.2.6
   husky: ^7.0.0
   i18next: ^20.3.2
+  i18next-http-backend: ^1.2.6
   lodash: ^4.17.21
   moment: ^2.29.1
   mongoose: ^5.13.1
@@ -57,6 +58,7 @@ dependencies:
   dotenv: 10.0.0
   graceful-fs: 4.2.6
   i18next: 20.3.2
+  i18next-http-backend: 1.2.6
   lodash: 4.17.21
   moment: 2.29.1
   mongoose: 5.13.1
@@ -1301,6 +1303,12 @@ packages:
       yaml: 1.10.2
     dev: true
 
+  /cross-fetch/3.1.4:
+    resolution: {integrity: sha512-1eAtFWdIubi6T4XPy6ei9iUFoKpUkIF971QLN8lIvvvwueI65+Nw5haMNKUwfJxabqlIIDODJKGrQ66gxC0PbQ==}
+    dependencies:
+      node-fetch: 2.6.1
+    dev: false
+
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
@@ -2218,6 +2226,12 @@ packages:
     engines: {node: '>=12'}
     hasBin: true
     dev: true
+
+  /i18next-http-backend/1.2.6:
+    resolution: {integrity: sha512-NeNNRofj+rR6Cw+/Elf8bCVaCiqWg2Y6F+CrmDvHiPzAW2Dtxxlk8O0na2et/rr1n3ST6rJr4nMXH/QOFuhaeA==}
+    dependencies:
+      cross-fetch: 3.1.4
+    dev: false
 
   /i18next/20.3.2:
     resolution: {integrity: sha512-e8CML2R9Ng2sSQOM80wb/PrM2j8mDm84o/T4Amzn9ArVyNX5/ENWxxAXkRpZdTQNDaxKImF93Wep4mAoozFrKw==}

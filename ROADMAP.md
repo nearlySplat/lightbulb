@@ -6,7 +6,7 @@ This is the roadmap for the current rewrite.
 
 - [ ] use classes for most exports
 - [ ] clean code and make it more readable
-- [ ] switch to [`i18next`][i18next] package instead of wonky custom implementation
+- [x] switch to [`i18next`][i18next] package instead of wonky custom implementation
 - [ ] extend discord.js's classes to avoid importing from index.js
 - [ ] work on using database space more, currently the user can't set _any_ configuration of their guild
 - [ ] tags

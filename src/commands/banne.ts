@@ -25,24 +25,29 @@ export const execute: CommandExecute<'user' | 'reason'> = ({
   const target = getMember(message.guild, args.data.user) ?? {
     user: { tag: args.data.user, id: '0' },
   };
-  message.reply({
-    content: message.client.i18n.get('banne.success', locale, { target }),
-  });
   const channel = getLogChannel(message.guild) as TextChannel;
-  if (!channel) return true;
-  channel.send(
-    createLogMessage({
-      compact: channel.topic.includes('--compact'),
-      victim: target.user,
-      perpetrator: message.author,
-      action: 'Bend',
-      context: '... wait no, `[bent]`',
-      emoji: '🔨',
-      case: Infinity,
-      reason: args.data.reason,
-    })
-  );
-  return true;
+  if (!channel) {
+    // do nothing
+  } else {
+    channel.send(
+      createLogMessage({
+        compact: channel.topic.includes('--compact'),
+        victim: target.user,
+        perpetrator: message.author,
+        action: 'Bend',
+        context: '... wait no, `[bent]`',
+        emoji: '🔨',
+        case: Infinity,
+        reason: args.data.reason,
+      })
+    );
+  }
+  return [
+    {
+      content: message.client.i18n.get('banne.success', locale, { target }),
+    },
+    null,
+  ];
 };
 
 export const meta: CommandMetadata = {

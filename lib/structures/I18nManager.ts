@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import i18next, { TFunction } from 'i18next';
-import fs from 'fs';
+import i18next from 'i18next';
+import Backend from 'i18next-http-backend';
+import { config } from '../../src/constants.js';
 
 export class I18nManager {
   i18next: typeof i18next;
@@ -26,25 +27,21 @@ export class I18nManager {
   constructor() {
     this.i18next = i18next;
 
-    const supportedLanguages = fs.readdirSync('./i18n');
-    for (const lang of supportedLanguages)
-      this.resources[lang] = {
-        translation: JSON.parse(
-          fs.readFileSync(`./i18n/${lang}/strings.json`, 'utf-8')
-        ),
-      };
-
-    this.i18next.init({
+    this.i18next.use(Backend).init({
       lng: 'en',
-      supportedLngs: supportedLanguages,
       fallbackLng: 'en',
       resources: this.resources,
+      defaultNS: 'strings',
+      backend: {
+        loadPath: config.i18n_path,
+      },
     });
   }
 
   /**
    * @deprecated
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
   static interpolate(string: string, ..._args: any[]): string {
     process.emitWarning(
       'The I18nManager.interpolate function is deprecated.',
@@ -54,7 +51,8 @@ export class I18nManager {
   }
 
   /** @deprecated */
-  static get(string: string, _locale?: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  static get(string: string, _locale?: string): string {
     process.emitWarning(
       'The I18nManager.get function is deprecated, please use Candle#i18n.get instead.',
       'DeprecationWarning'
@@ -62,7 +60,8 @@ export class I18nManager {
     return string;
   }
 
-  get(key: string, locale = 'en', vars: Record<string, any> = {}) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get(key: string, locale = 'en', vars: Record<string, any> = {}): string {
     return this.i18next.t(key, locale, vars);
   }
 }

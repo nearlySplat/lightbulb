@@ -197,6 +197,7 @@ export interface YAMLConfig {
   whitelist: null | string[];
   nodb: boolean;
   sentry_dsn: string;
+  i18n_path: string;
 }
 
 export interface Owner {
