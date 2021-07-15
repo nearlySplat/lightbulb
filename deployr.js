@@ -11,21 +11,23 @@ app.post('/', async (req, res) => {
   if (req.header('user-agent') !== conf.auth)
     return res.status(403).send('unauthorized');
   try {
-    child_process.execSync('git pull');
+    child_process.execSync('cd ~/lightbulb && git pull');
     child_process.exec(
-      'tsc && DEPLOY=1 pm2 restart 0 --update-env',
+      'cd ~/lightbulb && tsc && pm2 restart all',
       (e, o, er) => {
         console.log(inspect(e), inspect(o), inspect(er));
       }
     );
     const client = new WebhookClient(conf.webhook.id, conf.webhook.token);
     await client.send({
-      embed: new MessageEmbed()
-        .setDescription(
-          'deployed on commit' +
-            child_process.execSync("git log -n 1 --format='%H'")
-        )
-        .setColor('YELLOW'),
+      embeds: [
+        new MessageEmbed()
+          .setDescription(
+            'deployed on commit' +
+              child_process.execSync("git log -n 1 --format='%H'")
+          )
+          .setColor('YELLOW'),
+      ],
       username: 'Lightbulb',
       avatarURL: conf.webhook.avatar,
     });
