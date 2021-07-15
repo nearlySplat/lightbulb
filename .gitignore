@@ -7,3 +7,4 @@ src/migration/
 etc/tags.json
 etc/markov.txt
 etc/config.yml
+deployrconf.json
