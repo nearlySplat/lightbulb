@@ -96,7 +96,10 @@ export const execute = async (
     } else
       return {
         type: 4,
-        data: { content: client.i18n.get('generic.unauthorized'), flags: 64 },
+        data: {
+          content: client.i18n.i18next.t('generic.unauthorized'),
+          flags: 64,
+        },
       };
     return { type: 6 };
   };
