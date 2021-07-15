@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+require('module-alias/register');
 /*
  * Copyright (C) 2020 Splatterxl
  *
@@ -21,7 +22,6 @@ import CatLoggr from 'cat-loggr/ts';
 import { ClientEvents, WSEventType } from 'discord.js';
 import { config } from 'dotenv';
 import { get } from 'lodash';
-import 'module-alias/register';
 import { connect } from 'mongoose';
 import { join } from 'path';
 import * as Statcord from 'statcord.js';

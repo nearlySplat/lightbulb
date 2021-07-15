@@ -16,7 +16,7 @@
  */
 import i18next from 'i18next';
 import Backend from 'i18next-http-backend';
-import { config } from '../../src/constants.js';
+import { config } from '@lightbulb/src/constants.js';
 
 export class I18nManager {
   i18next: typeof i18next;

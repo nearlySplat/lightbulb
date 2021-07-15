@@ -38,7 +38,7 @@ import {
   Snowflake,
   User,
 } from 'discord.js';
-import { Candle } from '../lib/structures/Client.js';
+import { Candle } from '@lightbulb/lib/structures/Client.js';
 import { Message } from '@lightbulb/lib/structures/Message';
 import { CommandParameters, Parameter } from './util';
 import { TFunction } from 'i18next';

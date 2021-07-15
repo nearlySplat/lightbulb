@@ -30,8 +30,8 @@ import {
   User,
 } from 'discord.js';
 import { slashCommands } from '../..';
-import { Candle } from '../../../lib/structures/Client';
-import { Message } from '../../../lib/structures/Message';
+import { Candle } from '@lightbulb/lib/structures/Client';
+import { Message } from '@lightbulb/lib/structures/Message';
 import {
   Interaction,
   InteractionTypes,

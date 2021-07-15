@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { config, __prod__ } from '../../src/constants.js';
-import { i18n } from '../../src/util';
+import { config, __prod__ } from '@lightbulb/src/constants.js';
+import { i18n } from '@lightbulb/src/util';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
