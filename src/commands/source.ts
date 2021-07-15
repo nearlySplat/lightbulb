@@ -29,7 +29,7 @@ export const meta: CommandMetadata = {
 };
 
 export const execute: CommandExecute = async ctx => {
-  const m = await ctx.message.channel.send('Working on it...');
+  const m = await ctx.message.channel.send(ctx.t('source.loading'));
   const r = await ctx.message.react('a:loading:833416988981723147');
   let url =
     'https://github.com/nearlysplat/lightbulb/blob/development/src/commands/';
@@ -38,7 +38,7 @@ export const execute: CommandExecute = async ctx => {
   url += ctx.args.data.file + '.ts';
   await r.users.remove(ctx.client.user.id);
   await m.delete();
-  if (url === original) return [{ content: 'No such file' }, null];
+  if (url === original) return [{ content: ctx.t('source.no_file') }, null];
   const text = await readFile(
     join(__dirname, '..', '..', '..', 'src', 'commands', path + '.ts'),
     'utf-8'

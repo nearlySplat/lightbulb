@@ -1,9 +1,0 @@
-{
-  extends: [
-    "config:base"
-  ],
-  commitBody: "[skip ci]",
-  assignees: [
-    "nearlySplat"
-  ]
-}

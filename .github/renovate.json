@@ -1,0 +1,5 @@
+{
+  "extends": ["config:base", ":semanticCommitType(chore)"],
+  "commitBody": "[skip ci]",
+  "assignees": ["nearlySplat"]
+}

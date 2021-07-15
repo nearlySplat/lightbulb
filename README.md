@@ -38,7 +38,7 @@ Every file is also formatted before commit using Husky, again.
 
 ## Legal Stuff
 
-Lightbulb is a Discord Bot made by Splatterxl. You are free to use its code in your bot if you keep the original license in a prominent place in your code, e.g. at the top of the file the code has been copied to or in a NOTICE file. Read the [GNU Affero General Public License][AGPL].
+Lightbulb is a Discord Bot made by Splatterxl. You are free to use its code in your bot if you keep the original license in a prominent place in your code, e.g. at the top of the file the code has been copied to or in a NOTICE file. Read the [GNU Affero General Public License][agpl].
 
 ```
 Lightbulb: a utility-focused meme bot.
@@ -62,8 +62,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <!-- links -->
 
 [inv]: https://discord.com/oauth2/authorize?client_id=808333699879796787&scope=bot+applications.commands
-[TypeScript]: https://typescriptlang.org
-[Release]: https://github.com/nearlySplat/lightbulb/releases
-[PM2]: https://pm2.io
+[typescript]: https://typescriptlang.org
+[release]: https://github.com/nearlySplat/lightbulb/releases
+[pm2]: https://pm2.io
 [convcommits]: https://conventionalcommits.org/en/v1.0.0
-[AGPL]: https://www.gnu.org/licenses
+[agpl]: https://www.gnu.org/licenses
