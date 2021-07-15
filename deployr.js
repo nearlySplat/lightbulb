@@ -23,8 +23,9 @@ app.post('/', async (req, res) => {
       embeds: [
         new MessageEmbed()
           .setDescription(
-            'deployed on commit' +
-              child_process.execSync("git log -n 1 --format='%H'")
+            'Deployed on commit `' +
+              child_process.execSync("git log -n 1 --format='%H'").slice(0, 7) +
+              '`.'
           )
           .setColor('YELLOW'),
       ],
