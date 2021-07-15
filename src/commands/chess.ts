@@ -265,11 +265,11 @@ const vsButton = new MessageButton()
   .setLabel('v.')
   .setDisabled(true);
 function generatePlayerRow(players: [User | null, User | null]) {
-  const arr: [MessageButton, MessageButton, MessageButton] = [] as unknown as [
+  const arr: [
     MessageButton,
     MessageButton,
     MessageButton
-  ];
+  ] = ([] as unknown) as [MessageButton, MessageButton, MessageButton];
   for (let i = 0; i < players.length; i++) {
     arr.push(
       ...[
@@ -333,7 +333,7 @@ function generatePieceArray(board: Chess.Board) {
 function generateBoard(
   board: ({ type: ChessJSPieceType; color: 'b' | 'w' } | null)[][]
 ): Chess.Board {
-  const toReturn = Object.fromEntries(
+  const toReturn = (Object.fromEntries(
     board.flat().map((v, i) => [
       coords[i],
       {
@@ -345,7 +345,7 @@ function generateBoard(
           v,
       },
     ])
-  ) as unknown as Chess.Board;
+  ) as unknown) as Chess.Board;
   return toReturn;
 }
 
