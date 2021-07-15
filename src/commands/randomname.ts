@@ -29,7 +29,7 @@ export const meta: CommandMetadata = {
 };
 export const execute: CommandExecute = ctx => [
   {
-    content: 'Your generated name is:',
+    content: ctx.t('generic.generated', { thing: 'name' }),
     embed: new MessageEmbed({
       color: ctx.message.guild.me!.roles.color.color || CLIENT_COLOUR,
       description:

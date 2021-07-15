@@ -78,7 +78,7 @@ export const execute: CommandExecute = async ({ t }) => {
   let nextMoveMsg: Message;
   return [
     {
-      content: 'Who wants to play some chess?',
+      content: t('chess.starter'),
       components: [
         new MessageActionRow().addComponents(...generatePlayerRow(players)),
         helpRow,
@@ -126,13 +126,13 @@ export const execute: CommandExecute = async ({ t }) => {
         if (isOver())
           return {
             type: 4,
-            data: { content: 'This game is over.', flags: 64 },
+            data: { content: t('chess.game_over'), flags: 64 },
           };
         const pid = getPlayerID(customID as `p${1 | 2}`);
         if (players[pid] /*|| players.includes(ctx.user)*/)
           return {
             type: 4,
-            data: { content: "You can't do that!", flags: 64 },
+            data: { content: t('generic.unauthorized'), flags: 64 },
           };
         players[pid] = ctx.user;
         if (players.filter(v => v).length === 2) {
@@ -167,12 +167,13 @@ export const execute: CommandExecute = async ({ t }) => {
                 return;
               } else if (msg.content === 'resign') {
                 isOver = () => true;
-                winHandler(
+                resultHandler(
                   2,
                   msg.channel.send.bind(msg.channel),
                   ctx.message,
                   currentlyMoving,
-                  players
+                  players,
+                  t
                 );
                 coll.stop();
                 msg.react('✅');
@@ -208,12 +209,13 @@ export const execute: CommandExecute = async ({ t }) => {
                 else {
                   isOver = () => true;
                   coll.stop();
-                  winHandler(
+                  resultHandler(
                     state,
                     ctx.message.reply.bind(ctx.message),
                     ctx.message,
                     currentlyMoving,
-                    players
+                    players,
+                    t
                   );
                 }
                 msg.delete().catch(() => {
@@ -347,41 +349,41 @@ function generateBoard(
   return toReturn;
 }
 
-function winHandler(
+function resultHandler(
   type: ChessGameResult,
   fn: TextChannel['send'],
   messageReference: Message,
   current: 0 | 1,
-  players: User[]
+  players: User[],
+  t: import('i18next').TFunction
 ) {
   switch (type) {
+    // unimplemented
     case ChessGameResult.DrawByAgreement: {
-      fn({ content: `It was a draw!`, reply: { messageReference } });
+      fn({ content: t('chess.draw'), reply: { messageReference } });
       break;
     }
     case ChessGameResult.InsufficientMaterial: {
       fn({
-        content: 'There was insufficient material to continue the game!',
+        content: t('chess.no_material'),
         reply: { messageReference },
       });
       break;
     }
     case ChessGameResult.FiftyMoveLimit: {
       fn({
-        content:
-          'The game crossed the fifty (50) move limit, so the game was drawn.',
+        content: t('chess.fifty_move'),
         reply: { messageReference },
       });
       break;
     }
     case ChessGameResult.Stalemate: {
-      fn({ content: 'It was a stalemate!', reply: { messageReference } });
+      fn({ content: t('chess.stalemate'), reply: { messageReference } });
       break;
     }
     case ChessGameResult.Repetition: {
       fn({
-        content:
-          'This position occurred three or more times, so the game was drawn.',
+        content: t('chess.repetition'),
         reply: { messageReference },
       });
       break;
@@ -389,11 +391,10 @@ function winHandler(
     case ChessGameResult.CheckMate:
     case ChessGameResult.Resignation: {
       fn({
-        content: `**${
-          players[reverseIndex(current, players)].tag
-        }** has won by ${
-          type === ChessGameResult.CheckMate ? 'checkmate' : 'resignation'
-        }!`,
+        content: t('chess.win', {
+          winner: players[reverseIndex(current, players)].tag,
+          type: ChessGameResult.CheckMate ? 'checkmate' : 'resignation',
+        }),
         reply: { messageReference },
       });
       break;

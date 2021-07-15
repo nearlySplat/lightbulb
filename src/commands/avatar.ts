@@ -29,7 +29,7 @@ export const meta: CommandMetadata = {
 
 export const execute: CommandExecute = async ctx => {
   const target = getMember(ctx.message.guild, ctx.args.data.user).user;
-  if (!target) return [{ content: 'No target.' }, null];
+  if (!target) return [{ content: ctx.t('generic.no_target') }, null];
   return [
     {
       embed: new MessageEmbed()
@@ -38,7 +38,7 @@ export const execute: CommandExecute = async ctx => {
         .setImage(target.displayAvatarURL({ dynamic: true, size: 4096 }))
         .setTimestamp()
         .setFooter(
-          ctx.t('generic_requested_by', {
+          ctx.t('generic.requested_by', {
             requester: `${ctx.message.author.tag} (${ctx.message.author.id})`,
           })
         ),

@@ -129,7 +129,7 @@ export const execute: CommandExecute<'messageid' | 'channelid'> = async ({
         color: message.guild.me!.roles.highest.color,
         description: text,
         footer: {
-          text: t('generic_requested_by', {
+          text: t('generic.requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           }),
           iconURL: message.author.avatarURL() as string,

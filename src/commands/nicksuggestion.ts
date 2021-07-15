@@ -57,7 +57,7 @@ export const execute: CommandExecute = ctx => {
     );
   return [
     {
-      content: 'My suggestion is...',
+      content: ctx.t('nicksuggestion'),
       embed: new MessageEmbed({
         color: ctx.message.guild.me.roles.color.color,
         description: adj + thing,
@@ -69,7 +69,7 @@ export const execute: CommandExecute = ctx => {
         return {
           type: 4,
           data: {
-            content: "You can't do that!",
+            content: ctx.t('generic.unauthorized'),
             flags: 64,
           },
         };

@@ -96,7 +96,7 @@ export const execute = async (
     } else
       return {
         type: 4,
-        data: { content: "You can't do that!", flags: 64 },
+        data: { content: client.i18n.get('generic.unauthorized'), flags: 64 },
       };
     return { type: 6 };
   };

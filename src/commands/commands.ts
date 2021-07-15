@@ -18,7 +18,7 @@ import { GuildMember } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
 import { getAccessLevel, getCurrentLevel } from '../util';
 
-export const execute: CommandExecute = ({ message, commands, args }) => {
+export const execute: CommandExecute = ({ message, commands, args, t }) => {
   if (!args[0])
     return [
       {
@@ -37,8 +37,7 @@ export const execute: CommandExecute = ({ message, commands, args }) => {
       },
       null,
     ];
-  else
-    return [{ content: 'Use `help` for specific command information' }, null];
+  else return [{ content: t('commands.help') }, null];
 };
 
 export const meta: CommandMetadata = {

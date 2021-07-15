@@ -70,7 +70,7 @@ export const execute: CommandExecute<'target'> = async ({
       embed: new MessageEmbed()
         .setColor(message.guild.me!.roles.highest.color)
         .setFooter(
-          t('generic_requested_by', {
+          t('generic.requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           })
         )

@@ -29,7 +29,7 @@ export const execute: CommandExecute = ({ message, args, t }) => {
         .setColor(CLIENT_COLOUR)
         .setAuthor(t('gnu.header'))
         .setFooter(
-          t('generic_requested_by', {
+          t('generic.requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           }),
           message.author.avatarURL() as string

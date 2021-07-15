@@ -30,7 +30,7 @@ export const meta: CommandMetadata = {
 export const execute: CommandExecute = async ctx => {
   async function confirm(): Promise<boolean> {
     const msg = await ctx.message.channel.send({
-      content: `<@${nerrix}>, ${ctx.message.author.username} wants to deploy Obama. Authorize?`,
+      content: `<@${nerrix}>, ${ctx.t('obama.prompt')}`,
       allowedMentions: { users: [nerrix] },
       components: [
         new MessageActionRow().addComponents(
@@ -53,7 +53,7 @@ export const execute: CommandExecute = async ctx => {
         coll.stop();
         if (interaction.customId === 'a')
           await interaction.reply({
-            content: 'Obama has been deployed.',
+            content: ctx.t('obama.success'),
             files: ['1.png', '2.jpeg', '3.jpeg', 'final.png'].map(v =>
               // eslint-disable-next-line no-undef
               path.resolve(
@@ -71,9 +71,9 @@ export const execute: CommandExecute = async ctx => {
         await msg.edit({
           components: [],
           content:
-            'Deployment has ' +
-            (interaction.customId === 'd' ? 'not ' : '') +
-            'been authorized.',
+            interaction.customId === 'd'
+              ? ctx.t('obama.not_authorized')
+              : ctx.t('obama.authorized'),
         });
         if (interaction.customId === 'a') r(true);
         else r(false);
@@ -83,7 +83,7 @@ export const execute: CommandExecute = async ctx => {
   }
   function deploy() {
     ctx.message.reply({
-      content: 'Deployed.',
+      content: ctx.t('obama.success'),
       files: ['1.png', '2.jpeg', '3.jpeg', 'final.png'].map(v =>
         // eslint-disable-next-line no-undef
         path.resolve(__dirname, '..', '..', '..', 'assets', 'img', 'obama', v)
@@ -92,10 +92,7 @@ export const execute: CommandExecute = async ctx => {
   }
   const authorizedUsers = [...WHITELIST, nerrix];
   if (!authorizedUsers.includes(ctx.message.author.id))
-    return [
-      { content: 'You are not authorized to execute this action!' },
-      null,
-    ];
+    return [{ content: ctx.t('generic.unauthorized') }, null];
   if (ctx.message.author.id === nerrix) deploy();
   else confirm();
   return true;

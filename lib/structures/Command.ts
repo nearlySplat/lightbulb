@@ -60,7 +60,9 @@ export class Command {
 
   call(): void {
     this.reply({
-      content: 'Command not implemented yet.',
+      content: this.context.t('generic.not_implemented', {
+        thing: 'This command',
+      }),
     });
   }
 }

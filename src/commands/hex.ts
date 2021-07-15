@@ -20,7 +20,7 @@ import { CommandMetadata, CommandExecute } from '../types';
 // @ts-ignore
 export const execute: CommandExecute = ({ message, args, t }) => {
   if (isNaN(parseInt(args[0], 16)))
-    return [{ content: 'Invalid hex color.' }, null] as const;
+    return [{ content: t('hex.invalid') }, null] as const;
   return [
     {
       embed: new MessageEmbed()
@@ -37,7 +37,7 @@ export const execute: CommandExecute = ({ message, args, t }) => {
           })
         )
         .setFooter(
-          t('generic_requested_by', {
+          t('generic.requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           }),
           message.author.avatarURL() as string
