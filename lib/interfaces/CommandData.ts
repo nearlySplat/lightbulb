@@ -14,32 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { Context, CommandMetadata } from '../types';
-export const execute = async ({
-  message,
-  args,
-  t,
-}: Context): Promise<boolean> => {
-  await message.reply({
-    content: t('die.success'),
-  });
-  message.client.destroy();
-  // eslint-disable-next-line no-undef
-  setTimeout(() => process.exit(+args.data.code), 100);
-  return true;
-};
-
-export const meta: CommandMetadata = {
-  name: 'die',
-  description: 'die',
-  accessLevel: 3,
-  aliases: [],
-  hidden: true,
-  params: [
-    {
-      name: 'code',
-      type: 'int',
-      optional: true,
-    },
-  ],
-};
+export interface CommandData {
+  name?: string;
+  description?: string;
+  hidden?: boolean;
+  category?: string;
+}

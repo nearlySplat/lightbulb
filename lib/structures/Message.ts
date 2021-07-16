@@ -14,21 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { CommandExecute, CommandMetadata } from '../types';
-import { sleep } from '../util/sleep';
-export const meta: CommandMetadata = {
-  name: 'hello',
-  description: 'hi',
-  accessLevel: 0,
-  aliases: [],
-};
-export const execute: CommandExecute = async ctx => {
-  await ctx.message.channel.startTyping();
-  await sleep(7000 * 60 * 60);
-  ctx.message.channel.stopTyping();
-  await sleep(1000 * 60 * 60 * 3);
-  await ctx.message.channel.startTyping();
-  await sleep(1000 * 60 * 60 * 10);
-  ctx.message.channel.stopTyping();
-  return [{ content: 'hi', components: [] }, null];
-};
+import { Message as DJSMessage, MessageOptions } from 'discord.js';
+import { ExtendedMessageOptions } from '@lightbulb/src/types.js';
+import { Candle } from './Client.js';
+
+export class Message extends DJSMessage {
+  declare client: Candle;
+  async reply(options: ExtendedMessageOptions): Promise<Message> {
+    if (options.embeds || options.embed) {
+      options.embeds = [options.embed];
+    }
+    if (options.code) {
+      options.content = `\`\`\`${options.code === true ? '' : options.code}\n${
+        options.content
+      }\n\`\`\``;
+    }
+    return <Promise<Message>>super.reply(<MessageOptions>options);
+  }
+}

@@ -13,3 +13,6 @@ bot:
   support_server:
 whitelist: 
   -
+
+sentry_dsn:
+i18n_path:

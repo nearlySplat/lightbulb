@@ -30,6 +30,8 @@ import {
   User,
 } from 'discord.js';
 import { slashCommands } from '../..';
+import { Candle } from '@lightbulb/lib/structures/Client';
+import { Message } from '@lightbulb/lib/structures/Message';
 import {
   Interaction,
   InteractionTypes,
@@ -37,24 +39,24 @@ import {
   SlashCommand,
   SlashCommandResponse,
 } from '../../types';
-import { buttonHandlers } from '../message';
+import { buttonHandlers } from '../messageCreate';
 
 export const execute = async (
-  client: Client,
+  client: Candle,
   interaction: GatewayInteractionCreateDispatchData
 ): Promise<unknown> => {
   if (
-    (interaction.type as unknown as InteractionTypes) ===
+    ((interaction.type as unknown) as InteractionTypes) ===
     InteractionTypes.APPLICATION_COMMAND
   )
-    return slashCommandExecute(client, interaction as unknown as Interaction);
+    return slashCommandExecute(client, (interaction as unknown) as Interaction);
   else if (
-    (interaction.type as unknown as InteractionTypes) ===
+    ((interaction.type as unknown) as InteractionTypes) ===
     InteractionTypes.MESSAGE_COMPONENT
   ) {
     buttonExecute(
       client,
-      interaction as unknown as MessageComponentInteraction
+      (interaction as unknown) as MessageComponentInteraction
     );
   }
 };
@@ -67,8 +69,8 @@ export const slashCommandExecute = async (
     ApplicationCommandOptionType.SubCommand,
     ApplicationCommandOptionType.SubCommandGroup,
   ].includes(interaction.data.options[0].type)
-    ? (interaction.data
-        .options[0] as unknown as ApplicationCommandInteractionDataOptionSubCommand)
+    ? ((interaction.data
+        .options[0] as unknown) as ApplicationCommandInteractionDataOptionSubCommand)
     : null;
   function getOption(
     name: string
@@ -77,11 +79,11 @@ export const slashCommandExecute = async (
     | ApplicationCommandInteractionDataOptionSubCommand
     | ApplicationCommandInteractionDataOptionSubCommandGroup
   > {
-    return (
-      subcommand
-        ? subcommand.options.find(v => v.name === name)
-        : interaction.data.options.find(v => v.name === name)
-    ) as APIApplicationCommandInteractionDataOptionWithValues;
+    return (subcommand
+      ? subcommand.options.find(v => v.name === name)
+      : interaction.data.options.find(
+          v => v.name === name
+        )) as APIApplicationCommandInteractionDataOptionWithValues;
   }
   function respond(data: { data: SlashCommandResponse }) {
     return client.api
@@ -153,7 +155,7 @@ export const slashCommandExecute = async (
 };
 
 export const buttonExecute = async (
-  client: Client,
+  client: Candle,
   interaction: MessageComponentInteraction
 ): Promise<void> => {
   function respond(data: { data: SlashCommandResponse }) {
@@ -164,7 +166,7 @@ export const buttonExecute = async (
   const channel = (await client.channels.fetch(
     interaction.message.channel_id
   )) as TextChannel;
-  const message = await channel.messages.fetch(interaction.message.id);
+  const message = <Message>await channel.messages.fetch(interaction.message.id);
   if (buttonHandlers.has(message.id)) {
     const handler = buttonHandlers.get(message.id);
     const user = await client.users.fetch(

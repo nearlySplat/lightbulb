@@ -26,7 +26,7 @@ import {
   User,
 } from 'discord.js';
 import { CommandExecute, CommandMetadata } from '../types';
-import { AccessLevels, i18n, reverseIndex } from '../util';
+import { AccessLevels, reverseIndex } from '../util';
 import {
   Chess as ChessClient,
   PieceType as ChessJSPieceType,
@@ -69,7 +69,7 @@ const coords: Chess.Coordinates[] = [
   ...'abcdefgh',
 ].map((v, i) => v + '' + (Math.floor(i / 8) + 1)) as Chess.Coordinates[];
 
-export const execute: CommandExecute = async () => {
+export const execute: CommandExecute = async ({ t }) => {
   const players: [p1: User, p2: User] = [null, null] as [User, User];
   let board: Chess.Board = {} as Chess.Board;
   let currentlyMoving: 0 | 1 = 0;
@@ -78,7 +78,7 @@ export const execute: CommandExecute = async () => {
   let nextMoveMsg: Message;
   return [
     {
-      content: 'Who wants to play some chess?',
+      content: t('chess.starter'),
       components: [
         new MessageActionRow().addComponents(...generatePlayerRow(players)),
         helpRow,
@@ -95,7 +95,7 @@ export const execute: CommandExecute = async () => {
           data: {
             embeds: [
               {
-                description: i18n.get('CHESS_HELP'),
+                description: t('chess.help'),
                 color: (
                   ctx.message.member || {
                     roles: { highest: { color: CLIENT_COLOUR } },
@@ -126,13 +126,13 @@ export const execute: CommandExecute = async () => {
         if (isOver())
           return {
             type: 4,
-            data: { content: 'This game is over.', flags: 64 },
+            data: { content: t('chess.game_over'), flags: 64 },
           };
         const pid = getPlayerID(customID as `p${1 | 2}`);
         if (players[pid] /*|| players.includes(ctx.user)*/)
           return {
             type: 4,
-            data: { content: "You can't do that!", flags: 64 },
+            data: { content: t('generic.unauthorized'), flags: 64 },
           };
         players[pid] = ctx.user;
         if (players.filter(v => v).length === 2) {
@@ -153,26 +153,33 @@ export const execute: CommandExecute = async () => {
                     .map(v => `\`${v}\``)
                     .join(', ')}`
                 );
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
                 return;
               } else if (msg.content.match('what colou?r am I')) {
                 msg.channel.send(
                   `You are ${currentlyMoving ? 'black' : 'white'}.`
                 );
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
                 return;
               } else if (msg.content === 'resign') {
                 isOver = () => true;
-                winHandler(
+                resultHandler(
                   2,
                   msg.channel.send.bind(msg.channel),
                   ctx.message,
                   currentlyMoving,
-                  players
+                  players,
+                  t
                 );
                 coll.stop();
                 msg.react('✅');
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
                 return;
               }
               const move = instance.move(msg.content);
@@ -202,15 +209,18 @@ export const execute: CommandExecute = async () => {
                 else {
                   isOver = () => true;
                   coll.stop();
-                  winHandler(
+                  resultHandler(
                     state,
                     ctx.message.reply.bind(ctx.message),
                     ctx.message,
                     currentlyMoving,
-                    players
+                    players,
+                    t
                   );
                 }
-                msg.delete().catch(() => {});
+                msg.delete().catch(() => {
+                  // do nothing
+                });
               }
             }
 
@@ -255,11 +265,11 @@ const vsButton = new MessageButton()
   .setLabel('v.')
   .setDisabled(true);
 function generatePlayerRow(players: [User | null, User | null]) {
-  const arr: [MessageButton, MessageButton, MessageButton] = [] as unknown as [
+  const arr: [
     MessageButton,
     MessageButton,
     MessageButton
-  ];
+  ] = ([] as unknown) as [MessageButton, MessageButton, MessageButton];
   for (let i = 0; i < players.length; i++) {
     arr.push(
       ...[
@@ -323,7 +333,7 @@ function generatePieceArray(board: Chess.Board) {
 function generateBoard(
   board: ({ type: ChessJSPieceType; color: 'b' | 'w' } | null)[][]
 ): Chess.Board {
-  const toReturn = Object.fromEntries(
+  const toReturn = (Object.fromEntries(
     board.flat().map((v, i) => [
       coords[i],
       {
@@ -335,45 +345,45 @@ function generateBoard(
           v,
       },
     ])
-  ) as unknown as Chess.Board;
+  ) as unknown) as Chess.Board;
   return toReturn;
 }
 
-function winHandler(
+function resultHandler(
   type: ChessGameResult,
   fn: TextChannel['send'],
   messageReference: Message,
   current: 0 | 1,
-  players: User[]
+  players: User[],
+  t: import('i18next').TFunction
 ) {
   switch (type) {
+    // unimplemented
     case ChessGameResult.DrawByAgreement: {
-      fn({ content: `It was a draw!`, reply: { messageReference } });
+      fn({ content: t('chess.draw'), reply: { messageReference } });
       break;
     }
     case ChessGameResult.InsufficientMaterial: {
       fn({
-        content: 'There was insufficient material to continue the game!',
+        content: t('chess.no_material'),
         reply: { messageReference },
       });
       break;
     }
     case ChessGameResult.FiftyMoveLimit: {
       fn({
-        content:
-          'The game crossed the fifty (50) move limit, so the game was drawn.',
+        content: t('chess.fifty_move'),
         reply: { messageReference },
       });
       break;
     }
     case ChessGameResult.Stalemate: {
-      fn({ content: 'It was a stalemate!', reply: { messageReference } });
+      fn({ content: t('chess.stalemate'), reply: { messageReference } });
       break;
     }
     case ChessGameResult.Repetition: {
       fn({
-        content:
-          'This position occurred three or more times, so the game was drawn.',
+        content: t('chess.repetition'),
         reply: { messageReference },
       });
       break;
@@ -381,11 +391,10 @@ function winHandler(
     case ChessGameResult.CheckMate:
     case ChessGameResult.Resignation: {
       fn({
-        content: `**${
-          players[reverseIndex(current, players)].tag
-        }** has won by ${
-          type === ChessGameResult.CheckMate ? 'checkmate' : 'resignation'
-        }!`,
+        content: t('chess.win', {
+          winner: players[reverseIndex(current, players)].tag,
+          type: ChessGameResult.CheckMate ? 'checkmate' : 'resignation',
+        }),
         reply: { messageReference },
       });
       break;

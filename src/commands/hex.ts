@@ -16,29 +16,28 @@
  */
 import { MessageEmbed } from 'discord.js';
 import { CommandMetadata, CommandExecute } from '../types';
-import { get, interpolate } from '../util/i18n';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export const execute: CommandExecute = ({ message, args, locale }) => {
+export const execute: CommandExecute = ({ message, args, t }) => {
   if (isNaN(parseInt(args[0], 16)))
-    return [{ content: 'Invalid hex color.' }, null] as const;
+    return [{ content: t('hex.invalid') }, null] as const;
   return [
     {
       embed: new MessageEmbed()
         .setDescription(
-          interpolate(get('HEX_BODY', locale), {
+          t('hex.body', {
             hex_value: parseInt(args[0], 16).toString(16),
             decimal_value: parseInt(args[0], 16).toString(),
           })
         )
         .setColor(parseInt(args[0], 16))
         .setAuthor(
-          interpolate(get('HEX_HEADER', locale), {
+          t('hex.header', {
             color: parseInt(args[0], 16).toString(16),
           })
         )
         .setFooter(
-          interpolate(get('GENERIC_REQUESTED_BY', locale), {
+          t('generic.requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           }),
           message.author.avatarURL() as string

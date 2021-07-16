@@ -16,16 +16,15 @@
  */
 import { CommandExecute, CommandMetadata } from '../types';
 import { slashCommands } from '..';
-import { get } from '../util/i18n';
 
 export const meta: CommandMetadata = {
   name: 'syncslash',
   description: 'Syncs slash commands (owner only)',
   accessLevel: 3,
-  aliases: ['syncinteractions'],
+  aliases: ['syncinteractions', 'slashsync'],
 };
 
-export const execute: CommandExecute = async ({ client, message }) => {
+export const execute: CommandExecute = async ({ client, message, t }) => {
   const curr = await client.api
     .applications(client.user!.id)
     .commands.get<{ name: string }[]>();
@@ -33,12 +32,19 @@ export const execute: CommandExecute = async ({ client, message }) => {
     ({ meta: { name } }) => !curr.find(({ name: iName }) => iName === name)
   );
   if (!toAdd.size) {
-    message.channel.send(get('SLASHSYNC_NO_TARGETS'));
+    message.channel.send(t('slashsync.no_targets'));
     return false;
   }
   for (const [, command] of toAdd)
     client.api.applications(client.user!.id).commands.post({
-      data: command.meta as unknown as Record<string, unknown>,
+      data: (command.meta as unknown) as Record<string, unknown>,
     });
-  return [{ content: get('SLASHSYNC_SUCCESSFUL') }, null];
+  return [
+    {
+      content: t('slashsync.successWithCount', {
+        count: toAdd.size,
+      }),
+    },
+    null,
+  ];
 };

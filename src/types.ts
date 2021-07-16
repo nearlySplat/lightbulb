@@ -32,14 +32,16 @@ import {
   Guild,
   GuildMember,
   GuildPreview,
-  Message,
   MessageEmbed,
   MessageOptions,
   PermissionFlags,
   Snowflake,
   User,
 } from 'discord.js';
+import { Candle } from '@lightbulb/lib/structures/Client.js';
+import { Message } from '@lightbulb/lib/structures/Message';
 import { CommandParameters, Parameter } from './util';
+import { TFunction } from 'i18next';
 
 export type Command = {
   execute: CommandExecute;
@@ -68,7 +70,7 @@ export interface ButtonInteractionHandlerContext {
   user: User;
   channel: Channel;
   message: Message;
-  client: Client;
+  client: Candle;
   guild?: Guild;
   interaction: MessageComponentInteraction;
   customID: string;
@@ -82,9 +84,10 @@ export interface Context<T extends string = string> {
   commands: Collection<string, Command>;
   commandHandlerStarted: number;
   accessLevel: number;
-  locale: 'uwu' | 'en_UK';
+  locale: string;
   commandName: string;
   deleteButtonHandler: ButtonInteractionHandler;
+  t: TFunction;
 }
 
 export interface CommandMetadata {
@@ -193,6 +196,8 @@ export interface YAMLConfig {
   bot: Bot;
   whitelist: null | string[];
   nodb: boolean;
+  sentry_dsn: string;
+  i18n_path: string;
 }
 
 export interface Owner {

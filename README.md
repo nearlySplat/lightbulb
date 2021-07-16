@@ -1,18 +1,18 @@
 # lightbulb
 
-A small memebot that is focused on utility and a bit of moderation. I would prefer if you didn't selfhost my bot, and instead invited it using this link: [click me!](https://discord.com/oauth2/authorize?client_id=808333699879796787&scope=bot). This helps me a lot because it lets me know that people have noticed me.
+A small memebot that is focused on utility and a bit of moderation. I would prefer if you didn't selfhost my bot, and instead invited it using this link: [click me!][inv]. This helps me a lot because it lets me know that people have noticed me.
 
 If you're me, and want to host it, or you're not me and are disrespecting my instructions above (smh), self-hosting instructions are below.
 
 ## Self-hosting
 
-Running this code will require TypeScript, and a whole lot of other stuff you can install by running
+Running this code will require [TypeScript], and a whole lot of other stuff you can install by running
 
 ```sh
 npm install
 ```
 
-If you just want to run it without compiling, a [Release](https://github.com/nearlySplat/lightbulb/releases) just _might_ be published once in a while.
+If you just want to run it without compiling, a [Release] just _might_ be published once in a while.
 
 Compiling is pretty easy to be honest. Just install all the dependencies (including the dev ones), while simultaneously knocking out your storage drive, then run `tsc`. The code will then be compiled and it (won't) be ready to go.
 
@@ -26,13 +26,11 @@ You'll need to have a MongoDB database ready for this. Put the URL in the `.env`
 
 ## Running the bot
 
-You'll need to install [`nodemon`](https://npmjs.com/package/nodemon) for this as some stray child process code has been left (intentionally, maybe) in the index file. This will be fixed in a future version.
-
-When all that is done, run `nodemon` and the bot will hopefully connect to Discord!
+You can run the bot in any way you'd normally run a Node.js project, but what I use for production is a little tool called [PM2]. It runs your code in-memory, not in the current terminal, and restarts automatically if the process dies!
 
 ## Contributing
 
-This projects uses the [Conventional Commits standard](https://www.conventionalcommits.org/en/v1.0.0/) for commits. If you want to generate your commit message interactively, use `npm run commit`. Commit messages are linted befote commit using Git Hooks via Husky.
+This projects uses the [Conventional Commits standard][convcommits] for commits. If you want to generate your commit message interactively, use `npm run commit`. Commit messages are linted befote commit using Git Hooks via Husky.
 
 License headers are applied to every file before commit, if you want your name to be explicitly mentioned contact a maintainer.
 
@@ -40,12 +38,11 @@ Every file is also formatted before commit using Husky, again.
 
 ## Legal Stuff
 
-Lightbulb is a Discord Bot made by Splatterxl. You are free to use its code in your bot if you
-
-1. do not claim it is your code, and
-1. credit the actual author in a prominent place in your code, e.g. a `NOTICE` file.
+Lightbulb is a Discord Bot made by Splatterxl. You are free to use its code in your bot if you keep the original license in a prominent place in your code, e.g. at the top of the file the code has been copied to or in a NOTICE file. Read the [GNU Affero General Public License][agpl].
 
 ```
+Lightbulb: a utility-focused meme bot.
+
 Copyright (C) 2020 Splatterxl
 
 This program is free software: you can redistribute it and/or modify
@@ -61,3 +58,12 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
+
+<!-- links -->
+
+[inv]: https://discord.com/oauth2/authorize?client_id=808333699879796787&scope=bot+applications.commands
+[typescript]: https://typescriptlang.org
+[release]: https://github.com/nearlySplat/lightbulb/releases
+[pm2]: https://pm2.io
+[convcommits]: https://conventionalcommits.org/en/v1.0.0
+[agpl]: https://www.gnu.org/licenses

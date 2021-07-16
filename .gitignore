@@ -4,7 +4,7 @@ node_modules/
 yarn.lock
 *.code-workspace
 src/migration/
-pnpm-lock.yaml
 etc/tags.json
 etc/markov.txt
 etc/config.yml
+deployrconf.json

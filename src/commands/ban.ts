@@ -21,36 +21,29 @@ import {
   Permissions,
   Snowflake,
 } from 'discord.js';
-import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
-import { get, interpolate } from '../util/i18n';
 import { config, ERROR_CODES, WHITELIST } from '../constants';
-import { User, IUser } from '../models/User';
-import { defaultDeleteButton, reloadBlacklists } from '../events/message';
+import { defaultDeleteButton, reloadBlacklists } from '../events/messageCreate';
+import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 export const execute: CommandExecute<'user' | 'reason'> = async ({
   message,
   args,
-  locale,
+  t,
   deleteButtonHandler,
 }) => {
   if (!message.guild.me!.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
     return false;
   const target = await message.client.users
     .fetch(args.data.user.replace(/(<@!?|>)/g, '') as Snowflake)
-    .catch(() => null);
+    .catch(() => {
+      // do nothing
+    });
   if (!target) return false;
-  const user =
-    (await User.findOne({
-      uid: target.id,
-    }).exec()) || <IUser>(<unknown>{ pronouns: { object: 'them' } });
-  const {
-    pronouns: { object: objectPronoun },
-  } = user;
   const member = await message.guild.members.fetch(target.id).catch(() => null);
   const ban = async (): Promise<CommandResponse> => {
     return [
       {
-        content: interpolate(get('BAN_CONFIRMATION', locale), {
-          objectPronoun,
+        content: t('ban.confirmation', {
+          target,
         }),
         components: [
           new MessageActionRow({
@@ -69,38 +62,40 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
       },
       async ctx => {
         if (ctx.user.id !== message.author.id) return { type: 6 };
-        if (ctx.interaction.data.custom_id === 'internal__delete') {
+        if (['internal__delete', 'internal__hide'].includes(ctx.customID)) {
           return deleteButtonHandler(ctx);
         }
         if (ctx.interaction.data.custom_id === 'n') {
           ctx.message.delete();
-          message.delete().catch(() => {});
+          message.delete().catch(() => {
+            // do nothing
+          });
           return { type: 6 };
         }
         try {
           await message.guild.members.ban(target.id, {
             reason: `[ ${message.author.tag} ]: ${
-              args.data.reason || `None provided`
+              args.data.reason || t('moderation.no_reason')
             }`,
           });
           if (message.guild.id === config.bot.support_server) {
             void reloadBlacklists(message.client);
             ctx.message.edit({
               content:
-                interpolate(get('BAN_SUCCESSFUL', locale), {
-                  target: target.tag,
-                }) +
-                ' Additionally, as this is my support server, the blacklist has been updated.',
+                t('ban.success', {
+                  target,
+                }) + t('ban.blacklist'),
               components: defaultDeleteButton,
             });
           } else
             ctx.message.edit({
-              content: interpolate(get('BAN_SUCCESSFUL', locale), {
-                target: target.tag,
+              content: t('ban.success', {
+                target,
               }),
               components: defaultDeleteButton,
             });
         } catch (e) {
+          ctx.client.sentry.captureException(e);
           ctx.message.edit({
             content: `\`\`\`${e}\`\`\``,
             components: defaultDeleteButton,
@@ -115,30 +110,32 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
   }
   if (member.user.id === message.guild.ownerId) {
     message.channel.send(
-      interpolate(get('GENERIC_ERROR', locale), {
+      t('error.generic', {
         code: ERROR_CODES.TARGET_IS_OWNER.toString(),
-        message: 'Target is owner',
+        message: t('error.target_owner'),
       })
     );
+
     return false;
   }
+
   if (
     member.user.id === message.client.user.id ||
     WHITELIST.includes(target.id)
   ) {
     message.channel.send(
-      interpolate(get('GENERIC_ERROR', locale), {
+      t('error.generic', {
         code: ERROR_CODES.DISALLOWED_TARGET.toString(),
-        message: 'Disallowed target',
+        message: t('error.disallowed_target'),
       })
     );
     return false;
   }
   if (member.user.id === message.author.id) {
     message.channel.send(
-      interpolate(get('GENERIC_ERROR', locale), {
+      t('error.generic', {
         code: ERROR_CODES.SELF_IS_MODERATION_TARGET.toString(),
-        message: 'Self is moderation target',
+        message: t('error.self_mod_target'),
       })
     );
     return false;
@@ -150,7 +147,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
         message.member.roles.highest.rawPosition
     ) {
       message.channel.send(
-        interpolate(get('BAN_INSUFFICIENT_PERMISSIONS', locale), {
+        t('ban.noperms', {
           target: member.user.tag,
         })
       );
@@ -163,7 +160,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
 export const meta: CommandMetadata = {
   name: 'ban',
   description: 'Bans a member from the guild.',
-  accessLevel: 2,
+  accessLevel: 1,
   aliases: [],
   hidden: false,
   params: [

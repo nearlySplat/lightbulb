@@ -14,37 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { MessageEmbed } from 'discord.js';
-import { User, IUser } from '../models/User';
-import { CommandExecute, CommandMetadata } from '../types';
-
-export const meta: CommandMetadata = {
-  name: 'whataremypronouns',
-  description: 'When you forget your gender',
-  aliases: ['pronouns', 'changemypronounspls'],
-  accessLevel: 0,
-};
-
-export const execute: CommandExecute = async ctx => {
-  const data = await User.findOne({
-    uid: ctx.message.author.id,
-  }).exec();
-  if (!data) {
-    ctx.message.channel.send(
-      'You do not have any data in our database. `they/them` pronouns will be assumed unless you explicitly set them to anything else.'
-    );
-  }
-  const embed = new MessageEmbed()
-    .setAuthor(
-      `${ctx.message.author.tag}'s Pronouns`,
-      ctx.message.author.displayAvatarURL({
-        dynamic: true,
-      })
-    )
-    .setDescription(`Your pronouns are: ${formatPronouns(data.pronouns)}`)
-    .setColor(ctx.message.guild.me!.roles.highest.color);
-  return [{ embed }, null];
-};
+/**
+ * @todo Work on pronouns
+ * @body This was an empty command that only showed the owner's pronouns. By the end of the rewrite, pronouns *must* be configurable.
+ */
+import { IUser } from '../models/User';
 
 export function formatPronouns(pronouns: IUser['pronouns']): string {
   return `${Object.entries(pronouns)

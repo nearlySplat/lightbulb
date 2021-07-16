@@ -42,13 +42,16 @@ export const execute: CommandExecute = ctx => {
   } else {
     target = getMember(ctx.message.guild, ctx.args.data.user).user;
   }
-  if (!target) return [{ content: 'No user found.' }, null];
+  if (!target) return [{ content: ctx.t('generic.no_target') }, null];
   const presence = ctx.message.guild.presences.cache.get(target.id);
-  if (!presence.clientStatus) return [{ content: 'No data.' }, null];
+  if (!presence.clientStatus)
+    return [{ content: ctx.t('generic.no_data') }, null];
   const status = presence.clientStatus;
   return [
     {
-      content: `**__${target.tag}'s Presence__**\n\n${
+      content: `${ctx.t('presence.header', {
+        target,
+      })}\n\n${
         status.desktop
           ? `**Desktop**: <:${statusEmojis[status.desktop]}>\n`
           : ''

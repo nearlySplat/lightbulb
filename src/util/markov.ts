@@ -23,8 +23,7 @@ export function escapeRegExp(str: string | RegExp): string {
 }
 export class Markov {
   public static SENTENCE_BOUNDARIES = /\b[!?.\n]+\b/gi;
-  public static WORD_JOINERS =
-    /[-:;,@$%^&*!?.€£¥₩+'">\-/\\=#)\][}{\u2000-\u200f]/g;
+  public static WORD_JOINERS = /[-:;,@$%^&*!?.€£¥₩+'">\-/\\=#)\][}{\u2000-\u200f]/g;
   public static WORD = new RegExp(
     `(${Markov.WORD_JOINERS.source})?\\w+(((${Markov.WORD_JOINERS.source}+)(\\w+)?)*)`,
     'gi'
@@ -83,7 +82,7 @@ export class Markov {
     if (!this.matches.has(word)) return '';
     do {
       for (; !finished; ) {
-        let matched: string = this.matches.get(word) as unknown as string;
+        let matched: string = (this.matches.get(word) as unknown) as string;
         matched = matched?.[Math.floor(Math.random() * matched.length)];
         if (!matched || !matched.length) {
           finished = true;
@@ -104,9 +103,9 @@ export class Markov {
     let finished = false;
     const arr = [...this.matches];
     for (; !finished; ) {
-      let matched: string = arr
+      let matched: string = (arr
         .filter(([, matches]) => matches.includes(word))
-        .flatMap(v => v[0]) as unknown as string;
+        .flatMap(v => v[0]) as unknown) as string;
       if (!matched.length) {
         finished = true;
       }

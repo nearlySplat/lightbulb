@@ -15,12 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import { ClientPresenceStatusData, MessageEmbed, Snowflake } from 'discord.js';
+import moment from 'moment';
+import { commands } from '..';
 import { User } from '../models/User';
 import { CommandExecute, CommandMetadata } from '../types';
-import { getMember, i18n } from '../util';
+import { getMember } from '../util';
 import { formatPronouns } from './whataremypronouns';
-import { commands } from '..';
-import moment from 'moment';
+
+/**
+ * @todo I18n strings for user command
+ * @body Currently, this is always going to be in English.
+ */
 
 export const meta: CommandMetadata = {
   name: 'user',
@@ -39,7 +44,7 @@ export const meta: CommandMetadata = {
 export const execute: CommandExecute<'target'> = async ({
   message,
   args,
-  locale,
+  t,
 }) => {
   const member = getMember(
     message.guild,
@@ -57,15 +62,15 @@ export const execute: CommandExecute<'target'> = async ({
       uid: user.id,
     }).exec();
   if (!user) {
-    message.channel.send('no such user could be found');
-    return false;
+    return [{ content: t('user.not_found') }, null];
   }
+  const presence = message.guild.presences.cache.get(user.id);
   return [
     {
       embed: new MessageEmbed()
         .setColor(message.guild.me!.roles.highest.color)
         .setFooter(
-          i18n.interpolate(i18n.get('GENERIC_REQUESTED_BY', locale), {
+          t('generic.requested_by', {
             requester: `${message.author.tag} (${message.author.id})`,
           })
         )
@@ -80,7 +85,7 @@ export const execute: CommandExecute<'target'> = async ({
           ).fromNow()})
 	      **Account Type**: ${user.system ? 'System' : user.bot ? 'Bot' : 'Normal'}
 	      **Status**: ${getBestPresence(
-          user.presence.clientStatus as ClientPresenceStatusData
+          presence.clientStatus as ClientPresenceStatusData
         )}`.replace(/\n[\t ]*/g, '\n'),
           true
         )

@@ -17,7 +17,7 @@
 import { MessageActionRow, MessageButton } from 'discord.js';
 import { inspect } from 'util';
 import { WHITELIST } from '../constants';
-import { defaultDeleteButton } from '../events/message';
+import { defaultDeleteButton } from '../events/messageCreate';
 import { CommandExecute, CommandMetadata, CommandResponse } from '../types';
 export const execute: CommandExecute = async ({
   message,
@@ -85,7 +85,8 @@ export const execute: CommandExecute = async ({
     },
     ctx => {
       const customID = ctx.interaction.data.custom_id;
-      if (customID === 'internal__delete') return deleteButtonHandler(ctx);
+      if (['internal__delete', 'internal__hide'].includes(ctx.customID))
+        return deleteButtonHandler(ctx);
       else {
         switch (customID) {
           case '->': {

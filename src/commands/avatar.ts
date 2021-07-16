@@ -17,7 +17,7 @@
 import { MessageEmbed } from 'discord.js';
 import { CLIENT_COLOUR } from '../constants';
 import { CommandMetadata, CommandExecute } from '../types';
-import { getMember, i18n } from '../util';
+import { getMember } from '../util';
 
 export const meta: CommandMetadata = {
   name: 'avatar',
@@ -29,16 +29,16 @@ export const meta: CommandMetadata = {
 
 export const execute: CommandExecute = async ctx => {
   const target = getMember(ctx.message.guild, ctx.args.data.user).user;
-  if (!target) return [{ content: 'No target.' }, null];
+  if (!target) return [{ content: ctx.t('generic.no_target') }, null];
   return [
     {
       embed: new MessageEmbed()
-        .setAuthor(`${target.tag}'s Avatar`)
+        .setAuthor(ctx.t('avatar.title', { target }))
         .setColor(ctx.message.guild.me.roles.color.color || CLIENT_COLOUR)
         .setImage(target.displayAvatarURL({ dynamic: true, size: 4096 }))
         .setTimestamp()
         .setFooter(
-          i18n.interpolate(i18n.get('GENERIC_REQUESTED_BY', ctx.locale), {
+          ctx.t('generic.requested_by', {
             requester: `${ctx.message.author.tag} (${ctx.message.author.id})`,
           })
         ),

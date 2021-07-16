@@ -14,34 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import { CommandMetadata, CommandExecute } from '../types';
-import { GuildMember, Snowflake, TextChannel } from 'discord.js';
-import { createLogMessage } from '../util';
-export const execute: CommandExecute = async ({ message }) => {
-  const channel = message.guild.channels.cache.find(
-    value =>
-      ((value.name?.match(/^💡(-log(s|ging)?)?$/g) ||
-        ((value as TextChannel).topic as string | undefined)?.includes(
-          '--lightbulb-logs'
-        )) &&
-        value.type == 'GUILD_TEXT' &&
-        value
-          .permissionsFor(message.guild.me as GuildMember)
-          ?.has('SEND_MESSAGES')) ??
-      false
-  ) as TextChannel;
+import { Snowflake } from 'discord.js';
+import { CommandExecute, CommandMetadata } from '../types';
+import { createLogMessage, getLogChannel } from '../util';
+export const execute: CommandExecute = async ({ message, t }) => {
+  const channel = getLogChannel(message.guild);
   if (channel) {
     const result = createLogMessage({
       compact: channel.topic?.includes('--compact'),
-      victim: {
-        id: '0'.repeat(19) as Snowflake,
-        tag: 'Clyde#0000',
-      },
+      victim: message.author,
       perpetrator: {
-        id: '0'.repeat(17) as Snowflake,
+        id: '0'.repeat(18) as Snowflake,
         tag: 'Nelly#0000',
       },
-      reason: `Mod log test by **${message.author.tag}**`,
+      reason: t('moderation.no_reason'),
       case: 0,
       action: 'Ban',
       emoji: '🔨',
