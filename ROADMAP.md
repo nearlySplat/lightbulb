@@ -11,6 +11,7 @@ This is the roadmap for the current rewrite.
 - [ ] tags
 - [ ] use pronouns more widely
 - [ ] Guild settings (currently prefixes are supported but you can't set it)
+- [ ] remove Command#description, replace with ``t(`${command}.description`)``, also make it optional
 
 ## Other
 

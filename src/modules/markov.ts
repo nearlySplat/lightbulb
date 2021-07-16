@@ -133,9 +133,11 @@ export const splatMarkov = {
             : !INVALID(t.content)
         );
       markov.push(
-        ...((msgs instanceof Collection ? msgs : [msgs]).map as (
-          fn: (m: Message) => string
-        ) => string[])(v => v.cleanContent)
+        ...(
+          (msgs instanceof Collection ? msgs : [msgs]).map as (
+            fn: (m: Message) => string
+          ) => string[]
+        )(v => v.cleanContent)
       );
       fs.writeFileSync(
         path.join(__dirname, '..', '..', '..', 'etc', 'markov.txt'),
@@ -156,7 +158,6 @@ export const splatMarkov = {
         config.owner.markov.trigger + config.owner.markov.suffix
       ) && message.author.id !== config.owner.id
     );
-    message.channel.startTyping();
     console.log('started generating sentence');
     const text = args[0]
       ? instance.generate(0, { hasToHave: args[0] })
@@ -173,7 +174,6 @@ export const splatMarkov = {
           flags: MessageFlags.FLAGS.SUPPRESS_EMBEDS,
         })
       );
-    message.channel.stopTyping(true);
     return true;
   },
 };

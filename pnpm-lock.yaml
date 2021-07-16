@@ -25,7 +25,7 @@ specifiers:
   commitlint: 12.1.4
   cz-conventional-changelog: 3.3.0
   discord-api-types: ^0.19.0-next.4a83629.1626051438
-  discord.js: ^13.0.0-dev.1dcad05.1626091387
+  discord.js: ^13.0.0-dev.f200f14.1626436969
   dotenv: ^10.0.0
   eslint: 7.30.0
   express: ^4.17.1
@@ -56,7 +56,7 @@ dependencies:
   chess-image-generator: github.com/andyruwruw/chess-image-generator/6daa71f31a15c0dba93380cfc7fff98079ebbbe8
   chess.js: 0.12.0
   discord-api-types: 0.19.0-next.f393ba520d7d6d2aacaca7b3ca5d355fab614f6e
-  discord.js: 13.0.0-dev.1dcad05.1626091387
+  discord.js: 13.0.0-dev.f200f14.1626436969
   dotenv: 10.0.0
   express: 4.17.1
   graceful-fs: 4.2.6
@@ -560,13 +560,8 @@ packages:
     resolution: {integrity: sha512-wF6hazbsnwaW3GhK4jFuw5NaLDQVRQ6pWQUGAUrJzxixFkTaODSiAKMPXuHwPEPkAKQWHAzj6uJ5h+3zU9gQxg==}
     dev: false
 
-  /@types/node/16.3.1:
-    resolution: {integrity: sha512-N87VuQi7HEeRJkhzovao/JviiqKjDKMVKxKMfUvSKw+MbkbW8R0nA3fi/MQhhlxV2fQ+2ReM+/Nt4efdrJx3zA==}
-    dev: false
-
   /@types/node/16.3.2:
     resolution: {integrity: sha512-jJs9ErFLP403I+hMLGnqDRWT0RYKSvArxuBVh2veudHV7ifEC1WAmjJADacZ7mRbA2nWgHtn8xyECMAot0SkAw==}
-    dev: true
 
   /@types/normalize-package-data/2.4.0:
     resolution: {integrity: sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA==}
@@ -579,7 +574,7 @@ packages:
   /@types/ws/7.4.6:
     resolution: {integrity: sha512-ijZ1vzRawI7QoWnTNL8KpHixd2b2XVb9I9HAqI3triPsh1EC0xH0Eg6w2O3TKbDCgiNNlJqfrof6j4T2I+l9vw==}
     dependencies:
-      '@types/node': 16.3.1
+      '@types/node': 16.3.2
     dev: false
 
   /@typescript-eslint/eslint-plugin/4.28.3_8da3816a7c3fb8ebc9f4c4b3e4b2e38f:
@@ -1569,8 +1564,8 @@ packages:
     deprecated: No longer supported. Install the latest @next release
     dev: false
 
-  /discord.js/13.0.0-dev.1dcad05.1626091387:
-    resolution: {integrity: sha512-XdNADDxZGgD1qO0kaw22k0VSqqCW0awizweE5UZ6BsgdpTDdsFJne+MHrIAcn3cvH1b8wIcz+tfsXMBVzdLj/g==}
+  /discord.js/13.0.0-dev.f200f14.1626436969:
+    resolution: {integrity: sha512-ntb1T9ybIGA/qWJxkdiGZDg8sw8q7OmRrmBiSnatuf2tObfNl2gHR+wehrNAZ459fqhYxKUjE95/91LSbZJpYQ==}
     engines: {node: '>=14.0.0', npm: '>=7.0.0'}
     dependencies:
       '@discordjs/builders': 0.2.0
