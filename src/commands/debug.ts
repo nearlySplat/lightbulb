@@ -23,14 +23,20 @@ import { CommandExecute, CommandMetadata } from '../types';
 import fs from 'fs';
 import child_process from 'child_process';
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
-const commit = child_process.execSync('git log -n 1 --format="%H"').toString();
+const commit = child_process
+  .execSync('git log -n 1 --format="%H"')
+  .toString()
+  .trim();
 // eslint-disable-next-line no-undef
-const events = readdirSync(join(__dirname, '..', 'events'));
+const events = readdirSync(join(__dirname, '..', 'events')).filter(
+  v => !v.includes('map')
+);
 export const execute: CommandExecute = async ({
   message,
   commands,
   client,
   commandHandlerStarted,
+  t,
 }) => {
   return [
     {
@@ -41,20 +47,15 @@ export const execute: CommandExecute = async ({
       - I am currently on shard \`${message.guild?.shardId}\` with \`${
             commands.size
           }\` commands.
-        - I have requested gateway intents of \`${INTENTS}\` (${new Intents(
-            INTENTS
-          )
-            .toArray()
-            .map(v => `\`${v}\``)
-            .join(', ')}).
-        - I am ${
-          !(await client.application.fetch()).botPublic ? '**not** ' : ''
-        }available to invite to guilds.
+        - I have requested gateway intents of \`${INTENTS}\`
+	- I am ${
+    !(await client.application.fetch()).botPublic ? '**not** ' : ''
+  }available to invite to guilds.
         - Available events are ${events
           .map(
             v =>
               `\`${v
-                .replace(/\.[jt]s/g, '')
+                .replace(/\.[jt]s$/g, '')
                 .replace(/([a-z])([A-Z])/g, '$1_$2')
                 .toUpperCase()}\``
           )
@@ -65,16 +66,18 @@ export const execute: CommandExecute = async ({
           - Command handler latency is \`${
             Date.now() - commandHandlerStarted
           }ms\`.
-	  - I have ${
-      Object.keys(pkg.dependencies).length
-    } Node.js dependencies installed.
-    - I am on commit [\`${commit}\`](https://github.com/nearlySplat/lightbulb/commit/${commit})
-  `.replace(/\n +/g, '\n')
+          - I have ${
+            Object.keys(pkg.dependencies).length
+          } Node.js dependencies installed.
+          - I am on commit [\`${commit}\`](https://github.com/nearlySplat/lightbulb/commit/${commit})
+  `.replace(/\n\s+/g, '\n')
         )
-        .setColor(CLIENT_COLOUR)
+        .setColor(message.guild.me.roles.color.color || CLIENT_COLOUR)
         .setThumbnail(client.user?.avatarURL() as string)
         .setFooter(
-          `Requested by ${message.author.tag} (${message.author.id})`,
+          t('generic.requested_by', {
+            requester: `${message.author.tag} (${message.author.id})`,
+          }),
           message.author.avatarURL() as string
         ),
     },
