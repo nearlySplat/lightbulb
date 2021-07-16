@@ -160,7 +160,7 @@ export const execute: CommandExecute<'user' | 'reason'> = async ({
 export const meta: CommandMetadata = {
   name: 'ban',
   description: 'Bans a member from the guild.',
-  accessLevel: 2,
+  accessLevel: 1,
   aliases: [],
   hidden: false,
   params: [
