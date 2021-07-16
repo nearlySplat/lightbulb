@@ -18,16 +18,16 @@ app.post('/', async (req, res) => {
         console.log(inspect(e), inspect(o), inspect(er));
       }
     );
+    const commit = child_process.execSync('git log -n 1 --format="%H"');
     const client = new WebhookClient(conf.webhook.id, conf.webhook.token);
     await client.send({
       embeds: [
         new MessageEmbed()
-          .setDescription(
-            'Deployed on commit `' +
-              child_process.execSync("git log -n 1 --format='%H'").slice(0, 7) +
-              '`.'
-          )
-          .setColor('YELLOW'),
+          .setTitle('Successfully deployed on production')
+          .setColor('GREEN')
+          .setURL(
+            `https://github.com/lightbulb-bot/lightbulb/commit/${commit}`
+          ),
       ],
       username: 'Lightbulb',
       avatarURL: conf.webhook.avatar,
